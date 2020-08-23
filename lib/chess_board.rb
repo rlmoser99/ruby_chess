@@ -2,21 +2,8 @@
 
 # contains logic for chess board
 class ChessBoard
-  SOLID_KING = "\u265A"
-  SOLID_QUEEN = "\u265B"
-  SOLID_ROOK = "\u265C"
-  SOLID_BISHOP = "\u265D"
-  SOLID_KNIGHT = "\u265E"
-  SOLID_PAWN = "\u265F"
-  OUTLINE_KING = "\u2654"
-  OUTLINE_QUEEN = "\u2655"
-  OUTLINE_ROOK = "\u2656"
-  OUTLINE_BISHOP = "\u2657"
-  OUTLINE_KNIGHT = "\u2658"
-  OUTLINE_PAWN = "\u2659"
-
-  def initialize
-    @board = Array.new(8) { Array.new(8, ' ') }
+  def initialize(board = initial_placement)
+    @board = board
   end
 
   def to_s
@@ -26,30 +13,48 @@ class ChessBoard
     end
   end
 
-  def starting_positions
-    @board[0][0] = SOLID_KING
-    @board[0][1] = SOLID_QUEEN
-    @board[0][2] = SOLID_ROOK
-    @board[0][3] = SOLID_BISHOP
-    @board[0][4] = SOLID_KNIGHT
-    @board[0][5] = SOLID_PAWN
-    @board[1][0] = OUTLINE_KING
-    @board[1][1] = OUTLINE_QUEEN
-    @board[1][2] = OUTLINE_ROOK
-    @board[1][3] = OUTLINE_BISHOP
-    @board[1][4] = OUTLINE_KNIGHT
-    @board[1][5] = OUTLINE_PAWN
-  end
-
   private
+
+  def initial_placement
+    [
+      %w[br bn bb bq bk bb bn br],
+      %w[bp bp bp bp bp bp bp bp],
+      %w[-- -- -- -- -- -- -- --],
+      %w[-- -- -- -- -- -- -- --],
+      %w[-- -- -- -- -- -- -- --],
+      %w[-- -- -- -- -- -- -- --],
+      %w[wp wp wp wp wp wp wp wp],
+      %w[wr wn wb wq wk wb wn wr]
+    ]
+  end
 
   def print_row(row, row_index)
     row.each_with_index do |square, index|
-      if (row_index + index).even?
-        print "\e[47m #{square} \e[0m"
-      else
-        print "\e[100m #{square} \e[0m"
-      end
+      index_total = row_index + index
+      background = index_total.even? ? 47 : 100
+      print_square(square, background)
     end
+  end
+
+  def print_square(square, background)
+    text = square.match?(/^w/) ? 97 : 30
+    piece = chess_piece(square[-1])
+    color_square(text, background, piece)
+  end
+
+  def color_square(text, background, string)
+    print "\e[#{text};#{background}m#{string}\e[0m"
+  end
+
+  def chess_piece(letter)
+    {
+      'k' => " \u265A ",
+      'q' => " \u265B ",
+      'r' => " \u265C ",
+      'b' => " \u265D ",
+      'n' => " \u265E ",
+      'p' => " \u265F ",
+      '-' => '   '
+    }[letter]
   end
 end
