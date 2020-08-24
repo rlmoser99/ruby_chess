@@ -2,8 +2,10 @@
 
 # contains logic for chess board
 class ChessBoard
-  def initialize(board = initial_placement)
-    @board = board
+  # def initialize(board = initial_placement)
+  def initialize
+    # @board = board
+    @board = Array.new(8) { Array.new(8, '--') }
   end
 
   def to_s
@@ -12,6 +14,10 @@ class ChessBoard
     print_board
     puts "\e[36m    a  b  c  d  e  f  g  h \e[0m"
     puts
+  end
+
+  def update_value(row, column, piece)
+    @board[row][column] = piece
   end
 
   private

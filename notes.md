@@ -12,11 +12,11 @@
 - check mate status
 
 ## Board
-- 2-D array
-- print board's background black & white
-- rows are called 'ranks' denoted 1 to 8 from bottom to top according to White's perspective.
-- columns are called 'files' denoted a to h from left to right according to White's perspective.
-- The board has a light square at the right-hand corner nearest to each player. Thus, each queen starts on a square of its own color (the white queen on a light square; the black queen on a dark square).
++ 2-D array
++ print board's background black & white
++ rows are called 'ranks' denoted 1 to 8 from bottom to top according to White's perspective.
++ columns are called 'files' denoted a to h from left to right according to White's perspective.
++ The board has a light square at the right-hand corner nearest to each player. Thus, each queen starts on a square of its own color (the white queen on a light square; the black queen on a dark square).
 
 ## Game
 - Initialize with 2 players & 1 board
