@@ -31,9 +31,9 @@ class ChessBoard
 
   def print_board
     @board.each_with_index do |row, index|
-      print "\e[36m #{rank_number(index)} \e[0m"
+      print "\e[36m #{8 - index} \e[0m"
       print_row(row, index)
-      print "\e[36m #{rank_number(index)} \e[0m"
+      print "\e[36m #{8 - index} \e[0m"
       puts
     end
   end
@@ -66,12 +66,5 @@ class ChessBoard
       'p' => " \u265F ",
       '-' => '   '
     }[letter]
-  end
-
-  def rank_number(number)
-    return number if number == 4
-
-    changer = number - 4
-    number - (changer * 2)
   end
 end
