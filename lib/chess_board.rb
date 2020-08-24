@@ -7,10 +7,11 @@ class ChessBoard
   end
 
   def to_s
-    @board.each_with_index do |row, index|
-      print_row(row, index)
-      puts
-    end
+    puts
+    puts "\e[36m    a  b  c  d  e  f  g  h \e[0m"
+    print_board
+    puts "\e[36m    a  b  c  d  e  f  g  h \e[0m"
+    puts
   end
 
   private
@@ -26,6 +27,15 @@ class ChessBoard
       %w[wp wp wp wp wp wp wp wp],
       %w[wr wn wb wq wk wb wn wr]
     ]
+  end
+
+  def print_board
+    @board.each_with_index do |row, index|
+      print "\e[36m #{rank_number(index)} \e[0m"
+      print_row(row, index)
+      print "\e[36m #{rank_number(index)} \e[0m"
+      puts
+    end
   end
 
   def print_row(row, row_index)
@@ -56,5 +66,12 @@ class ChessBoard
       'p' => " \u265F ",
       '-' => '   '
     }[letter]
+  end
+
+  def rank_number(number)
+    return number if number == 4
+
+    changer = number - 4
+    number - (changer * 2)
   end
 end
