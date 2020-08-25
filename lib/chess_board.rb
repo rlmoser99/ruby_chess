@@ -2,8 +2,10 @@
 
 # contains logic for chess board
 class ChessBoard
-  def initialize(board = Array.new(8) { Array.new(8) })
-    @board = board
+  attr_reader :data
+
+  def initialize(data = Array.new(8) { Array.new(8) })
+    @data = data
   end
 
   def to_s
@@ -15,11 +17,11 @@ class ChessBoard
   end
 
   def update_value(row, column, piece)
-    @board[row][column] = piece
+    @data[row][column] = piece
   end
 
   def select_piece(row, column)
-    @board[row][column]
+    @data[row][column]
   end
 
   def initial_placement
@@ -32,11 +34,11 @@ class ChessBoard
   private
 
   def initial_pawn_row(color, number)
-    8.times { |index| @board[number][index] = Pawn.new(color) }
+    8.times { |index| @data[number][index] = Pawn.new(color) }
   end
 
   def initial_row(color, number)
-    @board[number] = [
+    @data[number] = [
       Rook.new(color), Knight.new(color), Bishop.new(color),
       Queen.new(color), King.new(color), Bishop.new(color),
       Knight.new(color), Rook.new(color)

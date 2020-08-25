@@ -1,6 +1,7 @@
 ## Chess Ideas
 - Have player choose a piece to move & then display the legal moves for player to input?
 - Visually warn player when King is in check
+- Show the pieces that have been captured
 
 ## Main
 - create players
