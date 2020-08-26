@@ -9,9 +9,9 @@ require_relative '../lib/pieces/knight'
 require_relative '../lib/pieces/pawn'
 
 RSpec.describe ChessBoard do
-  describe '#initial_placement' do
-    subject(:board) { described_class.new }
+  subject(:board) { described_class.new }
 
+  describe '#initial_placement' do
     before do
       board.initial_placement
     end
@@ -104,4 +104,30 @@ RSpec.describe ChessBoard do
       expect(board.data[7][7].instance_of?(Rook)).to be true
     end
   end
+
+  # describe '#translate_position' do
+  #   it 'returns hash row:0 column:0' do
+  #     user_input = 'a8'
+  #     result = board.translate_position(user_input)
+  #     expect(result).to eq({ row: 0, column: 0 })
+  #   end
+
+  #   it 'returns hash row:0 column:1' do
+  #     user_input = 'b8'
+  #     result = board.translate_position(user_input)
+  #     expect(result).to eq({ row: 0, column: 1 })
+  #   end
+
+  #   it 'returns hash row:1 column:0' do
+  #     user_input = 'a7'
+  #     result = board.translate_position(user_input)
+  #     expect(result).to eq({ row: 1, column: 0 })
+  #   end
+
+  #   it 'returns hash row:1 column:1' do
+  #     user_input = 'b7'
+  #     result = board.translate_position(user_input)
+  #     expect(result).to eq({ row: 1, column: 1 })
+  #   end
+  # end
 end

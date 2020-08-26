@@ -31,6 +31,7 @@
 - moved to either an unoccupied square or one occupied by an opponent's piece, which is captured and removed from play. 
 - can not skip a turn
 - can not make a turn that would put their own king in check,
+- Notation: https://www.ichess.net/blog/chess-notation/
 
 If the player to move has no legal move, the game is over; the result is either checkmate (a loss for the player with no legal move) if the king is in check, or stalemate (a draw) if the king is not.
 

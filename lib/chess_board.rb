@@ -16,12 +16,14 @@ class ChessBoard
     puts
   end
 
-  def update_value(row, column, piece)
+  def update_data(row, column, piece)
     @data[row][column] = piece
   end
 
-  def select_piece(row, column)
-    @data[row][column]
+  def select_piece(input)
+    translator ||= NotationTranslator.new
+    coords = translator.translate_notation(input)
+    @data[coords[:row]][coords[:column]]
   end
 
   def initial_placement
@@ -46,7 +48,7 @@ class ChessBoard
   end
 
   def print_board
-    @board.each_with_index do |row, index|
+    @data.each_with_index do |row, index|
       print "\e[36m #{8 - index} \e[0m"
       print_row(row, index)
       print "\e[36m #{8 - index} \e[0m"
