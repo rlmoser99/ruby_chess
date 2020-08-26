@@ -16,15 +16,20 @@ class ChessBoard
     puts
   end
 
-  def update_data(row, column, piece)
-    @data[row][column] = piece
+  def update_data(original, final)
+    translator ||= NotationTranslator.new
+    original_coords = translator.translate_notation(original)
+    moving_piece = @data[original_coords[:row]][original_coords[:column]]
+    final_coords = translator.translate_notation(final)
+    @data[final_coords[:row]][final_coords[:column]] = moving_piece
+    @data[original_coords[:row]][original_coords[:column]] = nil
   end
 
-  def select_piece(input)
-    translator ||= NotationTranslator.new
-    coords = translator.translate_notation(input)
-    @data[coords[:row]][coords[:column]]
-  end
+  # def select_piece(input)
+  #   translator ||= NotationTranslator.new
+  #   coords = translator.translate_notation(input)
+  #   @data[coords[:row]][coords[:column]]
+  # end
 
   def initial_placement
     initial_row(:black, 0)
