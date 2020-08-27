@@ -5,14 +5,14 @@ class Game
   # Declares error message when user enters invalid input
   class InputError < StandardError
     def message
-      'Invalid input!'
+      'Invalid input! Enter column & row, for example: d2'
     end
   end
 
   # Declares error message when user enters invalid move
   class MoveError < StandardError
     def message
-      'Invalid piece to move!'
+      'Invalid input! Enter column & row that has a chess piece.'
     end
   end
 
@@ -20,6 +20,7 @@ class Game
     @board = board
   end
 
+  # Public Script Method -> Test methods inside
   def play
     @board.initial_placement
     @board.to_s
@@ -27,6 +28,8 @@ class Game
     @board.to_s
   end
 
+  # Script Method -> Test methods inside
+  # Test Outgoing Command Message
   def player_turn
     piece_coords = select_piece_coordinates
     piece = @board.data[piece_coords[:row]][piece_coords[:column]]

@@ -10,13 +10,13 @@ class NotationTranslator
   def translate_notation(letter_number)
     coordinates = letter_number.split(//)
     translate_row(coordinates[1])
-    translate_col(coordinates[0])
+    translate_column(coordinates[0])
     { row: @row, column: @column }
   end
 
   protected
 
-  def translate_col(letter)
+  def translate_column(letter)
     @column = letter.downcase.ord - 97
   end
 
