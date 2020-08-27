@@ -1,0 +1,2 @@
+lib/game.rb -- 8 warnings:
+  [65]:UtilityFunction: Game#translate_coordinates doesn't depend on instance state (maybe move it to another class?) [https://github.com/troessner/reek/blob/v6.0.1/docs/Utility-Function.md]
