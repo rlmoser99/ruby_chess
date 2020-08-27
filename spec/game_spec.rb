@@ -6,27 +6,54 @@ require_relative '../lib/notation_translator'
 require_relative '../lib/pieces/rook'
 
 RSpec.describe Game do
+  # Declares error message when user enters invalid input
+  class InputError < StandardError
+    def message
+      'Invalid input! Enter column & row, for example: d2'
+    end
+  end
+
+  # Declares error message when user enters invalid move
+  class MoveError < StandardError
+    def message
+      'Invalid input! Enter column & row that has a chess piece.'
+    end
+  end
   # subject(:game) { described_class.new }
 
   describe '#validate_coordinates' do
     subject(:game_validate) { described_class.new(board_validate) }
-    let(:board_validate) { instance_double(ChessBoard) }
+    let(:board_validate) { ChessBoard.new(data_validate) }
     let(:rook) { instance_double(Rook) }
-    let(:test) { double('object') }
-
-    before do
-      # WANT THIS RECEIVE [0][0] AND TO RETURN AN OBJECT
-      allow(board_validate).to receive(:data).and_return('3')
+    let(:data_validate) do
+      [
+        [rook, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil]
+      ]
     end
 
-    it 'does not raise an error' do
-      expect { game_validate.validate_coordinates({ row: 0, column: 0 }) }.not_to raise_error
+    context 'when board coordinates are not nil' do
+      it 'does not raise an error' do
+        expect { game_validate.validate_coordinates({ row: 0, column: 0 }) }.not_to raise_error
+      end
+
+      it 'returns coordinates' do
+        coordinates = { row: 0, column: 0 }
+        result = game_validate.validate_coordinates(coordinates)
+        expect(result).to eq(coordinates)
+      end
     end
 
-    it 'returns coordinates' do
-      coordinates = { row: 0, column: 0 }
-      result = game_validate.validate_coordinates(coordinates)
-      expect(result).to eq(coordinates)
+    context 'when board coordinates is nil' do
+      it 'raises an error' do
+        expect { game_validate.validate_coordinates({ row: 1, column: 0 }) }.to raise_error(Game::MoveError)
+      end
     end
   end
 
