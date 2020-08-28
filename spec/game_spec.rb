@@ -21,6 +21,28 @@ RSpec.describe Game do
   end
   # subject(:game) { described_class.new }
 
+  describe '#validate_input' do
+    subject(:game_input) { described_class.new }
+
+    context 'when input is valid' do
+      it 'does not raise an error' do
+        expect { game_input.validate_input('c7') }.not_to raise_error
+      end
+    end
+
+    context 'when input is not valid' do
+      it 'raises an error' do
+        expect { game_input.validate_input('7c') }.to raise_error(Game::InputError)
+      end
+      it 'raises an error' do
+        expect { game_input.validate_input('77') }.to raise_error(Game::InputError)
+      end
+      it 'raises an error' do
+        expect { game_input.validate_input('cc') }.to raise_error(Game::InputError)
+      end
+    end
+  end
+
   describe '#validate_coordinates' do
     subject(:game_validate) { described_class.new(board_validate) }
     let(:board_validate) { ChessBoard.new(data_validate) }
