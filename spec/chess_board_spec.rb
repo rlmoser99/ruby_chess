@@ -105,29 +105,29 @@ RSpec.describe ChessBoard do
     end
   end
 
-  # describe '#translate_position' do
-  #   it 'returns hash row:0 column:0' do
-  #     user_input = 'a8'
-  #     result = board.translate_position(user_input)
-  #     expect(result).to eq({ row: 0, column: 0 })
-  #   end
+  describe '#update_final_coordinates' do
+    let(:rook) { instance_double(Rook) }
 
-  #   it 'returns hash row:0 column:1' do
-  #     user_input = 'b8'
-  #     result = board.translate_position(user_input)
-  #     expect(result).to eq({ row: 0, column: 1 })
-  #   end
+    it 'updates coordinate with the chess piece' do
+      coordinates = { row: 3, column: 0 }
+      board.update_final_coordinates(coordinates, rook)
+      expect(board.data[3][0]).to eq(rook)
+    end
+  end
 
-  #   it 'returns hash row:1 column:0' do
-  #     user_input = 'a7'
-  #     result = board.translate_position(user_input)
-  #     expect(result).to eq({ row: 1, column: 0 })
-  #   end
+  describe '#update_original_coordinates' do
+    before do
+      board.initial_placement
+    end
 
-  #   it 'returns hash row:1 column:1' do
-  #     user_input = 'b7'
-  #     result = board.translate_position(user_input)
-  #     expect(result).to eq({ row: 1, column: 1 })
-  #   end
-  # end
+    it 'removes chess piece from board coordinates' do
+      coordinates = { row: 1, column: 0 }
+      expect { board.update_original_coordinates(coordinates) }.to change { board.data[1][0] }.to(nil)
+    end
+
+    it 'removes chess piece from board coordinates' do
+      coordinates = { row: 0, column: 7 }
+      expect { board.update_original_coordinates(coordinates) }.to change { board.data[0][7] }.to(nil)
+    end
+  end
 end

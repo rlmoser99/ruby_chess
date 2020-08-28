@@ -8,6 +8,7 @@ class ChessBoard
     @data = data
   end
 
+  # Only Puts Method -> No tests needed
   def to_s
     puts
     puts "\e[36m    a  b  c  d  e  f  g  h \e[0m"
@@ -16,19 +17,23 @@ class ChessBoard
     puts
   end
 
+  # Script Method -> No tests needed (test inside methods)
   def update(original, final, piece)
     update_final_coordinates(final, piece)
     update_original_coordinates(original)
   end
 
+  # Completed Tests
   def update_final_coordinates(final, piece)
     @data[final[:row]][final[:column]] = piece
   end
 
+  # Completed Tests
   def update_original_coordinates(original)
     @data[original[:row]][original[:column]] = nil
   end
 
+  # Completed Tests
   def initial_placement
     initial_row(:black, 0)
     initial_pawn_row(:black, 1)
@@ -63,6 +68,8 @@ class ChessBoard
     row.each_with_index do |square, index|
       index_total = row_index + index
       background_color = index_total.even? ? 47 : 100
+      # Idea to color possible moves:
+      # background_color = 102 if index == 3 && row_index == 3
       print_square(square, background_color)
     end
   end

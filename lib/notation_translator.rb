@@ -7,6 +7,7 @@ class NotationTranslator
     @column = nil
   end
 
+  # Completed Tests
   def translate_notation(letter_number)
     coordinates = letter_number.split(//)
     translate_row(coordinates[1])
