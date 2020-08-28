@@ -6,8 +6,8 @@ require_relative 'piece'
 class King < Piece
   attr_reader :color, :symbol
 
-  def initialize(color)
-    super(color)
+  def initialize(args)
+    super(args)
     @symbol = " \u265A "
   end
 end

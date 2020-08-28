@@ -6,6 +6,7 @@ class ChessBoard
 
   def initialize(data = Array.new(8) { Array.new(8) })
     @data = data
+    @possible_moves = []
   end
 
   # Only Puts Method -> No tests needed
@@ -35,25 +36,25 @@ class ChessBoard
 
   # Completed Tests
   def initial_placement
-    initial_row(:black, 0)
+    # initial_row(:black, 0)
     initial_pawn_row(:black, 1)
     initial_pawn_row(:white, 6)
-    initial_row(:white, 7)
+    # initial_row(:white, 7)
   end
 
   private
 
   def initial_pawn_row(color, number)
-    8.times { |index| @data[number][index] = Pawn.new(color) }
+    8.times { |index| @data[number][index] = Pawn.new({ color: color, location: [[number][index]] }) }
   end
 
-  def initial_row(color, number)
-    @data[number] = [
-      Rook.new(color), Knight.new(color), Bishop.new(color),
-      Queen.new(color), King.new(color), Bishop.new(color),
-      Knight.new(color), Rook.new(color)
-    ]
-  end
+  # def initial_row(color, number)
+  #   @data[number] = [
+  #     Rook.new(color), Knight.new(color), Bishop.new(color),
+  #     Queen.new(color), King.new(color), Bishop.new(color),
+  #     Knight.new(color), Rook.new(color)
+  #   ]
+  # end
 
   def print_board
     @data.each_with_index do |row, index|
@@ -66,14 +67,25 @@ class ChessBoard
 
   def print_row(row, row_index)
     row.each_with_index do |square, index|
-      index_total = row_index + index
-      background_color = index_total.even? ? 47 : 100
-      # Idea to color possible moves:
-      # background_color = 102 if index == 3 && row_index == 3
+      background_color = select_background(row_index, index)
       print_square(square, background_color)
     end
   end
 
+  # 102 = Green, 47 = Light Gray, and 100 = Dark Gray
+  def select_background(row_index, column_index)
+    index_total = row_index + column_index
+    # @possible_moves = [[3, 3], [2, 1]]
+    if @possible_moves.any?([row_index, column_index])
+      102
+    elsif index_total.even?
+      47
+    else
+      100
+    end
+  end
+
+  # 97 = White and 30 = Black
   def print_square(square, background)
     if square
       text_color = square.color == :white ? 97 : 30

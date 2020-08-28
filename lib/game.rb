@@ -33,6 +33,7 @@ class Game
   def player_turn
     piece_coords = select_piece_coordinates
     piece = @board.data[piece_coords[:row]][piece_coords[:column]]
+    binding.pry
     new_coords = select_move_coordinates
     @board.update(piece_coords, new_coords, piece)
   end
