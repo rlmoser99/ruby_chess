@@ -15,3 +15,10 @@ require_relative 'pieces/pawn.rb'
 
 game = Game.new
 game.play
+
+# def pawn_test
+#   pawn = Pawn.new({ color: :white, location: [1, 0] })
+#   pawn.update_moves
+# end
+
+# pawn_test

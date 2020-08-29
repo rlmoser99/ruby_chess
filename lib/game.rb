@@ -33,8 +33,11 @@ class Game
   def player_turn
     piece_coords = select_piece_coordinates
     piece = @board.data[piece_coords[:row]][piece_coords[:column]]
-    binding.pry
-    new_coords = select_move_coordinates
+    piece.update_moves
+    @board.update_possible_moves(piece.moves)
+    @board.to_s
+    @board.update_possible_moves([])
+    new_coords = select_move_coordinates(piece)
     @board.update(piece_coords, new_coords, piece)
   end
 
@@ -50,11 +53,11 @@ class Game
   end
 
   # Script Method -> No tests needed (test inside methods)
-  def select_move_coordinates
+  def select_move_coordinates(piece)
     puts 'Where would you like to move it?'
     input = gets.chomp
     validate_input(input)
-    translate_coordinates(input)
+    validate_move(piece, translate_coordinates(input))
   rescue StandardError => e
     puts e.message
     retry
@@ -70,6 +73,10 @@ class Game
     raise MoveError unless @board.data[coords[:row]][coords[:column]]
 
     coords
+  end
+
+  def validate_move(piece, coords)
+    return coords if piece.moves.any?([coords[:row], coords[:column]])
   end
 
   # Completed Tests

@@ -11,11 +11,16 @@ class ChessBoard
 
   # Only Puts Method -> No tests needed
   def to_s
+    system 'clear'
     puts
     puts "\e[36m    a  b  c  d  e  f  g  h \e[0m"
     print_board
     puts "\e[36m    a  b  c  d  e  f  g  h \e[0m"
     puts
+  end
+
+  def update_possible_moves(moves)
+    @possible_moves = moves
   end
 
   # Script Method -> No tests needed (test inside methods)
@@ -36,25 +41,32 @@ class ChessBoard
 
   # Completed Tests
   def initial_placement
-    # initial_row(:black, 0)
+    initial_row(:black, 0)
     initial_pawn_row(:black, 1)
     initial_pawn_row(:white, 6)
-    # initial_row(:white, 7)
+    initial_row(:white, 7)
   end
 
   private
 
   def initial_pawn_row(color, number)
-    8.times { |index| @data[number][index] = Pawn.new({ color: color, location: [[number][index]] }) }
+    8.times do |index|
+      @data[number][index] = Pawn.new({ color: color, location: [number, index] })
+    end
   end
 
-  # def initial_row(color, number)
-  #   @data[number] = [
-  #     Rook.new(color), Knight.new(color), Bishop.new(color),
-  #     Queen.new(color), King.new(color), Bishop.new(color),
-  #     Knight.new(color), Rook.new(color)
-  #   ]
-  # end
+  def initial_row(color, number)
+    @data[number] = [
+      Rook.new({ color: color, location: [number, 0] }),
+      Knight.new({ color: color, location: [number, 1] }),
+      Bishop.new({ color: color, location: [number, 2] }),
+      Queen.new({ color: color, location: [number, 3] }),
+      King.new({ color: color, location: [number, 4] }),
+      Bishop.new({ color: color, location: [number, 5] }),
+      Knight.new({ color: color, location: [number, 6] }),
+      Rook.new({ color: color, location: [number, 7] })
+    ]
+  end
 
   def print_board
     @data.each_with_index do |row, index|

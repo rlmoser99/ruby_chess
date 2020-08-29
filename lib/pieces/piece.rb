@@ -6,5 +6,6 @@ class Piece
     @color = args[:color]
     @location = args[:location]
     @moves = []
+    @moved = false
   end
 end
