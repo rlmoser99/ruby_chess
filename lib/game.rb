@@ -10,9 +10,16 @@ class Game
   end
 
   # Declares error message when user enters invalid move
-  class MoveError < StandardError
+  class EmptySquareError < StandardError
     def message
       'Invalid input! Enter column & row that has a chess piece.'
+    end
+  end
+
+  # Declares error message when user enters invalid move
+  class MoveError < StandardError
+    def message
+      'Invalid input! Enter a valid (green) column & row'
     end
   end
 
@@ -70,13 +77,15 @@ class Game
 
   # Completed Tests
   def validate_coordinates(coords)
-    raise MoveError unless @board.data[coords[:row]][coords[:column]]
+    raise EmptySquareError unless @board.data[coords[:row]][coords[:column]]
 
     coords
   end
 
   def validate_move(piece, coords)
-    return coords if piece.moves.any?([coords[:row], coords[:column]])
+    raise MoveError unless piece.moves.any?([coords[:row], coords[:column]])
+
+    coords
   end
 
   # Completed Tests
