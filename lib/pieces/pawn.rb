@@ -9,8 +9,12 @@ class Pawn < Piece
   def initialize(args)
     super(args)
     @symbol = " \u265F "
+    @location = args[:location]
+    @moves = []
+    @moved = false
   end
 
+  # add valid move for en passant
   def update_moves
     row = @location[0]
     column = @location[1]

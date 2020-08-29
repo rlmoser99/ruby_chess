@@ -41,10 +41,11 @@ class Game
     piece_coords = select_piece_coordinates
     piece = @board.data[piece_coords[:row]][piece_coords[:column]]
     piece.update_moves
-    @board.update_possible_moves(piece.moves)
+    @board.update_possible_moves([piece_coords[:row], piece_coords[:column]], piece.moves)
     @board.to_s
-    @board.update_possible_moves([])
+    @board.update_possible_moves([], [])
     new_coords = select_move_coordinates(piece)
+    # Need to update that piece's new location.
     @board.update(piece_coords, new_coords, piece)
   end
 
