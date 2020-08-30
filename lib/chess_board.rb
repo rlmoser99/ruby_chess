@@ -114,7 +114,7 @@ class ChessBoard
   # 107-white, 47-light gray
   def even_background(row_index, column_index)
     if @possible_moves.any?([row_index, column_index])
-      45
+      105
     else
       47
     end
