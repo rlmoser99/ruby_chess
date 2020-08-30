@@ -95,7 +95,7 @@ class ChessBoard
   def select_background(row_index, column_index)
     index_total = row_index + column_index
     if @piece_to_move == [row_index, column_index]
-      104
+      44
     elsif index_total.even?
       47
     else
