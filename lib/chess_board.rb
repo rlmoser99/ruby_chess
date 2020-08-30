@@ -11,13 +11,13 @@ class ChessBoard
   end
 
   # Only Puts Method -> No tests needed
-  # 36 = Cyan Text
+  # 36 = Cyan Text -> 94 light blue
   def to_s
     system 'clear'
     puts
-    puts "\e[94m    a  b  c  d  e  f  g  h \e[0m"
+    puts "\e[36m    a  b  c  d  e  f  g  h \e[0m"
     print_board
-    puts "\e[94m    a  b  c  d  e  f  g  h \e[0m"
+    puts "\e[36m    a  b  c  d  e  f  g  h \e[0m"
     puts
   end
 
@@ -71,12 +71,12 @@ class ChessBoard
     ]
   end
 
-  # 36 = Cyan Text
+  # 36 = Cyan Text -> 94 light blue
   def print_board
     @data.each_with_index do |row, index|
-      print "\e[94m #{8 - index} \e[0m"
+      print "\e[36m #{8 - index} \e[0m"
       print_row(row, index)
-      print "\e[94m #{8 - index} \e[0m"
+      print "\e[36m #{8 - index} \e[0m"
       puts
     end
   end
@@ -88,14 +88,14 @@ class ChessBoard
     end
   end
 
-  # 46 = Cyan (active piece to move) -> 94 light blue
+  # 46 = Cyan (active piece to move) -> 44 blue
   # 105 = Light Magenta (possible capture background)
   # 47 = Light Gray (even)
   # 100 = Dark Gray (odd)
   def select_background(row_index, column_index)
     index_total = row_index + column_index
     if @piece_to_move == [row_index, column_index]
-      44
+      46
     elsif index_total.even?
       47
     else
