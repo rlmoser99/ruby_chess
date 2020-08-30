@@ -2,16 +2,21 @@
 
 # contains logic for chess board
 class ChessBoard
-  attr_reader :data
+  attr_reader :data, :active_piece
 
   def initialize(data = Array.new(8) { Array.new(8) })
     @data = data
-    @possible_moves = []
-    @piece_to_move = []
+    @active_piece = nil
+  end
+
+  def display_valid_moves(coordinates)
+    @active_piece = data[coordinates[:row]][coordinates[:column]]
+    @active_piece.update_moves
+    to_s
   end
 
   # Only Puts Method -> No tests needed
-  # 36 = Cyan Text -> 94 light blue
+  # 36 = Cyan Text (94 light blue looks good too)
   def to_s
     system 'clear'
     puts
@@ -21,25 +26,22 @@ class ChessBoard
     puts
   end
 
-  def update_possible_moves(current_coords, piece_moves)
-    @possible_moves = piece_moves
-    @piece_to_move = current_coords
-  end
-
   # Script Method -> No tests needed (test inside methods)
-  def update(original, final, piece)
-    update_final_coordinates(final, piece)
-    update_original_coordinates(original)
+  def update(coordinates)
+    update_final_coordinates(coordinates)
+    update_original_coordinates
+    @active_piece = nil
   end
 
-  # Completed Tests
-  def update_final_coordinates(final, piece)
-    @data[final[:row]][final[:column]] = piece
+  # Update Tests !!! ???
+  def update_final_coordinates(coords)
+    @data[coords[:row]][coords[:column]] = @active_piece
   end
 
-  # Completed Tests
-  def update_original_coordinates(original)
-    @data[original[:row]][original[:column]] = nil
+  # Update Tests !!! ???
+  def update_original_coordinates
+    original = @active_piece.location
+    @data[original[0]][original[1]] = nil
   end
 
   # Completed Tests
@@ -71,7 +73,7 @@ class ChessBoard
     ]
   end
 
-  # 36 = Cyan Text -> 94 light blue
+  # 36 = Cyan Text (94 light blue looks good too)
   def print_board
     @data.each_with_index do |row, index|
       print "\e[36m #{8 - index} \e[0m"
@@ -88,13 +90,13 @@ class ChessBoard
     end
   end
 
-  # 46 = Cyan (active piece to move) -> 44 blue
-  # 105 = Light Magenta (possible capture background)
+  # 46 = Cyan (active piece to move) (44 blue looks good too)
+  # 101 = Light Red (possible capture background)
   # 47 = Light Gray (even)
   # 100 = Dark Gray (odd)
   def select_background(row_index, column_index)
     index_total = row_index + column_index
-    if @piece_to_move == [row_index, column_index]
+    if @active_piece && @active_piece.location == [row_index, column_index]
       46
     elsif index_total.even?
       47
@@ -104,10 +106,10 @@ class ChessBoard
   end
 
   # 97 = White (chess pieces)
-  # 30 = Black (cheese pieces)
-  # 95 = Light Magenta (possible moves) -> 96 light cyan
+  # 30 = Black (chess pieces)
+  # 91 = Light Red (possible moves)
   def print_square(row_index, column_index, square, background)
-    if @possible_moves.any?([row_index, column_index])
+    if @active_piece&.moves&.any?([row_index, column_index])
       color_square(91, background, " \u25CF ")
     elsif square
       text_color = square.color == :white ? 97 : 30

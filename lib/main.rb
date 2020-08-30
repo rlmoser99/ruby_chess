@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'pry'
+
 require_relative 'chess_board.rb'
 require_relative 'game.rb'
 require_relative 'notation_translator.rb'
