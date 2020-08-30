@@ -14,9 +14,9 @@ class ChessBoard
   def to_s
     system 'clear'
     puts
-    puts "\e[36m    a  b  c  d  e  f  g  h \e[0m"
+    puts "\e[95m    a  b  c  d  e  f  g  h \e[0m"
     print_board
-    puts "\e[36m    a  b  c  d  e  f  g  h \e[0m"
+    puts "\e[95m    a  b  c  d  e  f  g  h \e[0m"
     puts
   end
 
@@ -72,9 +72,9 @@ class ChessBoard
 
   def print_board
     @data.each_with_index do |row, index|
-      print "\e[36m #{8 - index} \e[0m"
+      print "\e[95m #{8 - index} \e[0m"
       print_row(row, index)
-      print "\e[36m #{8 - index} \e[0m"
+      print "\e[95m #{8 - index} \e[0m"
       puts
     end
   end
@@ -103,7 +103,7 @@ class ChessBoard
   def select_background(row_index, column_index)
     index_total = row_index + column_index
     if @piece_to_move == [row_index, column_index]
-      46
+      45
     elsif index_total.even?
       even_background(row_index, column_index)
     else
@@ -114,7 +114,7 @@ class ChessBoard
   # 107-white, 47-light gray
   def even_background(row_index, column_index)
     if @possible_moves.any?([row_index, column_index])
-      103
+      46
     else
       47
     end
