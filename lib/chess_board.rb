@@ -88,10 +88,10 @@ class ChessBoard
     end
   end
 
-  # 46 = Cyan (active piece to move)
+  # 46 = Cyan (active piece to move) -> 45 magenta
   # 105 = Light Magenta (possible capture background)
-  # 47 = Light Gray (even)
-  # 100 = Dark Gray (odd)
+  # 47 = Light Gray (even) -> 104 light blue
+  # 100 = Dark Gray (odd) -> 46 cyan
   def select_background(row_index, column_index)
     index_total = row_index + column_index
     if @piece_to_move == [row_index, column_index]
@@ -105,10 +105,10 @@ class ChessBoard
 
   # 97 = White (chess pieces)
   # 30 = Black (cheese pieces)
-  # 95 = Light Magenta (possible moves)
+  # 95 = Light Magenta (possible moves) -> 96 light cyan
   def print_square(row_index, column_index, square, background)
     if @possible_moves.any?([row_index, column_index])
-      color_square(95, background, " \u25CF ")
+      color_square(35, background, " \u25CF ")
     elsif square
       text_color = square.color == :white ? 97 : 30
       color_square(text_color, background, square.symbol)
