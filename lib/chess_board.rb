@@ -84,37 +84,20 @@ class ChessBoard
   def print_row(row, row_index)
     row.each_with_index do |square, index|
       background_color = select_background(row_index, index)
-      print_square(square, background_color)
+      print_square(row_index, index, square, background_color)
     end
   end
 
   # 46 = Cyan (active piece to move)
+  # 105 = Light Magenta (possible capture background)
+  # 47 = Light Gray (even)
+  # 100 = Dark Gray (odd)
   def select_background(row_index, column_index)
     index_total = row_index + column_index
     if @piece_to_move == [row_index, column_index]
       46
     elsif index_total.even?
-      even_background(row_index, column_index)
-    else
-      odd_background(row_index, column_index)
-    end
-  end
-
-  # 105 = Light Magenta (possible moves)
-  # 47 = Light Gray (default)
-  def even_background(row_index, column_index)
-    if @possible_moves.any?([row_index, column_index])
-      105
-    else
       47
-    end
-  end
-
-  # 44 = Blue (possible moves)
-  # 100 = Dark Gray (default)
-  def odd_background(row_index, column_index)
-    if @possible_moves.any?([row_index, column_index])
-      44
     else
       100
     end
@@ -122,8 +105,11 @@ class ChessBoard
 
   # 97 = White (chess pieces)
   # 30 = Black (cheese pieces)
-  def print_square(square, background)
-    if square
+  # 95 = Light Magenta (possible moves)
+  def print_square(row_index, column_index, square, background)
+    if @possible_moves.any?([row_index, column_index])
+      color_square(95, background, " \u25CF ")
+    elsif square
       text_color = square.color == :white ? 97 : 30
       color_square(text_color, background, square.symbol)
     else
