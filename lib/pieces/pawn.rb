@@ -26,4 +26,9 @@ class Pawn < Piece
       @moves << [row + 1, column]
     end
   end
+
+  def update_location(row, column)
+    @location = [row, column]
+    @moved = true
+  end
 end

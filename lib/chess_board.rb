@@ -27,10 +27,10 @@ class ChessBoard
   end
 
   # Script Method -> No tests needed (test inside methods)
-  def update(coordinates)
-    update_final_coordinates(coordinates)
+  def update(coords)
+    update_final_coordinates(coords)
     update_original_coordinates
-    @active_piece = nil
+    update_active_piece(coords)
   end
 
   # Update Tests !!! ???
@@ -40,8 +40,12 @@ class ChessBoard
 
   # Update Tests !!! ???
   def update_original_coordinates
-    original = @active_piece.location
-    @data[original[0]][original[1]] = nil
+    @data[@active_piece.location[0]][@active_piece.location[1]] = nil
+  end
+
+  def update_active_piece(coords)
+    @active_piece.update_location(coords[:row], coords[:column])
+    @active_piece = nil
   end
 
   # Completed Tests

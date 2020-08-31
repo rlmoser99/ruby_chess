@@ -32,15 +32,12 @@ class Game
     @board.initial_placement
     @board.to_s
     player_turn
-    @board.to_s
   end
 
   # Script Method -> Test methods inside
   # Need to test outgoing command message
   def player_turn
     @board.display_valid_moves(select_piece_coordinates)
-    # Need to update that piece's new location.
-    # Need to update that piece's moved? to false.
     @board.update(select_move_coordinates)
     @board.to_s
   end
