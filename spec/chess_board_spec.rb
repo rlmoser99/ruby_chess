@@ -146,4 +146,27 @@ RSpec.describe ChessBoard do
       expect(board.active_piece).to be_nil
     end
   end
+
+  describe '#display_valid_moves' do
+    subject(:board) { described_class.new(data_display) }
+    let(:data_display) { [[nil, nil], [piece, nil]] }
+    let(:piece) { double('piece') }
+
+    before do
+      allow(piece).to receive(:update_moves)
+      allow(board).to receive(:to_s)
+    end
+
+    it 'sets the active_piece' do
+      coords = { row: 1, column: 0 }
+      board.display_valid_moves(coords)
+      expect(board.active_piece).to eq(piece)
+    end
+
+    it 'sends #update_moves to active_piece' do
+      coords = { row: 1, column: 0 }
+      expect(piece).to receive(:update_moves)
+      board.display_valid_moves(coords)
+    end
+  end
 end

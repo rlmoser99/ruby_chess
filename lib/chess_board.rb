@@ -9,6 +9,7 @@ class ChessBoard
     @active_piece = active_piece
   end
 
+  # Tested
   def display_valid_moves(coordinates)
     @active_piece = data[coordinates[:row]][coordinates[:column]]
     @active_piece.update_moves
