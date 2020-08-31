@@ -7,6 +7,7 @@ require_relative '../lib/pieces/rook'
 require_relative '../lib/pieces/bishop'
 require_relative '../lib/pieces/knight'
 require_relative '../lib/pieces/pawn'
+require_relative '../lib/pieces/piece'
 
 RSpec.describe ChessBoard do
   subject(:board) { described_class.new }
@@ -106,28 +107,24 @@ RSpec.describe ChessBoard do
   end
 
   describe '#update_final_coordinates' do
+    subject(:board) { described_class.new(empty_data, rook) }
+    let(:empty_data) { Array.new(8) { Array.new(8) } }
     let(:rook) { instance_double(Rook) }
 
     it 'updates coordinate with the chess piece' do
       coordinates = { row: 3, column: 0 }
-      board.update_final_coordinates(coordinates, rook)
+      board.update_final_coordinates(coordinates)
       expect(board.data[3][0]).to eq(rook)
     end
   end
 
   describe '#update_original_coordinates' do
-    before do
-      board.initial_placement
-    end
+    subject(:board) { described_class.new(data_update, piece) }
+    let(:data_update) { [[piece, nil], [nil, nil]] }
+    let(:piece) { double('piece', location: [0, 0]) }
 
-    it 'removes chess piece from board coordinates' do
-      coordinates = { row: 1, column: 0 }
-      expect { board.update_original_coordinates(coordinates) }.to change { board.data[1][0] }.to(nil)
-    end
-
-    it 'removes chess piece from board coordinates' do
-      coordinates = { row: 0, column: 7 }
-      expect { board.update_original_coordinates(coordinates) }.to change { board.data[0][7] }.to(nil)
+    it 'removes active_piece from coordinates' do
+      expect { board.update_original_coordinates }.to change { board.data[0][0] }.to(nil)
     end
   end
 end

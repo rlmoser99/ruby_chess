@@ -4,9 +4,9 @@
 class ChessBoard
   attr_reader :data, :active_piece
 
-  def initialize(data = Array.new(8) { Array.new(8) })
+  def initialize(data = Array.new(8) { Array.new(8) }, active_piece = nil)
     @data = data
-    @active_piece = nil
+    @active_piece = active_piece
   end
 
   def display_valid_moves(coordinates)
@@ -33,12 +33,12 @@ class ChessBoard
     update_active_piece(coords)
   end
 
-  # Update Tests !!! ???
+  # Tested
   def update_final_coordinates(coords)
     @data[coords[:row]][coords[:column]] = @active_piece
   end
 
-  # Update Tests !!! ???
+  # Tested
   def update_original_coordinates
     @data[@active_piece.location[0]][@active_piece.location[1]] = nil
   end
