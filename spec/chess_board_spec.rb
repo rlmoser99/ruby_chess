@@ -123,8 +123,27 @@ RSpec.describe ChessBoard do
     let(:data_update) { [[piece, nil], [nil, nil]] }
     let(:piece) { double('piece', location: [0, 0]) }
 
-    it 'removes active_piece from coordinates' do
+    it 'removes active_piece from original coordinates' do
       expect { board.update_original_coordinates }.to change { board.data[0][0] }.to(nil)
+    end
+  end
+
+  describe '#update_active_piece' do
+    subject(:board) { described_class.new(data_update, piece) }
+    let(:data_update) { [[piece, nil], [nil, nil]] }
+    let(:piece) { double('piece') }
+
+    it 'sends #update_location to active_piece' do
+      coords = { row: 1, column: 1 }
+      expect(piece).to receive(:update_location).with(1, 1)
+      board.update_active_piece(coords)
+    end
+
+    it 'chanes active_piece to nil' do
+      allow(piece).to receive(:update_location).with(1, 1)
+      coords = { row: 1, column: 1 }
+      board.update_active_piece(coords)
+      expect(board.active_piece).to be_nil
     end
   end
 end

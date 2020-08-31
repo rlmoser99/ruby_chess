@@ -43,6 +43,7 @@ class ChessBoard
     @data[@active_piece.location[0]][@active_piece.location[1]] = nil
   end
 
+  # Tested
   def update_active_piece(coords)
     @active_piece.update_location(coords[:row], coords[:column])
     @active_piece = nil
