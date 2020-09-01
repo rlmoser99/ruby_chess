@@ -14,16 +14,19 @@ class Pawn < Piece
     @moved = false
   end
 
+  # Tested
   # add valid move for en passant
   def update_moves
-    row = @location[0]
-    column = @location[1]
-    if color == :white
-      @moves << [row - 2, column] unless @moved
-      @moves << [row - 1, column]
-    else
-      @moves << [row + 2, column] unless @moved
-      @moves << [row + 1, column]
-    end
+    @moves = []
+    movement = color == :white ? -1 : 1
+    @moves << [@location[0] + movement, @location[1]]
+    additional_new_move unless @moved
+  end
+
+  private
+
+  def additional_new_move
+    movement = color == :white ? -2 : 2
+    @moves << [@location[0] + movement, @location[1]]
   end
 end
