@@ -4,6 +4,7 @@ require_relative '../lib/game'
 require_relative '../lib/chess_board'
 require_relative '../lib/notation_translator'
 require_relative '../lib/pieces/rook'
+require_relative '../lib/pieces/pawn'
 
 RSpec.describe Game do
   # Declares error message when user enters invalid input
@@ -74,7 +75,7 @@ RSpec.describe Game do
 
     context 'when board coordinates is nil' do
       it 'raises an error' do
-        expect { game_validate.validate_coordinates({ row: 1, column: 0 }) }.to raise_error(Game::MoveError)
+        expect { game_validate.validate_coordinates({ row: 1, column: 0 }) }.to raise_error(Game::EmptySquareError)
       end
     end
   end
@@ -86,6 +87,29 @@ RSpec.describe Game do
       user_input = 'd2'
       expect_any_instance_of(NotationTranslator).to receive(:translate_notation).with(user_input)
       game_translate.translate_coordinates(user_input)
+    end
+  end
+
+  describe '#validate_move' do
+    subject(:game_move) { described_class.new(board_move) }
+    let(:board_move) { instance_double(ChessBoard) }
+    let(:pawn) { instance_double(Pawn) }
+
+    before do
+      allow(board_move).to receive(:active_piece).and_return(pawn)
+      allow(pawn).to receive(:moves).and_return([[2, 4]])
+    end
+
+    context 'when board coordinates are valid' do
+      it 'does not raise an error' do
+        expect { game_move.validate_move({ row: 2, column: 4 }) }.not_to raise_error
+      end
+    end
+
+    context 'when board coordinates are not valid' do
+      it 'raises an error' do
+        expect { game_move.validate_move({ row: 1, column: 7 }) }.to raise_error(Game::MoveError)
+      end
     end
   end
 end

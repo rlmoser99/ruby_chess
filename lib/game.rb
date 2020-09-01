@@ -28,6 +28,7 @@ class Game
   end
 
   # Public Script Method -> No tests needed (test inside methods)
+  # Need to test outgoing command message
   def play
     @board.initial_placement
     @board.to_s
@@ -76,6 +77,7 @@ class Game
     coords
   end
 
+  # Completed Tests
   def validate_move(coords)
     unless @board.active_piece.moves.any?([coords[:row], coords[:column]])
       raise MoveError
