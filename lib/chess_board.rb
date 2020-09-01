@@ -12,8 +12,18 @@ class ChessBoard
   # Tested
   def display_valid_moves(coordinates)
     @active_piece = data[coordinates[:row]][coordinates[:column]]
+    # Should this be moved out of this method???
     @active_piece.update_moves
+    # Check the piece.moves to also be nil to display dot.
     to_s
+  end
+
+  # Tested
+  def valid_empty_moves?(coordinates)
+    piece = data[coordinates[:row]][coordinates[:column]]
+    piece.update_moves
+    possible_moves = piece.moves
+    possible_moves.any? { |moves| data[moves[0]][moves[1]].nil? }
   end
 
   # Only Puts Method -> No tests needed

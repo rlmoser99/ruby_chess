@@ -169,4 +169,40 @@ RSpec.describe ChessBoard do
       board.display_valid_moves(coords)
     end
   end
+
+  describe '#valid_empty_moves?' do
+    context 'when piece has available places to move' do
+      subject(:board_valid) { described_class.new(data_valid) }
+      let(:data_valid) { [[pawn, nil], [nil, nil], [nil, nil]] }
+      let(:pawn) { instance_double(Pawn) }
+
+      before do
+        allow(pawn).to receive(:update_moves)
+        allow(pawn).to receive(:moves).and_return([[1, 0], [2, 0]])
+      end
+
+      it 'returns true' do
+        coords = { row: 0, column: 0 }
+        result = board_valid.valid_empty_moves?(coords)
+        expect(result).to be true
+      end
+    end
+
+    context 'when piece does not have available places to move' do
+      subject(:board_valid) { described_class.new(data_valid) }
+      let(:data_valid) { [[pawn, nil], [pawn, nil], [pawn, nil]] }
+      let(:pawn) { instance_double(Pawn) }
+
+      before do
+        allow(pawn).to receive(:update_moves)
+        allow(pawn).to receive(:moves).and_return([[1, 0], [2, 0]])
+      end
+
+      it 'returns false' do
+        coords = { row: 0, column: 0 }
+        result = board_valid.valid_empty_moves?(coords)
+        expect(result).to be false
+      end
+    end
+  end
 end

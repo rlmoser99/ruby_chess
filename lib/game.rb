@@ -48,7 +48,11 @@ class Game
     puts 'What piece would you like to move?'
     input = gets.chomp
     validate_input(input)
-    validate_coordinates(translate_coordinates(input))
+    coords = translate_coordinates(input)
+    validate_coordinates(coords)
+    # Check to see if that piece can be moved
+    # Need to check for available captures
+    # validate_piece(coords)
   rescue StandardError => e
     puts e.message
     retry
