@@ -39,6 +39,7 @@ class Game
   def play
     @board.initial_placement
     @board.to_s
+    # 8.times { player_turn }
     player_turn
   end
 
@@ -104,8 +105,8 @@ class Game
     translator.translate_notation(input)
   end
 
-  # Need to also check for available captures
+  # Need to test
   def validate_piece_moves(coordinates)
-    raise NoAvailableOpenMoves unless @board.valid_empty_moves?(coordinates)
+    raise NoAvailableOpenMoves unless @board.valid_piece?(coordinates)
   end
 end

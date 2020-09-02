@@ -24,6 +24,7 @@ class Pawn < Piece
     additional_new_move unless @moved
   end
 
+  # Tested
   def update_captures
     @captures = []
     row = @location[0]

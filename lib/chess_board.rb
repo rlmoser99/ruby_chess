@@ -14,6 +14,7 @@ class ChessBoard
     @active_piece = data[coordinates[:row]][coordinates[:column]]
     # Should this be moved out of this method???
     @active_piece.update_moves
+    @active_piece.update_captures
     # Check the piece.moves to also be nil to display dot.
     to_s
   end
@@ -31,7 +32,12 @@ class ChessBoard
     possible_moves.any? { |moves| data[moves[0]][moves[1]].nil? }
   end
 
-  def valid_capture_moves?(coordinates); end
+  def valid_capture_moves?(coordinates)
+    piece = data[coordinates[:row]][coordinates[:column]]
+    piece.update_captures
+    possible_captures = piece.captures
+    possible_captures.any? { |moves| data[moves[0]][moves[1]] }
+  end
 
   # Only Puts Method -> No tests needed
   # 36 = Cyan Text (94 light blue looks good too)
@@ -121,11 +127,17 @@ class ChessBoard
     index_total = row_index + column_index
     if @active_piece && @active_piece.location == [row_index, column_index]
       46
+    elsif capture_background?(row_index, column_index)
+      101
     elsif index_total.even?
       47
     else
       100
     end
+  end
+
+  def capture_background?(row_index, column_index)
+    @active_piece&.captures&.any?([row_index, column_index]) && @data[row_index][column_index]
   end
 
   # 97 = White (chess pieces)
