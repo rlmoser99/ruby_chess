@@ -65,12 +65,6 @@ RSpec.describe Game do
       it 'does not raise an error' do
         expect { game_validate.validate_coordinates({ row: 0, column: 0 }) }.not_to raise_error
       end
-
-      it 'returns coordinates' do
-        coordinates = { row: 0, column: 0 }
-        result = game_validate.validate_coordinates(coordinates)
-        expect(result).to eq(coordinates)
-      end
     end
 
     context 'when board coordinates is nil' do
@@ -109,6 +103,31 @@ RSpec.describe Game do
     context 'when board coordinates are not valid' do
       it 'raises an error' do
         expect { game_move.validate_move({ row: 1, column: 7 }) }.to raise_error(Game::MoveError)
+      end
+    end
+  end
+
+  describe '#validate_piece_moves' do
+    subject(:game_piece) { described_class.new(board_piece) }
+    let(:board_piece) { instance_double(ChessBoard) }
+
+    context 'when piece is valid' do
+      before do
+        allow(board_piece).to receive(:valid_piece?).and_return(true)
+      end
+
+      it 'does not raise an error' do
+        expect { game_piece.validate_piece_moves({ row: 0, column: 0 }) }.not_to raise_error
+      end
+    end
+
+    context 'when piece is not valid' do
+      before do
+        allow(board_piece).to receive(:valid_piece?).and_return(false)
+      end
+
+      it 'raises an error' do
+        expect { game_piece.validate_piece_moves({ row: 0, column: 0 }) }.to raise_error(Game::NoAvailableOpenMoves)
       end
     end
   end

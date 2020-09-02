@@ -72,7 +72,9 @@ class Game
     puts 'Where would you like to move it?'
     input = gets.chomp
     validate_input(input)
-    validate_move(translate_coordinates(input))
+    coords = translate_coordinates(input)
+    validate_move(coords)
+    coords
   rescue StandardError => e
     puts e.message
     retry
@@ -86,8 +88,6 @@ class Game
   # Completed Tests
   def validate_coordinates(coords)
     raise EmptySquareError unless @board.data[coords[:row]][coords[:column]]
-
-    coords
   end
 
   # Completed Tests
@@ -95,8 +95,6 @@ class Game
     unless @board.active_piece.moves.any?([coords[:row], coords[:column]])
       raise MoveError
     end
-
-    coords
   end
 
   # Completed Tests
