@@ -4,13 +4,14 @@ require_relative 'piece'
 
 # logic for each chess piece
 class Pawn < Piece
-  attr_reader :color, :symbol, :moves, :location
+  attr_reader :color, :symbol, :moves, :location, :captures
 
   def initialize(args)
     super(args)
     @symbol = " \u265F "
     @location = args[:location]
     @moves = []
+    @captures = []
     @moved = false
   end
 
@@ -21,6 +22,15 @@ class Pawn < Piece
     movement = color == :white ? -1 : 1
     @moves << [@location[0] + movement, @location[1]]
     additional_new_move unless @moved
+  end
+
+  def update_captures
+    @captures = []
+    row = @location[0]
+    column = @location[1]
+    movement = color == :white ? -1 : 1
+    @captures << [row + movement, column - 1] if column >= 1
+    @captures << [row + movement, column + 1] if column <= 6
   end
 
   private

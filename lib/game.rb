@@ -23,6 +23,13 @@ class Game
     end
   end
 
+  # Declares error message when user enters invalid move
+  class NoAvailableOpenMoves < StandardError
+    def message
+      'Invalid input! This piece does not have any available open moves.'
+    end
+  end
+
   def initialize(board = ChessBoard.new)
     @board = board
   end
@@ -50,9 +57,10 @@ class Game
     validate_input(input)
     coords = translate_coordinates(input)
     validate_coordinates(coords)
-    # Check to see if that piece can be moved
-    # Need to check for available captures
+    # Need to also check for available captures
+    validate_piece_moves(coords)
     # validate_piece(coords)
+    coords
   rescue StandardError => e
     puts e.message
     retry
@@ -94,5 +102,10 @@ class Game
   def translate_coordinates(input)
     translator ||= NotationTranslator.new
     translator.translate_notation(input)
+  end
+
+  # Need to also check for available captures
+  def validate_piece_moves(coordinates)
+    raise NoAvailableOpenMoves unless @board.valid_empty_moves?(coordinates)
   end
 end

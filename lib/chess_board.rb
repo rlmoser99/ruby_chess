@@ -18,6 +18,11 @@ class ChessBoard
     to_s
   end
 
+  def valid_piece?(coordinates)
+    # use piece instead of coordinates?
+    valid_empty_moves?(coordinates) || valid_capture_moves?(coordinates)
+  end
+
   # Tested
   def valid_empty_moves?(coordinates)
     piece = data[coordinates[:row]][coordinates[:column]]
@@ -25,6 +30,8 @@ class ChessBoard
     possible_moves = piece.moves
     possible_moves.any? { |moves| data[moves[0]][moves[1]].nil? }
   end
+
+  def valid_capture_moves?(coordinates); end
 
   # Only Puts Method -> No tests needed
   # 36 = Cyan Text (94 light blue looks good too)
