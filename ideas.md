@@ -44,3 +44,7 @@ It should not show a red dot when it the square already has a piece on the board
 [https://github.com/troessner/reek/blob/v6.0.1/docs/Too-Many-Statements.md]
 20 total warnings
 
+[48, 48]:FeatureEnvy: Pawn#valid_capture_moves? refers to 'moves' more than self (maybe move it to another class?) [https://github.com/troessner/reek/blob/v6.0.1/docs/Feature-Envy.md]
+
+[44, 44]:FeatureEnvy: Pawn#valid_empty_moves? refers to 'moves' more than self (maybe move it to another class?) [https://github.com/troessner/reek/blob/v6.0.1/docs/Feature-Envy.md]
+

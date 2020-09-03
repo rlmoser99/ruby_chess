@@ -10,23 +10,23 @@ class Game
   end
 
   # Declares error message when user enters invalid move
-  class EmptySquareError < StandardError
+  class CoordinatesError < StandardError
     def message
-      'Invalid input! Enter column & row that has a chess piece.'
+      'Invalid coordinates! Enter column & row that has a chess piece.'
     end
   end
 
   # Declares error message when user enters invalid move
   class MoveError < StandardError
     def message
-      'Invalid input! Enter a valid (green) column & row'
+      'Invalid coordinates! Enter a valid column & row to move.'
     end
   end
 
   # Declares error message when user enters invalid move
-  class NoAvailableOpenMoves < StandardError
+  class PieceError < StandardError
     def message
-      'Invalid input! This piece does not have any available open moves.'
+      'Invalid piece! This piece can not move. Please enter a different column & row.'
     end
   end
 
@@ -58,9 +58,7 @@ class Game
     validate_input(input)
     coords = translate_coordinates(input)
     validate_coordinates(coords)
-    # Need to also check for available captures
-    validate_piece_moves(coords)
-    # validate_piece(coords)
+    validiate_piece(coords)
     coords
   rescue StandardError => e
     puts e.message
@@ -73,6 +71,7 @@ class Game
     input = gets.chomp
     validate_input(input)
     coords = translate_coordinates(input)
+    # Need to validate move in the piece
     validate_move(coords)
     coords
   rescue StandardError => e
@@ -87,7 +86,7 @@ class Game
 
   # Completed Tests
   def validate_coordinates(coords)
-    raise EmptySquareError unless @board.data[coords[:row]][coords[:column]]
+    raise CoordinatesError unless @board.data[coords[:row]][coords[:column]]
   end
 
   # Completed Tests
@@ -103,8 +102,8 @@ class Game
     translator.translate_notation(input)
   end
 
-  # Need to test
-  def validate_piece_moves(coordinates)
-    raise NoAvailableOpenMoves unless @board.valid_piece?(coordinates)
+  def validiate_piece(coords)
+    piece = @board.data[coords[:row]][coords[:column]]
+    raise PieceError unless piece.valid_moves?(@board.data)
   end
 end

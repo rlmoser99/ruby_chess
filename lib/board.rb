@@ -11,31 +11,7 @@ class Board
 
   def display_valid_moves(coordinates)
     @active_piece = data[coordinates[:row]][coordinates[:column]]
-    # Should this be moved out of this method???
-    @active_piece.update_moves
-    @active_piece.update_captures
-    # Check the piece.moves to also be nil to display dot.
     to_s
-  end
-
-  def valid_piece?(coordinates)
-    # use piece instead of coordinates?
-    valid_empty_moves?(coordinates) || valid_capture_moves?(coordinates)
-  end
-
-  # Tested
-  def valid_empty_moves?(coordinates)
-    piece = data[coordinates[:row]][coordinates[:column]]
-    piece.update_moves
-    possible_moves = piece.moves
-    possible_moves.any? { |moves| data[moves[0]][moves[1]].nil? }
-  end
-
-  def valid_capture_moves?(coordinates)
-    piece = data[coordinates[:row]][coordinates[:column]]
-    piece.update_captures
-    possible_captures = piece.captures
-    possible_captures.any? { |moves| data[moves[0]][moves[1]] }
   end
 
   # Only Puts Method -> No tests needed
