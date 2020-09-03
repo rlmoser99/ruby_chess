@@ -30,7 +30,7 @@ class Game
     end
   end
 
-  def initialize(board = ChessBoard.new)
+  def initialize(board = Board.new)
     @board = board
   end
 

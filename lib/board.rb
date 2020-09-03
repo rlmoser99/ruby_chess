@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # contains logic for chess board
-class ChessBoard
+class Board
   attr_reader :data, :active_piece
 
   def initialize(data = Array.new(8) { Array.new(8) }, active_piece = nil)
@@ -9,7 +9,6 @@ class ChessBoard
     @active_piece = active_piece
   end
 
-  # Tested
   def display_valid_moves(coordinates)
     @active_piece = data[coordinates[:row]][coordinates[:column]]
     # Should this be moved out of this method???

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../lib/game'
-require_relative '../lib/chess_board'
+require_relative '../lib/board'
 require_relative '../lib/notation_translator'
 require_relative '../lib/pieces/rook'
 require_relative '../lib/pieces/pawn'
@@ -46,7 +46,7 @@ RSpec.describe Game do
 
   describe '#validate_coordinates' do
     subject(:game_validate) { described_class.new(board_validate) }
-    let(:board_validate) { ChessBoard.new(data_validate) }
+    let(:board_validate) { Board.new(data_validate) }
     let(:rook) { instance_double(Rook) }
     let(:data_validate) do
       [
@@ -86,7 +86,7 @@ RSpec.describe Game do
 
   describe '#validate_move' do
     subject(:game_move) { described_class.new(board_move) }
-    let(:board_move) { instance_double(ChessBoard) }
+    let(:board_move) { instance_double(Board) }
     let(:pawn) { instance_double(Pawn) }
 
     before do
@@ -109,7 +109,7 @@ RSpec.describe Game do
 
   describe '#validate_piece_moves' do
     subject(:game_piece) { described_class.new(board_piece) }
-    let(:board_piece) { instance_double(ChessBoard) }
+    let(:board_piece) { instance_double(Board) }
 
     context 'when piece is valid' do
       before do
