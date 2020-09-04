@@ -46,20 +46,22 @@ class Game
   # Script Method -> Test methods inside
   # Need to test outgoing command message
   def player_turn
-    @board.display_valid_moves(select_piece_coordinates)
-    @board.update(select_move_coordinates)
-    @board.to_s
+    coords = select_piece_coordinates
+    @board.display_valid_moves(coords)
+    # @board.update(select_move_coordinates)
+    # @board.to_s
   end
 
   # Script Method -> No tests needed (test inside methods)
   def select_piece_coordinates
-    puts 'What piece would you like to move?'
-    input = gets.chomp
+    input = user_input('What piece would you like to move?')
     validate_input(input)
     coords = translate_coordinates(input)
-    validate_coordinates(coords)
-    validiate_piece(coords)
-    coords
+    validate_piece_coordinates(coords)
+    board.update_active_piece(coordinates)
+    validiate_active_piece
+    # coords
+    # sents active piece in board - does not need to return coordinates?
   rescue StandardError => e
     puts e.message
     retry
@@ -72,6 +74,9 @@ class Game
     validate_input(input)
     coords = translate_coordinates(input)
     # Need to validate move in the piece
+    # Needs to check for valid capture moves too
+    # Have piece update this moves & captures, then check valid?
+    # Maybe make method in board to verify all cases
     validate_move(coords)
     coords
   rescue StandardError => e
@@ -85,7 +90,7 @@ class Game
   end
 
   # Completed Tests
-  def validate_coordinates(coords)
+  def validate_piece_coordinates(coords)
     raise CoordinatesError unless @board.data[coords[:row]][coords[:column]]
   end
 
@@ -102,8 +107,18 @@ class Game
     translator.translate_notation(input)
   end
 
+  def validiate_active_piece
+    # raise PieceError unless board.???
+  end
+
   def validiate_piece(coords)
-    piece = @board.data[coords[:row]][coords[:column]]
-    raise PieceError unless piece.valid_moves?(@board.data)
+    # make it the active piece in the board!
+    # piece = @board.data[coords[:row]][coords[:column]]
+    # raise PieceError unless piece.valid_moves?(@board.data)
+  end
+
+  def user_input(phrase)
+    puts phrase
+    gets.chomp
   end
 end

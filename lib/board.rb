@@ -9,9 +9,34 @@ class Board
     @active_piece = active_piece
   end
 
-  def display_valid_moves(coordinates)
-    @active_piece = data[coordinates[:row]][coordinates[:column]]
-    to_s
+  # def display_valid_moves(coordinates)
+  #   @active_piece = data[coordinates[:row]][coordinates[:column]]
+  #   to_s
+  # end
+
+  def valid_piece?(coordinates)
+    piece = data[coordinates[:row]][coordinates[:column]]
+    piece.update_moves_captures
+    valid_empty_moves?(piece) || valid_capture_moves?(piece)
+  end
+
+  def valid_empty_moves?(piece)
+    piece.moves.any? { |moves| !data[moves[0]][moves[1]] }
+  end
+
+  def valid_capture_moves?(piece)
+    piece.captures.any? { |moves| data[moves[0]][moves[1]] }
+  end
+
+  # def update_active_piece(coordinates)
+  #   @active_piece = data[coordinates[:row]][coordinates[:column]]
+  # end
+
+  def update_active_piece(coordinates)
+    piece = data[coordinates[:row]][coordinates[:column]]
+    @valid_moves = piece.current_moves(data)
+    @valid_captures = piece.current_captures(data)
+    @active_piece = piece
   end
 
   # Only Puts Method -> No tests needed
@@ -111,19 +136,19 @@ class Board
     end
   end
 
-  def capture_background?(row_index, column_index)
-    @active_piece&.captures&.any?([row_index, column_index]) && @data[row_index][column_index]
+  def capture_background?(row, column)
+    @active_piece&.captures&.any?([row, column]) && @data[row][column]
   end
 
   # 97 = White (chess pieces)
   # 30 = Black (chess pieces)
   # 91 = Light Red (possible moves)
   def print_square(row_index, column_index, square, background)
-    if @active_piece&.moves&.any?([row_index, column_index])
-      color_square(91, background, " \u25CF ")
-    elsif square
+    if square
       text_color = square.color == :white ? 97 : 30
       color_square(text_color, background, square.symbol)
+    elsif @active_piece&.moves&.any?([row_index, column_index])
+      color_square(91, background, " \u25CF ")
     else
       color_square(30, background, '   ')
     end
