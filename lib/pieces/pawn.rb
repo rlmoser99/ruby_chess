@@ -42,6 +42,7 @@ class Pawn < Piece
     update_captures(rank_direction)
   end
 
+  # Tested
   def current_moves(board)
     moves = []
     rank = @location[0] + rank_direction
@@ -52,11 +53,21 @@ class Pawn < Piece
     moves
   end
 
-  private
+  # Needs Tests & then Refactor
+  def current_captures(board)
+    captures = []
+    rank = @location[0] + rank_direction
+    file = @location[1]
+    if file >= 1 && board[rank][file - 1] && board[rank][file - 1].color != color
+      captures << [rank, file - 1]
+    end
+    if file <= 6 && board[rank][file + 1] && board[rank][file + 1].color != color
+      captures << [rank, file + 1]
+    end
+    captures
+  end
 
-  # def additional_new_move(movement)
-  #   @moves << [@location[0] + movement, @location[1]]
-  # end
+  private
 
   def first_move_bonus
     double_rank = @location[0] + (rank_direction * 2)

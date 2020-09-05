@@ -209,4 +209,41 @@ RSpec.describe Pawn do
       end
     end
   end
+
+  describe '#current_captures' do
+    context 'when pawn is black' do
+      context 'when pawn is in first file' do
+        subject(:black_pawn) { described_class.new({ color: :black, location: [1, 0] }) }
+
+        context 'when there is nothing to capture' do
+          let(:board_empty) { [[nil, nil], [black_pawn, nil], [nil, nil], [nil, nil]] }
+
+          it 'has no captures' do
+            results = black_pawn.current_captures(board_empty)
+            expect(results).to be_empty
+          end
+        end
+
+        context 'when there is a same color piece in capture' do
+          let(:piece) { instance_double(Piece, color: :black) }
+          let(:board_same) { [[nil, nil], [black_pawn, nil], [nil, piece], [nil, nil]] }
+
+          it 'has no captures' do
+            results = black_pawn.current_captures(board_same)
+            expect(results).to be_empty
+          end
+        end
+
+        context 'when there is not the same color piece in capture' do
+          let(:piece) { instance_double(Piece, color: :white) }
+          let(:board_capture) { [[nil, nil], [black_pawn, nil], [nil, piece], [nil, nil]] }
+
+          it 'has one capture' do
+            results = black_pawn.current_captures(board_capture)
+            expect(results).to contain_exactly([2, 1])
+          end
+        end
+      end
+    end
+  end
 end
