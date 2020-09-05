@@ -47,7 +47,8 @@ class Pawn < Piece
     rank = @location[0] + rank_direction
     file = @location[1]
     moves << [rank, file] unless board[rank][file]
-    moves << first_move_bonus(board) unless @moved
+    bonus = first_move_bonus
+    moves << bonus unless @moved || board[bonus[0]][bonus[1]]
     moves
   end
 
@@ -57,10 +58,10 @@ class Pawn < Piece
   #   @moves << [@location[0] + movement, @location[1]]
   # end
 
-  def first_move_bonus(board)
+  def first_move_bonus
     double_rank = @location[0] + (rank_direction * 2)
     file = @location[1]
-    return [double_rank, file] unless board[double_rank][file]
+    [double_rank, file]
   end
 
   def rank_direction

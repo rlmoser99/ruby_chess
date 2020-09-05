@@ -32,7 +32,7 @@ class Board
   #   @active_piece = data[coordinates[:row]][coordinates[:column]]
   # end
 
-  def update_active_piece(coordinates)
+  def update_valid_moves_captures(coordinates)
     piece = data[coordinates[:row]][coordinates[:column]]
     @valid_moves = piece.current_moves(data)
     @valid_captures = piece.current_captures(data)
