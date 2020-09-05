@@ -5,7 +5,7 @@ AllCops:
   NewCops: enable
 Metrics/BlockLength:
   Exclude:
-    - 'spec/*'
+    - 'spec/**/*'
 Layout/LineLength:
   Exclude:
-    - 'spec/*'
+    - 'spec/**/*'
