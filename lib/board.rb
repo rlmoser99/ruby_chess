@@ -53,7 +53,8 @@ class Board
 
   # Tested
   def update_original_coordinates
-    @data[@active_piece.location[0]][@active_piece.location[1]] = nil
+    square = @active_piece.location
+    @data[square[0]][square[1]] = nil
   end
 
   # Tested
