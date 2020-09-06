@@ -7,12 +7,9 @@ class Board
   def initialize(data = Array.new(8) { Array.new(8) }, active_piece = nil)
     @data = data
     @active_piece = active_piece
+    @valid_moves = []
+    @valid_captures = []
   end
-
-  # def display_valid_moves(coordinates)
-  #   @active_piece = data[coordinates[:row]][coordinates[:column]]
-  #   to_s
-  # end
 
   def valid_piece?(coordinates)
     piece = data[coordinates[:row]][coordinates[:column]]
@@ -28,15 +25,29 @@ class Board
     piece.captures.any? { |moves| data[moves[0]][moves[1]] }
   end
 
-  # def update_active_piece(coordinates)
-  #   @active_piece = data[coordinates[:row]][coordinates[:column]]
-  # end
+  def update_active_piece(coordinates)
+    @active_piece = data[coordinates[:row]][coordinates[:column]]
+    @valid_moves = @active_piece.current_moves(@data)
+    @valid_captures = @active_piece.current_captures(@data)
+  end
 
   def update_valid_moves_captures(coordinates)
     piece = data[coordinates[:row]][coordinates[:column]]
     @valid_moves = piece.current_moves(data)
     @valid_captures = piece.current_captures(data)
     @active_piece = piece
+  end
+
+  def available_moves?
+    @valid_moves.size >= 1 || @valid_captures.size >= 1
+  end
+
+  def valid_moves?(coords)
+    @valid_moves.any?([coords[:row], coords[:column]])
+  end
+
+  def valid_captures?(coords)
+    @valid_captures.any?([coords[:row], coords[:column]])
   end
 
   # Only Puts Method -> No tests needed
@@ -54,7 +65,9 @@ class Board
   def update(coords)
     update_final_coordinates(coords)
     update_original_coordinates
-    update_active_piece(coords)
+    change_active_piece(coords)
+    @valid_moves = []
+    @valid_captures = []
   end
 
   # Tested
@@ -68,7 +81,7 @@ class Board
   end
 
   # Tested
-  def update_active_piece(coords)
+  def change_active_piece(coords)
     @active_piece.update_location(coords[:row], coords[:column])
     @active_piece = nil
   end
@@ -137,8 +150,11 @@ class Board
   end
 
   def capture_background?(row, column)
-    @active_piece&.captures&.any?([row, column]) && @data[row][column]
+    @valid_captures&.any?([row, column]) && @data[row][column]
   end
+  # def capture_background?(row, column)
+  #   @active_piece&.captures&.any?([row, column]) && @data[row][column]
+  # end
 
   # 97 = White (chess pieces)
   # 30 = Black (chess pieces)
@@ -147,7 +163,7 @@ class Board
     if square
       text_color = square.color == :white ? 97 : 30
       color_square(text_color, background, square.symbol)
-    elsif @active_piece&.moves&.any?([row_index, column_index])
+    elsif @valid_moves&.any?([row_index, column_index])
       color_square(91, background, " \u25CF ")
     else
       color_square(30, background, '   ')
