@@ -11,31 +11,10 @@ class Board
     @valid_captures = []
   end
 
-  def valid_piece?(coordinates)
-    piece = data[coordinates[:row]][coordinates[:column]]
-    piece.update_moves_captures
-    valid_empty_moves?(piece) || valid_capture_moves?(piece)
-  end
-
-  def valid_empty_moves?(piece)
-    piece.moves.any? { |moves| !data[moves[0]][moves[1]] }
-  end
-
-  def valid_capture_moves?(piece)
-    piece.captures.any? { |moves| data[moves[0]][moves[1]] }
-  end
-
   def update_active_piece(coordinates)
     @active_piece = data[coordinates[:row]][coordinates[:column]]
     @valid_moves = @active_piece.current_moves(@data)
     @valid_captures = @active_piece.current_captures(@data)
-  end
-
-  def update_valid_moves_captures(coordinates)
-    piece = data[coordinates[:row]][coordinates[:column]]
-    @valid_moves = piece.current_moves(data)
-    @valid_captures = piece.current_captures(data)
-    @active_piece = piece
   end
 
   def available_moves?

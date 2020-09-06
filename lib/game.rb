@@ -115,11 +115,11 @@ class Game
     raise PieceError unless @board.available_moves?
   end
 
-  def validiate_piece(coords)
-    # make it the active piece in the board!
-    # piece = @board.data[coords[:row]][coords[:column]]
-    # raise PieceError unless piece.valid_moves?(@board.data)
-  end
+  # def validiate_piece(coords)
+  # make it the active piece in the board!
+  # piece = @board.data[coords[:row]][coords[:column]]
+  # raise PieceError unless piece.valid_moves?(@board.data)
+  # end
 
   def user_input(phrase)
     puts phrase

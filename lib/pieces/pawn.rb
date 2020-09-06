@@ -10,36 +10,7 @@ class Pawn < Piece
     super(args)
     @symbol = " \u265F "
     @location = args[:location]
-    @moves = []
-    @captures = []
     @moved = false
-  end
-
-  # Tested
-  # add valid move for en passant
-  def update_moves(movement)
-    # Should only work if there is not a piece in the spot
-    @moves = []
-    @moves << [@location[0] + movement, @location[1]]
-    additional_new_move(movement * 2) unless @moved
-    # additional new move (movement x 2)
-    # new_moves
-  end
-
-  # Can this be split up into 2 methods
-  # Tested ???
-  def update_captures(movement)
-    @captures = []
-    row = @location[0]
-    column = @location[1]
-    @captures << [row + movement, column - 1] if column >= 1
-    @captures << [row + movement, column + 1] if column <= 6
-  end
-
-  # Need to Test
-  def update_moves_captures
-    update_moves(rank_direction)
-    update_captures(rank_direction)
   end
 
   # Tested
@@ -57,8 +28,9 @@ class Pawn < Piece
   def current_captures(board)
     captures = []
     rank = @location[0] + rank_direction
-    lower_file = @location[1] - 1
-    higher_file = @location[1] + 1
+    file = @location[1]
+    lower_file = file - 1
+    higher_file = file + 1
     captures << [rank, lower_file] if lower_capture?(rank, lower_file, board)
     captures << [rank, higher_file] if higher_capture?(rank, higher_file, board)
     captures

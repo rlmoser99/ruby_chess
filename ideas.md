@@ -29,19 +29,7 @@ It should not show a red dot when it the square already has a piece on the board
 [101]:UtilityFunction: Game#translate_coordinates doesn't depend on instance state (maybe move it to another class?) 
 [https://github.com/troessner/reek/blob/v6.0.1/docs/Utility-Function.md]
 
-# lib/pieces/pawn.rb -- 5 warnings:
+# lib/pieces/pawn.rb -- 3 warnings:
 
-  [60, 61]:DuplicateMethodCall: Pawn#current_captures calls '@location[1]' 2 times 
-  [https://github.com/troessner/reek/blob/v6.0.1/docs/Duplicate-Method-Call.md]
-
-  [35, 36]:DuplicateMethodCall: Pawn#update_captures calls 'row + movement' 2 times 
-  [https://github.com/troessner/reek/blob/v6.0.1/docs/Duplicate-Method-Call.md]
-
-  [6]:TooManyInstanceVariables: Pawn has at least 5 instance variables 
-  [https://github.com/troessner/reek/blob/v6.0.1/docs/Too-Many-Instance-Variables.md]
-
-  [57]:TooManyStatements: Pawn#current_captures has approx 7 statements 
-  [https://github.com/troessner/reek/blob/v6.0.1/docs/Too-Many-Statements.md]
-
-  [46]:TooManyStatements: Pawn#current_moves has approx 7 statements 
-  [https://github.com/troessner/reek/blob/v6.0.1/docs/Too-Many-Statements.md]
+[28]:TooManyStatements: Pawn#current_captures has approx 7 statements -> IGNORE
+[17]:TooManyStatements: Pawn#current_moves has approx 7 statements -> IGNORE
