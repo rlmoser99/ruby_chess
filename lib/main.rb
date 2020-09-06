@@ -3,6 +3,7 @@
 require 'pry'
 
 require_relative 'board.rb'
+require_relative 'displayable.rb'
 require_relative 'game.rb'
 require_relative 'notation_translator.rb'
 require_relative 'pieces/piece.rb'
