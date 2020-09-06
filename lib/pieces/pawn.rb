@@ -53,21 +53,28 @@ class Pawn < Piece
     moves
   end
 
-  # Needs Tests & then Refactor
+  # Tested
   def current_captures(board)
     captures = []
     rank = @location[0] + rank_direction
-    file = @location[1]
-    if file >= 1 && board[rank][file - 1] && board[rank][file - 1].color != color
-      captures << [rank, file - 1]
-    end
-    if file <= 6 && board[rank][file + 1] && board[rank][file + 1].color != color
-      captures << [rank, file + 1]
-    end
+    lower_file = @location[1] - 1
+    higher_file = @location[1] + 1
+    captures << [rank, lower_file] if lower_capture?(rank, lower_file, board)
+    captures << [rank, higher_file] if higher_capture?(rank, higher_file, board)
     captures
   end
 
   private
+
+  def lower_capture?(rank, file, board)
+    piece = board[rank][file]
+    file >= 1 && piece && piece.color != color
+  end
+
+  def higher_capture?(rank, file, board)
+    piece = board[rank][file]
+    file <= 6 && piece && piece.color != color
+  end
 
   def first_move_bonus
     double_rank = @location[0] + (rank_direction * 2)

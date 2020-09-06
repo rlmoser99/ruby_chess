@@ -29,22 +29,19 @@ It should not show a red dot when it the square already has a piece on the board
 [101]:UtilityFunction: Game#translate_coordinates doesn't depend on instance state (maybe move it to another class?) 
 [https://github.com/troessner/reek/blob/v6.0.1/docs/Utility-Function.md]
 
-# lib/pieces/pawn.rb -- 4 warnings:
+# lib/pieces/pawn.rb -- 5 warnings:
 
-[33, 34]:DuplicateMethodCall: Pawn#update_captures calls 'row + movement' 2 times 
-[https://github.com/troessner/reek/blob/v6.0.1/docs/Duplicate-Method-Call.md]
+  [60, 61]:DuplicateMethodCall: Pawn#current_captures calls '@location[1]' 2 times 
+  [https://github.com/troessner/reek/blob/v6.0.1/docs/Duplicate-Method-Call.md]
 
-[22, 32, 40]:RepeatedConditional: Pawn tests 'color == :white' at least 3 times 
-[https://github.com/troessner/reek/blob/v6.0.1/docs/Repeated-Conditional.md]
+  [35, 36]:DuplicateMethodCall: Pawn#update_captures calls 'row + movement' 2 times 
+  [https://github.com/troessner/reek/blob/v6.0.1/docs/Duplicate-Method-Call.md]
 
-[6]:TooManyInstanceVariables: Pawn has at least 5 instance variables 
-[https://github.com/troessner/reek/blob/v6.0.1/docs/Too-Many-Instance-Variables.md]
+  [6]:TooManyInstanceVariables: Pawn has at least 5 instance variables 
+  [https://github.com/troessner/reek/blob/v6.0.1/docs/Too-Many-Instance-Variables.md]
 
-[28]:TooManyStatements: Pawn#update_captures has approx 7 statements 
-[https://github.com/troessner/reek/blob/v6.0.1/docs/Too-Many-Statements.md]
-20 total warnings
+  [57]:TooManyStatements: Pawn#current_captures has approx 7 statements 
+  [https://github.com/troessner/reek/blob/v6.0.1/docs/Too-Many-Statements.md]
 
-[48, 48]:FeatureEnvy: Pawn#valid_capture_moves? refers to 'moves' more than self (maybe move it to another class?) [https://github.com/troessner/reek/blob/v6.0.1/docs/Feature-Envy.md]
-
-[44, 44]:FeatureEnvy: Pawn#valid_empty_moves? refers to 'moves' more than self (maybe move it to another class?) [https://github.com/troessner/reek/blob/v6.0.1/docs/Feature-Envy.md]
-
+  [46]:TooManyStatements: Pawn#current_moves has approx 7 statements 
+  [https://github.com/troessner/reek/blob/v6.0.1/docs/Too-Many-Statements.md]
