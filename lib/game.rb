@@ -48,6 +48,7 @@ class Game
   # Need to test outgoing command message
   def player_turn
     select_piece_coordinates
+    @board.to_s
     move = select_move_coordinates
     @board.update(move)
     @board.to_s
@@ -60,7 +61,7 @@ class Game
     coords = translate_coordinates(input)
     validate_piece_coordinates(coords)
     @board.update_active_piece(coords)
-    validate_available_moves
+    validate_active_piece
   rescue StandardError => e
     puts e.message
     retry
@@ -68,7 +69,6 @@ class Game
 
   # Script Method -> No tests needed (test inside methods)
   def select_move_coordinates
-    @board.to_s
     input = user_input('Where would you like to move it?')
     validate_input(input)
     coords = translate_coordinates(input)
@@ -89,9 +89,7 @@ class Game
   end
 
   def validate_move(coords)
-    unless @board.valid_moves?(coords) || @board.valid_captures?(coords)
-      raise MoveError
-    end
+    raise MoveError unless @board.valid_piece_movement?(coords)
   end
 
   # Completed Tests
@@ -100,8 +98,8 @@ class Game
     translator.translate_notation(input)
   end
 
-  def validate_available_moves
-    raise PieceError unless @board.available_moves?
+  def validate_active_piece
+    raise PieceError unless @board.active_piece_moveable?
   end
 
   private

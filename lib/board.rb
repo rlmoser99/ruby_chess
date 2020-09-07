@@ -16,20 +16,18 @@ class Board
 
   def update_active_piece(coordinates)
     @active_piece = data[coordinates[:row]][coordinates[:column]]
-    @valid_moves = @active_piece.current_moves(@data)
-    @valid_captures = @active_piece.current_captures(@data)
   end
 
-  def available_moves?
+  def active_piece_moveable?
+    @valid_moves = @active_piece.current_moves(@data)
+    @valid_captures = @active_piece.current_captures(@data)
     @valid_moves.size >= 1 || @valid_captures.size >= 1
   end
 
-  def valid_moves?(coords)
-    @valid_moves.any?([coords[:row], coords[:column]])
-  end
-
-  def valid_captures?(coords)
-    @valid_captures.any?([coords[:row], coords[:column]])
+  def valid_piece_movement?(coords)
+    row = coords[:row]
+    column = coords[:column]
+    @valid_moves.any?([row, column]) || @valid_captures.any?([row, column])
   end
 
   # Only Puts Method -> No tests needed
@@ -39,28 +37,31 @@ class Board
 
   # Script Method -> No tests needed (test inside methods)
   def update(coords)
-    update_final_coordinates(coords)
-    update_original_coordinates
-    change_active_piece(coords)
-    @valid_moves = []
-    @valid_captures = []
+    update_new_coordinates(coords)
+    remove_old_piece
+    update_active_piece_location(coords)
+    reset_active_piece_values
   end
 
   # Tested
-  def update_final_coordinates(coords)
+  def update_new_coordinates(coords)
     @data[coords[:row]][coords[:column]] = @active_piece
   end
 
   # Tested
-  def update_original_coordinates
+  def remove_old_piece
     square = @active_piece.location
     @data[square[0]][square[1]] = nil
   end
 
-  # Tested
-  def change_active_piece(coords)
+  def update_active_piece_location(coords)
     @active_piece.update_location(coords[:row], coords[:column])
+  end
+
+  def reset_active_piece_values
     @active_piece = nil
+    @valid_moves = []
+    @valid_captures = []
   end
 
   # Completed Tests

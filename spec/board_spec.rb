@@ -106,25 +106,25 @@ RSpec.describe Board do
     end
   end
 
-  describe '#update_final_coordinates' do
+  describe '#update_new_coordinates' do
     subject(:board) { described_class.new(empty_data, rook) }
     let(:empty_data) { Array.new(8) { Array.new(8) } }
     let(:rook) { instance_double(Rook) }
 
     it 'updates coordinate with the chess piece' do
       coordinates = { row: 3, column: 0 }
-      board.update_final_coordinates(coordinates)
+      board.update_new_coordinates(coordinates)
       expect(board.data[3][0]).to eq(rook)
     end
   end
 
-  describe '#update_original_coordinates' do
+  describe '#remove_old_piece' do
     subject(:board) { described_class.new(data_update, piece) }
     let(:data_update) { [[piece, nil], [nil, nil]] }
     let(:piece) { double('piece', location: [0, 0]) }
 
     it 'removes active_piece from original coordinates' do
-      expect { board.update_original_coordinates }.to change { board.data[0][0] }.to(nil)
+      expect { board.remove_old_piece }.to change { board.data[0][0] }.to(nil)
     end
   end
 end

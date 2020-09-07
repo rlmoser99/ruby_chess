@@ -1,7 +1,6 @@
-# lib/board.rb -- 2 warnings:
+# lib/board.rb -- 1 warnings:
 
-[32, 32]:FeatureEnvy: Board#valid_captures? refers to 'coords' more than self -> IGNORE
-[28, 28]:FeatureEnvy: Board#valid_moves? refers to 'coords' more than self -> IGNORE
+[58, 58]:FeatureEnvy: Board#update_active_piece_location refers to 'coords' more than self -> IGNORE
 
 
 # lib/displayable.rb -- 7 warnings:
@@ -14,12 +13,13 @@
 [6]:TooManyStatements: Displayable#print_chess_game has approx 6 statements -> IGNORE
 
 
-# lib/game.rb -- 5 warnings:
+# lib/game.rb -- 6 warnings:
+[51, 54]:DuplicateMethodCall: Game#player_turn calls '@board.to_s' 2 times -> IGNORE
+[70]:TooManyStatements: Game#select_move_coordinates has approx 8 statements -> IGNORE
+[57]:TooManyStatements: Game#select_piece_coordinates has approx 9 statements -> IGNORE
 [80]:UncommunicativeVariableName: Game#select_move_coordinates has the variable name 'e' -> IGNORE
 [64]:UncommunicativeVariableName: Game#select_piece_coordinates has the variable name 'e' -> IGNORE
 [109]:UtilityFunction: Game#translate_coordinates doesn't depend on instance state -> IGNORE
-[70]:TooManyStatements: Game#select_move_coordinates has approx 8 statements -> IGNORE
-[57]:TooManyStatements: Game#select_piece_coordinates has approx 9 statements -> IGNORE
 
 
 # lib/pieces/pawn.rb -- 2 warnings:
