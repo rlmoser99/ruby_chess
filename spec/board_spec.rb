@@ -181,4 +181,77 @@ RSpec.describe Board do
       end
     end
   end
+
+  describe '#valid_piece_movement?' do
+    context 'when coordinates matches a valid move' do
+      subject(:board_valid) { described_class.new(data_valid, piece, [[1, 0]]) }
+      let(:data_valid) { [[piece, nil], [nil, nil]] }
+      let(:piece) { double(Piece, location: [0, 0]) }
+
+      it 'returns true' do
+        coordinates = { row: 1, column: 0 }
+        result = board_valid.valid_piece_movement?(coordinates)
+        expect(result).to be true
+      end
+    end
+
+    context 'when coordinates matches a valid capture' do
+      subject(:board_valid) { described_class.new(data_valid, piece, [], [[1, 0]]) }
+      let(:data_valid) { [[piece, nil], [nil, nil]] }
+      let(:piece) { double(Piece, location: [0, 0]) }
+
+      it 'returns true' do
+        coordinates = { row: 1, column: 0 }
+        result = board_valid.valid_piece_movement?(coordinates)
+        expect(result).to be true
+      end
+    end
+
+    context 'when coordinates does not matches valid move or capture' do
+      subject(:board_valid) { described_class.new(data_valid, piece, [], [[1, 0]]) }
+      let(:data_valid) { [[piece, nil], [nil, nil]] }
+      let(:piece) { double(Piece, location: [0, 0]) }
+
+      it 'returns false' do
+        coordinates = { row: 2, column: 0 }
+        result = board_valid.valid_piece_movement?(coordinates)
+        expect(result).to be false
+      end
+    end
+  end
+
+  describe '#update_active_piece_location' do
+    subject(:board_location) { described_class.new(data_location, piece) }
+    let(:data_location) { [[piece, nil], [nil, nil]] }
+    let(:piece) { double(Piece, location: [0, 0]) }
+
+    it 'sends coordinates to piece' do
+      coordinates = { row: 1, column: 0 }
+      expect(piece).to receive(:update_location).with(1, 0)
+      board_location.update_active_piece_location(coordinates)
+    end
+  end
+
+  describe '#reset_active_piece_values' do
+    subject(:board_values) { described_class.new(data_values, piece, [[1, 1]], [[0, 1]]) }
+    let(:data_values) { [[piece, nil], [nil, nil]] }
+    let(:piece) { double(Piece, location: [0, 0]) }
+
+    it 'sets active_piece to nil' do
+      board_values.reset_active_piece_values
+      expect(board_values.active_piece).to be_nil
+    end
+
+    it 'sets valid_moves to be an empty array' do
+      board_values.reset_active_piece_values
+      valid_moves = board_values.instance_variable_get(:@valid_moves)
+      expect(valid_moves).to be_empty
+    end
+
+    it 'sets valid_captures to be an empty array' do
+      board_values.reset_active_piece_values
+      valid_captures = board_values.instance_variable_get(:@valid_captures)
+      expect(valid_captures).to be_empty
+    end
+  end
 end

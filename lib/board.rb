@@ -26,6 +26,7 @@ class Board
     @valid_moves.size >= 1 || @valid_captures.size >= 1
   end
 
+  # Tested
   def valid_piece_movement?(coords)
     row = coords[:row]
     column = coords[:column]
@@ -51,17 +52,19 @@ class Board
     @data[location[0]][location[1]] = nil
   end
 
+  # Tested
   def update_active_piece_location(coords)
     @active_piece.update_location(coords[:row], coords[:column])
   end
 
+  # Tested
   def reset_active_piece_values
     @active_piece = nil
     @valid_moves = []
     @valid_captures = []
   end
 
-  # Completed Tests
+  # Tested
   def initial_placement
     initial_row(:black, 0)
     initial_pawn_row(:black, 1)
