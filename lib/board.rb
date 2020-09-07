@@ -33,6 +33,11 @@ class Board
     @valid_moves.any?([row, column]) || @valid_captures.any?([row, column])
   end
 
+  # Tested
+  def piece?(coords)
+    @data[coords[:row]][coords[:column]].is_a?(Piece)
+  end
+
   # Script Method -> No tests needed (test inside methods)
   def update(coords)
     update_new_coordinates(coords)

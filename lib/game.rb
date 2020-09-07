@@ -35,7 +35,7 @@ class Game
   end
 
   # Public Script Method -> No tests needed (test inside methods)
-  # Need to test outgoing command message
+  # Need to test any outgoing command messages ??
   def play
     @board.initial_placement
     @board.to_s
@@ -45,7 +45,7 @@ class Game
   end
 
   # Script Method -> Test methods inside
-  # Need to test outgoing command message
+  # Need to test any outgoing command messages ??
   def player_turn
     select_piece_coordinates
     @board.to_s
@@ -55,6 +55,7 @@ class Game
   end
 
   # Script Method -> No tests needed (test inside methods)
+  # Need to test any outgoing command messages ??
   def select_piece_coordinates
     input = user_input('What piece would you like to move?')
     validate_input(input)
@@ -68,6 +69,7 @@ class Game
   end
 
   # Script Method -> No tests needed (test inside methods)
+  # Need to test any outgoing command messages ??
   def select_move_coordinates
     input = user_input('Where would you like to move it?')
     validate_input(input)
@@ -79,25 +81,28 @@ class Game
     retry
   end
 
-  # Completed Tests
+  # Tested
   def validate_input(input)
     raise InputError unless input.match?(/^[a-h][1-8]$/)
   end
 
+  # Tested
   def validate_piece_coordinates(coords)
-    raise CoordinatesError unless @board.data[coords[:row]][coords[:column]]
+    raise CoordinatesError unless @board.piece?(coords)
   end
 
+  # Tested
   def validate_move(coords)
     raise MoveError unless @board.valid_piece_movement?(coords)
   end
 
-  # Completed Tests
+  # Tested
   def translate_coordinates(input)
     translator ||= NotationTranslator.new
     translator.translate_notation(input)
   end
 
+  # Tested
   def validate_active_piece
     raise PieceError unless @board.active_piece_moveable?
   end

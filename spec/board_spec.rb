@@ -254,4 +254,26 @@ RSpec.describe Board do
       expect(valid_captures).to be_empty
     end
   end
+
+  describe '#piece?' do
+    subject(:board_piece) { described_class.new(data_piece, pawn) }
+    let(:data_piece) { [[pawn, nil], [nil, nil]] }
+    let(:pawn) { Pawn.new({ color: :white, location: [0, 0] }) }
+
+    context 'when coordinates is a piece' do
+      it 'returns true' do
+        coordinates = { row: 0, column: 0 }
+        results = board_piece.piece?(coordinates)
+        expect(results).to be true
+      end
+    end
+
+    context 'when coordinates is not a piece' do
+      it 'returns false' do
+        coordinates = { row: 1, column: 0 }
+        results = board_piece.piece?(coordinates)
+        expect(results).to be false
+      end
+    end
+  end
 end
