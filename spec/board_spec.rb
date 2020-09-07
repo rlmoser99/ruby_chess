@@ -127,4 +127,58 @@ RSpec.describe Board do
       expect { board.remove_old_piece }.to change { board.data[0][0] }.to(nil)
     end
   end
+
+  describe '#update_active_piece' do
+    subject(:board) { described_class.new(data_update) }
+    let(:data_update) { [[piece, nil], [nil, nil]] }
+    let(:piece) { double(Piece, location: [0, 0]) }
+
+    it 'updates active piece with coordinates' do
+      coordinates = { row: 0, column: 0 }
+      board.update_active_piece(coordinates)
+      expect(board.active_piece).to eq(piece)
+    end
+  end
+
+  describe '#active_piece_moveable?' do
+    subject(:board_moveable) { described_class.new(data_moveable, piece) }
+    let(:data_moveable) { [[piece, nil], [nil, nil]] }
+    let(:piece) { double(Piece, location: [0, 0]) }
+
+    context 'when there is one current_move' do
+      before do
+        allow(piece).to receive(:current_moves).and_return([0, 1])
+        allow(piece).to receive(:current_captures)
+      end
+
+      it 'returns true' do
+        result = board_moveable.active_piece_moveable?
+        expect(result).to be true
+      end
+    end
+
+    context 'when there is one current_captures' do
+      before do
+        allow(piece).to receive(:current_moves).and_return([])
+        allow(piece).to receive(:current_captures).and_return([1, 1])
+      end
+
+      it 'returns true' do
+        result = board_moveable.active_piece_moveable?
+        expect(result).to be true
+      end
+    end
+
+    context 'when there is no current_move or current_capture' do
+      before do
+        allow(piece).to receive(:current_moves).and_return([])
+        allow(piece).to receive(:current_captures).and_return([])
+      end
+
+      it 'returns false' do
+        result = board_moveable.active_piece_moveable?
+        expect(result).to be false
+      end
+    end
+  end
 end

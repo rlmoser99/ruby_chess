@@ -14,10 +14,12 @@ class Board
     @valid_captures = valid_captures
   end
 
+  # Tested
   def update_active_piece(coordinates)
     @active_piece = data[coordinates[:row]][coordinates[:column]]
   end
 
+  # Tested
   def active_piece_moveable?
     @valid_moves = @active_piece.current_moves(@data)
     @valid_captures = @active_piece.current_captures(@data)
@@ -28,11 +30,6 @@ class Board
     row = coords[:row]
     column = coords[:column]
     @valid_moves.any?([row, column]) || @valid_captures.any?([row, column])
-  end
-
-  # Only Puts Method -> No tests needed
-  def to_s
-    print_chess_game
   end
 
   # Script Method -> No tests needed (test inside methods)
@@ -50,8 +47,8 @@ class Board
 
   # Tested
   def remove_old_piece
-    square = @active_piece.location
-    @data[square[0]][square[1]] = nil
+    location = @active_piece.location
+    @data[location[0]][location[1]] = nil
   end
 
   def update_active_piece_location(coords)
@@ -70,6 +67,11 @@ class Board
     initial_pawn_row(:black, 1)
     initial_pawn_row(:white, 6)
     initial_row(:white, 7)
+  end
+
+  # Only Puts Method -> No tests needed
+  def to_s
+    print_chess_game
   end
 
   private
