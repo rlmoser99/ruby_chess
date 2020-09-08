@@ -25,3 +25,24 @@
 # lib/pieces/pawn.rb -- 2 warnings:
 [28]:TooManyStatements: Pawn#current_captures has approx 7 statements -> IGNORE
 [17]:TooManyStatements: Pawn#current_moves has approx 7 statements -> IGNORE
+
+
+# lib/pieces/rook.rb -- 6 warnings:
+
+[49, 58, 67, 76]:DataClump: Rook takes parameters ['index', 'row'] to 4 methods 
+[https://github.com/troessner/reek/blob/v6.0.1/docs/Data-Clump.md]
+
+[78, 80]:FeatureEnvy: Rook#file_decrease refers to 'index' more than self (maybe move it to another class?) 
+[https://github.com/troessner/reek/blob/v6.0.1/docs/Feature-Envy.md]
+
+[69, 71]:FeatureEnvy: Rook#file_increase refers to 'index' more than self (maybe move it to another class?) 
+[https://github.com/troessner/reek/blob/v6.0.1/docs/Feature-Envy.md]
+
+[60, 62]:FeatureEnvy: Rook#rank_decrease refers to 'index' more than self (maybe move it to another class?) 
+[https://github.com/troessner/reek/blob/v6.0.1/docs/Feature-Envy.md]
+
+[51, 53]:FeatureEnvy: Rook#rank_increase refers to 'index' more than self (maybe move it to another class?) 
+[https://github.com/troessner/reek/blob/v6.0.1/docs/Feature-Envy.md]
+
+[40]:TooManyStatements: Rook#file_moves has approx 6 statements 
+[https://github.com/troessner/reek/blob/v6.0.1/docs/Too-Many-Statements.md]
