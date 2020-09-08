@@ -4,7 +4,7 @@ require_relative 'piece'
 
 # logic for each chess piece
 class Pawn < Piece
-  attr_reader :color, :symbol, :moves, :location, :captures
+  attr_reader :color, :symbol, :location
 
   def initialize(args)
     super(args)
