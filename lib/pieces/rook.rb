@@ -13,11 +13,7 @@ class Rook < Piece
   end
 
   def current_moves(board)
-    moves = []
-    rank = @location[0]
-    moves << rank_moves(board[rank])
-    moves << file_moves(board)
-    moves.flatten(1)
+    rank_moves(board[@location[0]]) + file_moves(board)
   end
 
   def current_captures(_board)
@@ -31,52 +27,31 @@ class Rook < Piece
 
   def rank_moves(rank)
     index = @location[1]
-    empty_squares = []
-    empty_squares << rank_increase(index + 1, rank)
-    empty_squares << rank_decrease(index - 1, rank)
-    empty_squares.flatten(1)
+    empty_ranks = row_increase(index + 1, rank) + row_decrease(index - 1, rank)
+    [@location[0]].product(empty_ranks)
   end
 
   def file_moves(board)
-    file = board.transpose[@location[1]]
-    index = @location[0]
-    empty_squares = []
-    empty_squares << file_increase(index + 1, file)
-    empty_squares << file_decrease(index - 1, file)
-    empty_squares.flatten(1)
+    rank = @location[0]
+    file = @location[1]
+    row = board.transpose[file]
+    empty_files = row_increase(rank + 1, row) + row_decrease(rank - 1, row)
+    empty_files.product([file])
   end
 
-  def rank_increase(index, row)
+  def row_increase(index, row)
     empty_increase = []
     until row[index] || index > 7
-      empty_increase << [@location[0], index]
+      empty_increase << index
       index += 1
     end
     empty_increase
   end
 
-  def rank_decrease(index, row)
+  def row_decrease(index, row)
     empty_decrease = []
     until row[index] || index.negative?
-      empty_decrease << [@location[0], index]
-      index -= 1
-    end
-    empty_decrease
-  end
-
-  def file_increase(index, row)
-    empty_increase = []
-    until row[index] || index > 7
-      empty_increase << [index, @location[1]]
-      index += 1
-    end
-    empty_increase
-  end
-
-  def file_decrease(index, row)
-    empty_decrease = []
-    until row[index] || index.negative?
-      empty_decrease << [index, @location[1]]
+      empty_decrease << index
       index -= 1
     end
     empty_decrease
