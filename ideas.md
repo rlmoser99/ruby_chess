@@ -30,3 +30,25 @@
 # lib/pieces/rook.rb -- 2 warnings:
 [51]:UtilityFunction: Rook#row_decrease doesn't depend on instance state -> IGNORE
 [42]:UtilityFunction: Rook#row_increase doesn't depend on instance state -> IGNORE
+
+lib/pieces/rook.rb -- 7 warnings:
+[41, 50, 70, 77, 84]:DataClump: Rook takes parameters ['index', 'row'] to 5 methods 
+[https://github.com/troessner/reek/blob/v6.0.1/docs/Data-Clump.md]
+
+[78, 79]:DuplicateMethodCall: Rook#capture_decrease calls 'opposing_piece?(index, row)' 2 times 
+[https://github.com/troessner/reek/blob/v6.0.1/docs/Duplicate-Method-Call.md]
+
+[71, 72]:DuplicateMethodCall: Rook#capture_increase calls 'opposing_piece?(index, row)' 2 times 
+[https://github.com/troessner/reek/blob/v6.0.1/docs/Duplicate-Method-Call.md]
+
+[85, 85]:DuplicateMethodCall: Rook#opposing_piece? calls 'row[index]' 2 times 
+[https://github.com/troessner/reek/blob/v6.0.1/docs/Duplicate-Method-Call.md]
+
+[85, 85]:FeatureEnvy: Rook#opposing_piece? refers to 'row' more than self (maybe move it to another class?) 
+[https://github.com/troessner/reek/blob/v6.0.1/docs/Feature-Envy.md]
+
+[50]:UtilityFunction: Rook#row_decrease doesn't depend on instance state (maybe move it to another class?) 
+[https://github.com/troessner/reek/blob/v6.0.1/docs/Utility-Function.md]
+
+[41]:UtilityFunction: Rook#row_increase doesn't depend on instance state (maybe move it to another class?) 
+[https://github.com/troessner/reek/blob/v6.0.1/docs/Utility-Function.md]

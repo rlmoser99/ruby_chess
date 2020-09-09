@@ -17,9 +17,12 @@ class Rook < Piece
   end
 
   def current_captures(board)
-    # rank = @location[0]
-    # file = @location[1]
-    rank_captures(board[@location[0]])
+    captures = []
+    rank = rank_captures(board[@location[0]])
+    file = file_captures(board)
+    captures << rank if rank
+    captures << file if file
+    captures.flatten(1)
   end
 
   private
@@ -58,26 +61,30 @@ class Rook < Piece
 
   def rank_captures(rank)
     index = @location[1]
-    captures = []
-    increase = capture_increase(index + 1, rank)
-    decrease = capture_decrease(index - 1, rank)
-    captures << increase if increase
-    captures << decrease if decrease
-    [@location[0]].product(captures)
+    captures = [capture_up(index + 1, rank), capture_down(index - 1, rank)].compact
+    [@location[0]].product(captures) unless captures.empty?
   end
 
-  def capture_increase(index, row)
-    return index if opposing_piece?(index, row)
-    return nil unless opposing_piece?(index, row) || index < 8
-
-    capture_increase(index + 1, row)
+  def file_captures(board)
+    rank = @location[0]
+    file = @location[1]
+    row = board.transpose[file]
+    captures = [capture_up(rank + 1, row), capture_down(rank - 1, row)].compact
+    captures.product([file])
   end
 
-  def capture_decrease(index, row)
+  def capture_up(index, row)
     return index if opposing_piece?(index, row)
-    return nil unless opposing_piece?(index, row) || index >= 0
+    return unless opposing_piece?(index, row) || index < 8
 
-    capture_decrease(index - 1, row)
+    capture_up(index + 1, row)
+  end
+
+  def capture_down(index, row)
+    return index if opposing_piece?(index, row) && index != -1
+    return unless opposing_piece?(index, row) || index > -1
+
+    capture_down(index - 1, row)
   end
 
   def opposing_piece?(index, row)
