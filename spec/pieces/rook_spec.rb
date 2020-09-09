@@ -115,4 +115,75 @@ RSpec.describe Rook do
       end
     end
   end
+
+  # Make a test for current_moves where there is NO MOVES!!!
+
+  describe '#current_captures' do
+    context 'when 1 opposing piece is up rank' do
+      subject(:black_rook) { described_class.new({ color: :black, location: [1, 0] }) }
+      let(:white_piece) { instance_double(Piece) }
+      let(:black_piece) { instance_double(Piece) }
+      let(:board_one) do
+        [
+          [black_piece, nil, nil, nil, nil, nil, nil, nil],
+          [black_rook, nil, white_piece, black_piece, nil, nil, nil, nil],
+          [black_piece, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      before do
+        allow(white_piece).to receive(:color).and_return(:white)
+        allow(black_piece).to receive(:color).and_return(:black)
+      end
+
+      it 'has one capture' do
+        results = black_rook.current_captures(board_one)
+        expect(results).to contain_exactly([1, 2])
+      end
+    end
+
+    context 'when 1 opposing piece is down rank' do
+      subject(:black_rook) { described_class.new({ color: :black, location: [1, 5] }) }
+      let(:white_piece) { instance_double(Piece) }
+      let(:black_piece) { instance_double(Piece) }
+      let(:board_one) do
+        [
+          [nil, nil, nil, nil, nil, black_piece, nil, nil],
+          [white_piece, nil, nil, nil, nil, black_rook, nil, nil],
+          [nil, nil, nil, nil, nil, black_piece, nil, nil]
+        ]
+      end
+
+      before do
+        allow(white_piece).to receive(:color).and_return(:white)
+        allow(black_piece).to receive(:color).and_return(:black)
+      end
+
+      it 'has one capture' do
+        results = black_rook.current_captures(board_one)
+        expect(results).to contain_exactly([1, 0])
+      end
+    end
+
+    context 'when 0 opposing pieces' do
+      subject(:black_rook) { described_class.new({ color: :black, location: [1, 5] }) }
+      let(:black_piece) { instance_double(Piece) }
+      let(:board_zero) do
+        [
+          [nil, nil, nil, nil, nil, black_piece, nil, nil],
+          [black_piece, nil, nil, nil, nil, black_rook, nil, black_piece],
+          [nil, nil, nil, nil, nil, black_piece, nil, nil]
+        ]
+      end
+
+      before do
+        allow(black_piece).to receive(:color).and_return(:black)
+      end
+
+      it 'has no captures' do
+        results = black_rook.current_captures(board_zero)
+        expect(results).to be_empty
+      end
+    end
+  end
 end
