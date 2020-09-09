@@ -140,25 +140,23 @@ RSpec.describe Rook do
 
   describe '#current_captures' do
     context 'when 1 opposing piece is up rank' do
-      subject(:black_rook) { described_class.new({ color: :black, location: [1, 0] }) }
+      subject(:black_rook) { described_class.new({ color: :black, location: [1, 1] }) }
       let(:white_piece) { instance_double(Piece) }
-      let(:black_piece) { instance_double(Piece) }
       let(:board_one) do
         [
-          [black_piece, nil, nil, nil, nil, nil, nil, nil],
-          [black_rook, nil, white_piece, black_piece, nil, nil, nil, nil],
-          [black_piece, nil, nil, nil, nil, nil, nil, nil]
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, black_rook, nil, nil, nil, white_piece, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
         ]
       end
 
       before do
         allow(white_piece).to receive(:color).and_return(:white)
-        allow(black_piece).to receive(:color).and_return(:black)
       end
 
       it 'has one capture' do
         results = black_rook.current_captures(board_one)
-        expect(results).to contain_exactly([1, 2])
+        expect(results).to contain_exactly([1, 5])
       end
     end
 
@@ -206,13 +204,13 @@ RSpec.describe Rook do
       end
     end
 
-    context 'when 1 opposing piece is up file' do
+    context 'when 1 opposing piece is up file and ignores piece down file' do
       subject(:white_rook) { described_class.new({ color: :white, location: [4, 7] }) }
       let(:black_piece) { instance_double(Piece) }
       let(:white_piece) { instance_double(Piece) }
       let(:board_one) do
         [
-          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, black_piece],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, white_piece],
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -283,6 +281,34 @@ RSpec.describe Rook do
       it 'has 2 captures' do
         results = white_rook.current_captures(board_two)
         expect(results).to contain_exactly([3, 1], [6, 3])
+      end
+    end
+
+    context 'when 1 opposing piece is down file and ignores piece down rank' do
+      subject(:white_rook) { described_class.new({ color: :white, location: [4, 4] }) }
+      let(:black_piece) { instance_double(Piece) }
+      let(:white_piece) { instance_double(Piece) }
+      let(:board_one) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, black_piece, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [black_piece, nil, white_piece, nil, white_rook, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      before do
+        allow(black_piece).to receive(:color).and_return(:black)
+        allow(white_piece).to receive(:color).and_return(:white)
+      end
+
+      it 'has 1 captures' do
+        results = white_rook.current_captures(board_one)
+        expect(results).to contain_exactly([1, 4])
       end
     end
   end
