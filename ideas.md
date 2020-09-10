@@ -31,3 +31,7 @@
 [51]:UtilityFunction: Rook#row_decrease doesn't depend on instance state -> IGNORE
 [42]:UtilityFunction: Rook#row_increase doesn't depend on instance state -> IGNORE
 [39, 48, 71, 78, 85, 90]:DataClump: Rook takes parameters ['index', 'row'] to 6 methods -> IGNORE
+
+# lib/pieces/knight.rb -- 2 warnings:
+[28]:TooManyStatements: Knight#current_captures has approx 8 statements -> IGNORE
+[15]:TooManyStatements: Knight#current_moves has approx 8 statements -> IGNORE
