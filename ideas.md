@@ -35,3 +35,9 @@
 # lib/pieces/knight.rb -- 2 warnings:
 [28]:TooManyStatements: Knight#current_captures has approx 8 statements -> IGNORE
 [15]:TooManyStatements: Knight#current_moves has approx 8 statements -> IGNORE
+
+# lib/pieces/bishop.rb -- 2 warnings:
+[19, 19]:FeatureEnvy: Bishop#current_moves refers to 'position' more than self -> IGNORE
+[19, 21]:FeatureEnvy: Bishop#current_moves refers to 'results' more than self -> IGNORE
+[71]:TooManyStatements: Bishop#diagonal_moves has approx 7 statements -> IGNORE
+[85]:UtilityFunction: Bishop#invalid_location? doesn't depend on instance state -> IGNORE
