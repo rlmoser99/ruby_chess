@@ -54,7 +54,7 @@ class Bishop < Piece
       file += file_change
       break if invalid_location?(rank, file) || board[rank][file]
     end
-    [rank, file] if valid?(rank, file) && opposing_piece?(rank, file, board)
+    [rank, file] if opposing_piece?(rank, file, board)
   end
 
   def move_possibilities
@@ -68,11 +68,9 @@ class Bishop < Piece
   end
 
   def opposing_piece?(rank, file, board)
+    return if invalid_location?(rank, file)
+
     piece = board[rank][file]
     piece && piece.color != color
-  end
-
-  def valid?(rank, file)
-    rank.between?(0, 7) && file.between?(0, 7)
   end
 end
