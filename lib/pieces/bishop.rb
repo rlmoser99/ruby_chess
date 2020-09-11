@@ -27,7 +27,7 @@ class Bishop < Piece
     diagonal_positions.each do |position|
       results << diagonal_captures(board, position[0], position[1])
     end
-    results.compact.flatten(1)
+    results.compact
   end
 
   private
@@ -36,7 +36,9 @@ class Bishop < Piece
     rank = @location[0] + rank_change
     file = @location[1] + file_change
     result = []
-    until board[rank][file] || invalid_location?(rank, file)
+    until invalid_location?(rank, file)
+      break if board[rank][file]
+
       result << [rank, file]
       rank += rank_change
       file += file_change
@@ -45,17 +47,14 @@ class Bishop < Piece
   end
 
   def diagonal_captures(board, rank_change, file_change)
-    rank = @location[0] + rank_change
-    file = @location[1] + file_change
-    result = []
-    until invalid_location?(rank, file)
-      result << [rank, file] if opposing_piece?(rank, file, board)
-      break if board[rank][file]
-
+    rank = @location[0]
+    file = @location[1]
+    loop do
       rank += rank_change
       file += file_change
+      break if invalid_location?(rank, file) || board[rank][file]
     end
-    result
+    [rank, file] if valid?(rank, file) && opposing_piece?(rank, file, board)
   end
 
   def move_possibilities
@@ -71,5 +70,9 @@ class Bishop < Piece
   def opposing_piece?(rank, file, board)
     piece = board[rank][file]
     piece && piece.color != color
+  end
+
+  def valid?(rank, file)
+    rank.between?(0, 7) && file.between?(0, 7)
   end
 end
