@@ -88,5 +88,133 @@ RSpec.describe Bishop do
         expect(results).to contain_exactly([4, 2], [3, 1], [2, 0])
       end
     end
+
+    context 'when there are 2 spaces in up file' do
+      subject(:white_bishop) { described_class.new({ color: :white, location: [4, 0] }) }
+      let(:piece) { instance_double(Piece) }
+      let(:board) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, piece, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [white_bishop, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, piece, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      it 'has two moves' do
+        results = white_bishop.current_moves(board)
+        expect(results).to contain_exactly([3, 1], [5, 1])
+      end
+    end
+
+    context 'when there are no spaces to move' do
+      subject(:white_bishop) { described_class.new({ color: :white, location: [4, 0] }) }
+      let(:piece) { instance_double(Piece) }
+      let(:board) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, piece, nil, nil, nil, nil, nil, nil],
+          [white_bishop, nil, nil, nil, nil, nil, nil, nil],
+          [nil, piece, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      it 'has no moves' do
+        results = white_bishop.current_moves(board)
+        expect(results).to be_empty
+      end
+    end
+  end
+
+  describe '#current_captures' do
+    context 'when there are 1 opposing piece to capture' do
+      subject(:white_bishop) { described_class.new({ color: :white, location: [7, 2] }) }
+      let(:black_piece) { instance_double(Piece) }
+      let(:white_piece) { instance_double(Piece) }
+      let(:board) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [black_piece, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, white_piece, nil, nil, nil, nil],
+          [nil, nil, white_bishop, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      before do
+        allow(black_piece).to receive(:color).and_return(:black)
+        allow(white_piece).to receive(:color).and_return(:white)
+      end
+
+      it 'has one captures' do
+        results = white_bishop.current_captures(board)
+        expect(results).to contain_exactly([5, 0])
+      end
+    end
+
+    context 'when there are 2 opposing piece to capture' do
+      subject(:white_bishop) { described_class.new({ color: :white, location: [3, 3] }) }
+      let(:black_piece) { instance_double(Piece) }
+      let(:white_piece) { instance_double(Piece) }
+      let(:board) do
+        [
+          [white_piece, nil, nil, nil, nil, nil, black_piece, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, white_bishop, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [black_piece, nil, nil, nil, nil, nil, white_piece, nil]
+        ]
+      end
+
+      before do
+        allow(black_piece).to receive(:color).and_return(:black)
+        allow(white_piece).to receive(:color).and_return(:white)
+      end
+
+      it 'has two captures' do
+        results = white_bishop.current_captures(board)
+        expect(results).to contain_exactly([0, 6], [6, 0])
+      end
+    end
+
+    # context 'when there are no opposing piece to capture' do
+    #   subject(:white_bishop) { described_class.new({ color: :white, location: [3, 3] }) }
+    #   let(:black_piece) { instance_double(Piece) }
+    #   let(:white_piece) { instance_double(Piece) }
+    #   let(:board) do
+    #     [
+    #       [nil, nil, nil, nil, nil, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil],
+    #       [nil, nil, nil, white_bishop, nil, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil]
+    #     ]
+    #   end
+
+    #   before do
+    #     allow(black_piece).to receive(:color).and_return(:black)
+    #     allow(white_piece).to receive(:color).and_return(:white)
+    #   end
+
+    #   it 'has no captures' do
+    #     results = white_bishop.current_captures(board)
+    #     expect(results).to be_empty
+    #   end
+    # end
   end
 end
