@@ -125,8 +125,8 @@ RSpec.describe Pawn do
         end
 
         context 'when a same color piece in capture square' do
-          let(:piece) { instance_double(Piece, color: :black) }
-          let(:board_same) { [[nil, nil], [black_pawn, nil], [nil, piece], [nil, nil]] }
+          let(:black_piece) { instance_double(Piece, color: :black) }
+          let(:board_same) { [[nil, nil], [black_pawn, nil], [nil, black_piece], [nil, nil]] }
 
           it 'has no captures' do
             results = black_pawn.current_captures(board_same)
@@ -134,9 +134,9 @@ RSpec.describe Pawn do
           end
         end
 
-        context 'when an opposite color piece in capture square' do
-          let(:piece) { instance_double(Piece, color: :white) }
-          let(:board_opposite) { [[nil, nil], [black_pawn, nil], [nil, piece], [nil, nil]] }
+        context 'when an opposing piece in capture square' do
+          let(:white_piece) { instance_double(Piece, color: :white) }
+          let(:board_opposite) { [[nil, nil], [black_pawn, nil], [nil, white_piece], [nil, nil]] }
 
           it 'has one capture' do
             results = black_pawn.current_captures(board_opposite)
@@ -144,9 +144,34 @@ RSpec.describe Pawn do
           end
         end
       end
+
+      context 'when pawn is in second file' do
+        context 'when an opposing piece in capture square' do
+          subject(:black_pawn) { described_class.new({ color: :black, location: [1, 1] }) }
+          let(:black_piece) { instance_double(Piece, color: :black) }
+          let(:white_piece) { instance_double(Piece, color: :white) }
+          let(:board) do
+            [
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, black_pawn, black_piece, nil, nil, nil, nil, nil],
+              [white_piece, nil, nil, nil, nil, nil, nil, nil],
+              [black_piece, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil]
+            ]
+          end
+
+          it 'has one capture' do
+            results = black_pawn.current_captures(board)
+            expect(results).to contain_exactly([2, 0])
+          end
+        end
+      end
     end
 
-    context 'when pawn in white' do
+    context 'when pawn is white' do
       context 'when pawn is in last file' do
         subject(:white_pawn) { described_class.new({ color: :white, location: [6, 7] }) }
 

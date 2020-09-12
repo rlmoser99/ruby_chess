@@ -40,12 +40,12 @@ class Pawn < Piece
 
   def lower_capture?(rank, file, board)
     piece = board[rank][file]
-    file >= 1 && piece && piece.color != color
+    file >= 0 && piece && piece.color != color
   end
 
   def higher_capture?(rank, file, board)
     piece = board[rank][file]
-    file <= 6 && piece && piece.color != color
+    file <= 7 && piece && piece.color != color
   end
 
   def first_move_bonus
