@@ -146,6 +146,11 @@ RSpec.describe Rook do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, black_rook, nil, nil, nil, white_piece, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil]
         ]
       end
