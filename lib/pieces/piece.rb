@@ -19,6 +19,10 @@ class Piece
 
   private
 
+  def move_set
+    raise 'Called abstract method: move_set'
+  end
+
   def find_valid_moves(board)
     move_set.inject([]) do |memo, move|
       memo << create_moves(board, move[0], move[1])

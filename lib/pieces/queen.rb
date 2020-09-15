@@ -8,6 +8,21 @@ class Queen < Piece
 
   def initialize(args)
     super(args)
+    @location = args[:location]
     @symbol = " \u265B "
+  end
+
+  def current_moves(board)
+    find_valid_moves(board).compact.flatten(1)
+  end
+
+  def current_captures(board)
+    find_valid_captures(board).compact
+  end
+
+  private
+
+  def move_set
+    [[0, 1], [0, -1], [-1, 0], [1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]]
   end
 end
