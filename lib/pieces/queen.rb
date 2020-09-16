@@ -12,14 +12,6 @@ class Queen < Piece
     @symbol = " \u265B "
   end
 
-  def current_moves(board)
-    find_valid_moves(board).compact.flatten(1)
-  end
-
-  def current_captures(board)
-    find_valid_captures(board).compact
-  end
-
   private
 
   def move_set
