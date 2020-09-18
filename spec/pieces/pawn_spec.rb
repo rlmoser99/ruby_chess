@@ -5,6 +5,8 @@ require_relative '../../lib/pieces/piece'
 
 RSpec.describe Pawn do
   describe '#current_moves' do
+    let(:piece) { instance_double(Piece) }
+
     context 'when pawn is black' do
       context 'when pawn has not moved' do
         subject(:black_pawn) { described_class.new({ color: :black, location: [1, 0] }) }
@@ -19,7 +21,6 @@ RSpec.describe Pawn do
         end
 
         context 'when bonus square is occupied' do
-          let(:piece) { instance_double(Piece) }
           let(:board_occupied) { [[nil, nil], [black_pawn, nil], [nil, nil], [piece, nil]] }
 
           it 'has one move' do
@@ -46,7 +47,6 @@ RSpec.describe Pawn do
         end
 
         context 'when next square is occupied' do
-          let(:piece) { instance_double(Piece) }
           let(:board_occupied) { [[nil, nil], [black_pawn, nil], [nil, nil], [piece, nil]] }
 
           it 'has no moves' do
@@ -71,7 +71,6 @@ RSpec.describe Pawn do
         end
 
         context 'when bonus square is occupied' do
-          let(:piece) { instance_double(Piece) }
           let(:board_bonus) { [[nil, nil], [white_pawn, nil], [nil, nil], [piece, nil]] }
 
           it 'has one move' do
@@ -98,7 +97,6 @@ RSpec.describe Pawn do
         end
 
         context 'when next square is occupied' do
-          let(:piece) { instance_double(Piece) }
           let(:board_occupied) { [[piece, nil], [nil, nil], [white_pawn, nil], [nil, nil]] }
 
           it 'has no moves' do
@@ -111,35 +109,69 @@ RSpec.describe Pawn do
   end
 
   describe '#current_captures' do
+    let(:black_piece) { instance_double(Piece, color: :black) }
+    let(:white_piece) { instance_double(Piece, color: :white) }
+
     context 'when pawn is black' do
       context 'when pawn is in first file' do
         subject(:black_pawn) { described_class.new({ color: :black, location: [1, 0] }) }
 
         context 'when there is nothing to capture' do
-          let(:board_empty) { [[nil, nil], [black_pawn, nil], [nil, nil], [nil, nil]] }
+          let(:board) do
+            [
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [black_pawn, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil]
+            ]
+          end
 
           it 'has no captures' do
-            results = black_pawn.current_captures(board_empty)
+            results = black_pawn.current_captures(board)
             expect(results).to be_empty
           end
         end
 
         context 'when a same color piece in capture square' do
-          let(:black_piece) { instance_double(Piece, color: :black) }
-          let(:board_same) { [[nil, nil], [black_pawn, nil], [nil, black_piece], [nil, nil]] }
+          let(:board) do
+            [
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [black_pawn, nil, nil, nil, nil, nil, nil, nil],
+              [nil, black_piece, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil]
+            ]
+          end
 
           it 'has no captures' do
-            results = black_pawn.current_captures(board_same)
+            results = black_pawn.current_captures(board)
             expect(results).to be_empty
           end
         end
 
         context 'when an opposing piece in capture square' do
-          let(:white_piece) { instance_double(Piece, color: :white) }
-          let(:board_opposite) { [[nil, nil], [black_pawn, nil], [nil, white_piece], [nil, nil]] }
+          let(:board) do
+            [
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [black_pawn, nil, nil, nil, nil, nil, nil, nil],
+              [nil, white_piece, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil]
+            ]
+          end
 
           it 'has one capture' do
-            results = black_pawn.current_captures(board_opposite)
+            results = black_pawn.current_captures(board)
             expect(results).to contain_exactly([2, 1])
           end
         end
@@ -148,8 +180,6 @@ RSpec.describe Pawn do
       context 'when pawn is in second file' do
         context 'when an opposing piece in capture square' do
           subject(:black_pawn) { described_class.new({ color: :black, location: [1, 1] }) }
-          let(:black_piece) { instance_double(Piece, color: :black) }
-          let(:white_piece) { instance_double(Piece, color: :white) }
           let(:board) do
             [
               [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -176,7 +206,7 @@ RSpec.describe Pawn do
         subject(:white_pawn) { described_class.new({ color: :white, location: [6, 7] }) }
 
         context 'when there is nothing to capture' do
-          let(:board_empty) do
+          let(:board) do
             [
               [nil, nil, nil, nil, nil, nil, nil, nil],
               [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -190,14 +220,13 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            results = white_pawn.current_captures(board_empty)
+            results = white_pawn.current_captures(board)
             expect(results).to be_empty
           end
         end
 
         context 'when a same color piece in capture square' do
-          let(:white_piece) { instance_double(Piece, color: :white) }
-          let(:board_same) do
+          let(:board) do
             [
               [nil, nil, nil, nil, nil, nil, nil, nil],
               [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -211,14 +240,13 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            results = white_pawn.current_captures(board_same)
+            results = white_pawn.current_captures(board)
             expect(results).to be_empty
           end
         end
 
         context 'when an opposite color piece in capture square' do
-          let(:black_piece) { instance_double(Piece, color: :black) }
-          let(:board_opposite) do
+          let(:board) do
             [
               [nil, nil, nil, nil, nil, nil, nil, nil],
               [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -232,7 +260,7 @@ RSpec.describe Pawn do
           end
 
           it 'has one capture' do
-            results = white_pawn.current_captures(board_opposite)
+            results = white_pawn.current_captures(board)
             expect(results).to contain_exactly([5, 6])
           end
         end
@@ -242,7 +270,7 @@ RSpec.describe Pawn do
         subject(:white_pawn) { described_class.new({ color: :white, location: [6, 4] }) }
 
         context 'when there is nothing to capture' do
-          let(:board_empty) do
+          let(:board) do
             [
               [nil, nil, nil, nil, nil, nil, nil, nil],
               [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -256,14 +284,13 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            results = white_pawn.current_captures(board_empty)
+            results = white_pawn.current_captures(board)
             expect(results).to be_empty
           end
         end
 
         context 'when a same color piece in capture square' do
-          let(:white_piece) { instance_double(Piece, color: :white) }
-          let(:board_same) do
+          let(:board) do
             [
               [nil, nil, nil, nil, nil, nil, nil, nil],
               [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -277,14 +304,13 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            results = white_pawn.current_captures(board_same)
+            results = white_pawn.current_captures(board)
             expect(results).to be_empty
           end
         end
 
         context 'when an opposite color piece in capture square' do
-          let(:black_piece) { instance_double(Piece, color: :black) }
-          let(:board_opposite) do
+          let(:board) do
             [
               [nil, nil, nil, nil, nil, nil, nil, nil],
               [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -298,14 +324,13 @@ RSpec.describe Pawn do
           end
 
           it 'has one capture' do
-            results = white_pawn.current_captures(board_opposite)
+            results = white_pawn.current_captures(board)
             expect(results).to contain_exactly([5, 5])
           end
         end
 
         context 'when two opposite color pieces are in capture squares' do
-          let(:black_piece) { instance_double(Piece, color: :black) }
-          let(:board_two) do
+          let(:board) do
             [
               [nil, nil, nil, nil, nil, nil, nil, nil],
               [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -319,7 +344,7 @@ RSpec.describe Pawn do
           end
 
           it 'has two captures' do
-            results = white_pawn.current_captures(board_two)
+            results = white_pawn.current_captures(board)
             expect(results).to contain_exactly([5, 5], [5, 3])
           end
         end
