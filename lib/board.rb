@@ -12,6 +12,7 @@ class Board
     @active_piece = active_piece
     @valid_moves = valid_moves
     @valid_captures = valid_captures
+    # keep track of the previous piece moved, for en_passant
   end
 
   # Tested

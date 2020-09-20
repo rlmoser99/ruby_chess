@@ -351,4 +351,48 @@ RSpec.describe Pawn do
       end
     end
   end
+
+  describe '#update_location' do
+    context 'when pawn moves one square' do
+      subject(:black_pawn) { described_class.new({ color: :black, location: [1, 1] }) }
+      let(:board) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, black_pawn, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      it 'is not en passant' do
+        black_pawn.update_location(2, 1)
+        expect(black_pawn.en_passant).to be false
+      end
+    end
+
+    context 'when pawn moves two squares' do
+      subject(:black_pawn) { described_class.new({ color: :black, location: [1, 1] }) }
+      let(:board) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, black_pawn, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      it 'is en passant' do
+        black_pawn.update_location(3, 1)
+        expect(black_pawn.en_passant).to be true
+      end
+    end
+  end
 end
