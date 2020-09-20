@@ -5,14 +5,14 @@ require_relative 'displayable.rb'
 # contains logic for chess board
 class Board
   include Displayable
-  attr_reader :data, :active_piece
+  attr_reader :data, :active_piece, :previous_piece
 
   def initialize(data = Array.new(8) { Array.new(8) }, active_piece = nil, valid_moves = [], valid_captures = [])
     @data = data
     @active_piece = active_piece
     @valid_moves = valid_moves
     @valid_captures = valid_captures
-    # keep track of the previous piece moved, for en_passant
+    @previous_piece = nil
   end
 
   # Tested
@@ -44,7 +44,7 @@ class Board
     update_new_coordinates(coords)
     remove_old_piece
     update_active_piece_location(coords)
-    reset_active_piece_values
+    reset_board_values
   end
 
   # Tested
@@ -64,7 +64,8 @@ class Board
   end
 
   # Tested
-  def reset_active_piece_values
+  def reset_board_values
+    @previous_piece = active_piece
     @active_piece = nil
     @valid_moves = []
     @valid_captures = []
