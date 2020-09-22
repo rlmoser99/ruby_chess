@@ -171,7 +171,7 @@ RSpec.describe Bishop do
       end
 
       it 'has one captures' do
-        results = white_bishop.current_captures(board)
+        results = white_bishop.current_captures(board, black_piece)
         expect(results).to contain_exactly([5, 0])
       end
     end
@@ -191,7 +191,7 @@ RSpec.describe Bishop do
       end
 
       it 'has two captures' do
-        results = white_bishop.current_captures(board)
+        results = white_bishop.current_captures(board, black_piece)
         expect(results).to contain_exactly([0, 6], [6, 0])
       end
     end
@@ -212,7 +212,7 @@ RSpec.describe Bishop do
       end
 
       it 'has no moves' do
-        results = white_bishop.current_captures(board)
+        results = white_bishop.current_captures(board, black_piece)
         expect(results).to be_empty
       end
     end

@@ -18,11 +18,11 @@ class Piece
     @moved = true
   end
 
-  def current_moves(board, _previous_piece = nil)
+  def current_moves(board)
     find_valid_moves(board).compact.flatten(1)
   end
 
-  def current_captures(board)
+  def current_captures(board, _previous_piece)
     find_valid_captures(board).compact
   end
 

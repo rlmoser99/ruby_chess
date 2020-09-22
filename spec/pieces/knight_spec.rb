@@ -112,7 +112,7 @@ RSpec.describe Knight do
       end
 
       it 'has one capture' do
-        results = black_knight.current_captures(board)
+        results = black_knight.current_captures(board, white_piece)
         expect(results).to contain_exactly([3, 5])
       end
     end
@@ -133,7 +133,7 @@ RSpec.describe Knight do
       end
 
       it 'has four captures' do
-        results = black_knight.current_captures(board)
+        results = black_knight.current_captures(board, white_piece)
         expect(results).to contain_exactly([1, 2], [1, 4], [5, 2], [5, 4])
       end
     end
@@ -154,7 +154,7 @@ RSpec.describe Knight do
       end
 
       it 'has four captures' do
-        results = black_knight.current_captures(board)
+        results = black_knight.current_captures(board, white_piece)
         expect(results).to contain_exactly([2, 1], [2, 5], [4, 1], [4, 5])
       end
     end

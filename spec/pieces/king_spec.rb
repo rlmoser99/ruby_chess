@@ -96,7 +96,7 @@ RSpec.describe King do
       end
 
       it 'has no captures' do
-        results = white_king.current_captures(board)
+        results = white_king.current_captures(board, black_piece)
         expect(results).to be_empty
       end
     end
@@ -117,7 +117,7 @@ RSpec.describe King do
       end
 
       it 'has one capture' do
-        results = white_king.current_captures(board)
+        results = white_king.current_captures(board, black_piece)
         expect(results).to contain_exactly([6, 3])
       end
     end
@@ -138,7 +138,7 @@ RSpec.describe King do
       end
 
       it 'has two captures' do
-        results = white_king.current_captures(board)
+        results = white_king.current_captures(board, black_piece)
         expect(results).to contain_exactly([4, 3], [5, 1])
       end
     end

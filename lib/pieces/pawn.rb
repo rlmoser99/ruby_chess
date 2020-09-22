@@ -35,7 +35,6 @@ class Pawn < Piece
   # Tested
   def current_captures(board, previous_piece)
     # Need to check for a piece that can be captured en_passant
-    # Black in 4th rank & White in 5th rank might be able to do en passant.
     captures = []
     rank = @location[0] + rank_direction
     file = @location[1]
@@ -50,8 +49,9 @@ class Pawn < Piece
   private
 
   # Tested in update_location
+  # Determines whether a move was two spaces (true) or not.
   def update_en_passant(row)
-    @en_passant = row - location[0] == 2
+    @en_passant = (row - location[0]).abs == 2
   end
 
   def first_move_bonus
@@ -60,10 +60,12 @@ class Pawn < Piece
     [double_rank, file]
   end
 
+  # White can only move up and Black can only move down
   def rank_direction
     color == :white ? -1 : 1
   end
 
+  # Tested in current_captures
   # Checks that a piece is a pawn & that is en_passant is true
   def valid_en_passant?(piece)
     en_passant_rank? && symbol == piece.symbol && piece.en_passant
@@ -71,7 +73,7 @@ class Pawn < Piece
 
   # White Pawn must be in 3rd row or Black Pawn must be in 4th row
   def en_passant_rank?
-    (location[0] == 3 && color == :white) || (location[0] == 4 && color == :black)
+    (location[0] == 4 && color == :black) || (location[0] == 3 && color == :white)
   end
 end
 

@@ -39,9 +39,9 @@ class Game
   def play
     @board.initial_placement
     @board.to_s
-    player_turn
+    # player_turn
     # Need to switch current player
-    # 12.times { player_turn }
+    12.times { player_turn }
   end
 
   # Script Method -> Test methods inside

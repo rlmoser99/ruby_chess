@@ -66,7 +66,7 @@ class Board
 
   # Tested
   def reset_board_values
-    @previous_piece = active_piece
+    @previous_piece = @active_piece
     @active_piece = nil
     @valid_moves = []
     @valid_captures = []

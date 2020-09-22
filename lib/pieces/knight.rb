@@ -25,7 +25,7 @@ class Knight < Piece
     result
   end
 
-  def current_captures(board)
+  def current_captures(board, _previous_piece)
     moves = move_possibilities
     result = []
     moves.each do |move|

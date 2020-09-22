@@ -15,7 +15,7 @@ class King < Piece
     find_valid_moves(board).compact
   end
 
-  def current_captures(board)
+  def current_captures(board, _previous_piece)
     find_valid_captures(board).compact
   end
 
