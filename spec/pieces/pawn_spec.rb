@@ -109,8 +109,8 @@ RSpec.describe Pawn do
   end
 
   describe '#current_captures' do
-    let(:black_piece) { instance_double(Piece, color: :black) }
-    let(:white_piece) { instance_double(Piece, color: :white) }
+    let(:black_piece) { instance_double(Piece, color: :black, symbol: nil) }
+    let(:white_piece) { instance_double(Piece, color: :white, symbol: nil) }
 
     context 'when pawn is black' do
       context 'when pawn is in first file' do
@@ -131,7 +131,7 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            results = black_pawn.current_captures(board)
+            results = black_pawn.current_captures(board, white_piece)
             expect(results).to be_empty
           end
         end
@@ -151,7 +151,7 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            results = black_pawn.current_captures(board)
+            results = black_pawn.current_captures(board, white_piece)
             expect(results).to be_empty
           end
         end
@@ -171,7 +171,7 @@ RSpec.describe Pawn do
           end
 
           it 'has one capture' do
-            results = black_pawn.current_captures(board)
+            results = black_pawn.current_captures(board, white_piece)
             expect(results).to contain_exactly([2, 1])
           end
         end
@@ -194,9 +194,53 @@ RSpec.describe Pawn do
           end
 
           it 'has one capture' do
-            results = black_pawn.current_captures(board)
+            results = black_pawn.current_captures(board, white_piece)
             expect(results).to contain_exactly([2, 0])
           end
+        end
+      end
+
+      context 'when pawn has en_passant' do
+        subject(:black_pawn) { described_class.new({ color: :black, location: [4, 1] }) }
+        let(:white_pawn) { instance_double(Pawn, en_passant: true, location: [4, 2], symbol: " \u265F ") }
+        let(:board) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, black_pawn, white_pawn, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
+        end
+
+        it 'has one capture' do
+          results = black_pawn.current_captures(board, white_pawn)
+          expect(results).to contain_exactly([4, 2])
+        end
+      end
+
+      context 'when pawn has a capture and is next to a pawn without en_passant' do
+        subject(:black_pawn) { described_class.new({ color: :black, location: [4, 1] }) }
+        let(:white_pawn) { instance_double(Pawn, en_passant: false, location: [4, 2], symbol: " \u265F ") }
+        let(:board) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, black_pawn, white_pawn, nil, nil, nil, nil, nil],
+            [white_piece, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
+        end
+
+        it 'has one capture' do
+          results = black_pawn.current_captures(board, white_pawn)
+          expect(results).to contain_exactly([5, 0])
         end
       end
     end
@@ -220,7 +264,7 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            results = white_pawn.current_captures(board)
+            results = white_pawn.current_captures(board, black_piece)
             expect(results).to be_empty
           end
         end
@@ -240,7 +284,7 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            results = white_pawn.current_captures(board)
+            results = white_pawn.current_captures(board, black_piece)
             expect(results).to be_empty
           end
         end
@@ -260,7 +304,7 @@ RSpec.describe Pawn do
           end
 
           it 'has one capture' do
-            results = white_pawn.current_captures(board)
+            results = white_pawn.current_captures(board, black_piece)
             expect(results).to contain_exactly([5, 6])
           end
         end
@@ -284,7 +328,7 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            results = white_pawn.current_captures(board)
+            results = white_pawn.current_captures(board, black_piece)
             expect(results).to be_empty
           end
         end
@@ -304,7 +348,7 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            results = white_pawn.current_captures(board)
+            results = white_pawn.current_captures(board, black_piece)
             expect(results).to be_empty
           end
         end
@@ -324,7 +368,7 @@ RSpec.describe Pawn do
           end
 
           it 'has one capture' do
-            results = white_pawn.current_captures(board)
+            results = white_pawn.current_captures(board, black_piece)
             expect(results).to contain_exactly([5, 5])
           end
         end
@@ -344,8 +388,52 @@ RSpec.describe Pawn do
           end
 
           it 'has two captures' do
-            results = white_pawn.current_captures(board)
+            results = white_pawn.current_captures(board, black_piece)
             expect(results).to contain_exactly([5, 5], [5, 3])
+          end
+        end
+
+        context 'when pawn has en_passant and a capture' do
+          subject(:white_pawn) { described_class.new({ color: :white, location: [3, 3] }) }
+          let(:black_pawn) { instance_double(Pawn, en_passant: true, location: [3, 4], symbol: " \u265F ") }
+          let(:board) do
+            [
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, black_piece, nil, nil, nil, nil, nil],
+              [nil, nil, nil, white_pawn, black_pawn, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil]
+            ]
+          end
+
+          it 'has two captures' do
+            results = white_pawn.current_captures(board, black_pawn)
+            expect(results).to contain_exactly([3, 4], [2, 2])
+          end
+        end
+
+        context 'when pawn has en_passant but is not previous_piece' do
+          subject(:white_pawn) { described_class.new({ color: :white, location: [3, 3] }) }
+          let(:black_pawn) { instance_double(Pawn, en_passant: true, location: [3, 4], symbol: " \u265F ") }
+          let(:board) do
+            [
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, black_piece, nil, nil, nil, nil, nil],
+              [nil, nil, nil, white_pawn, black_pawn, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil],
+              [nil, nil, nil, nil, nil, nil, nil, nil]
+            ]
+          end
+
+          it 'has one capture' do
+            results = white_pawn.current_captures(board, black_piece)
+            expect(results).to contain_exactly([2, 2])
           end
         end
       end

@@ -16,6 +16,7 @@ class Pawn < Piece
 
   def update_location(row, column)
     update_en_passant(row)
+    # check to see if en_passant capture is happening?
     @location = [row, column]
     @moved = true
   end
@@ -32,7 +33,7 @@ class Pawn < Piece
   end
 
   # Tested
-  def current_captures(board)
+  def current_captures(board, previous_piece)
     # Need to check for a piece that can be captured en_passant
     # Black in 4th rank & White in 5th rank might be able to do en passant.
     captures = []
@@ -42,6 +43,7 @@ class Pawn < Piece
     higher_file = file + 1
     captures << [rank, lower_file] if opposing_piece?(rank, lower_file, board)
     captures << [rank, higher_file] if opposing_piece?(rank, higher_file, board)
+    captures << previous_piece.location if valid_en_passant?(previous_piece)
     captures
   end
 
@@ -61,7 +63,17 @@ class Pawn < Piece
   def rank_direction
     color == :white ? -1 : 1
   end
+
+  # Checks that a piece is a pawn & that is en_passant is true
+  def valid_en_passant?(piece)
+    en_passant_rank? && symbol == piece.symbol && piece.en_passant
+  end
+
+  # White Pawn must be in 3rd row or Black Pawn must be in 4th row
+  def en_passant_rank?
+    (location[0] == 3 && color == :white) || (location[0] == 4 && color == :black)
+  end
 end
 
-# Black in 4th rank & White in 5th rank can do en passant, to an opposing pawn.
-# That opposing piece must have just done it's "double" move.
+# Removes the captures piece & places piece on square in front
+# (as if captured piece moved one square)
