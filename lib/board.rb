@@ -42,9 +42,13 @@ class Board
 
   # Script Method -> No tests needed (test inside methods)
   def update(coords)
-    update_new_coordinates(coords)
-    remove_old_piece
-    update_active_piece_location(coords)
+    if en_passant_capture?(coords)
+      update_en_passant(coords)
+    else
+      update_new_coordinates(coords)
+      remove_old_piece
+      update_active_piece_location(coords)
+    end
     reset_board_values
   end
 
@@ -104,5 +108,18 @@ class Board
       Knight.new({ color: color, location: [number, 6] }),
       Rook.new({ color: color, location: [number, 7] })
     ]
+  end
+
+  def en_passant_capture?(coords)
+    @previous_piece&.location == [coords[:row], coords[:column]]
+  end
+
+  def update_en_passant(coords)
+    new_rank = coords[:row] + @active_piece.rank_direction
+    new_coords = { row: new_rank, column: coords[:column] }
+    update_new_coordinates(new_coords) # -> update board coords of before/after = piece
+    @data[coords[:row]][coords[:column]] = nil # capture coords = nil
+    remove_old_piece # -> stays the same
+    update_active_piece_location(new_coords) # -> active_piece.location = coords of before/after
   end
 end

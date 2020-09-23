@@ -46,6 +46,11 @@ class Pawn < Piece
     captures
   end
 
+  # White can only move up and Black can only move down
+  def rank_direction
+    color == :white ? -1 : 1
+  end
+
   private
 
   # Tested in update_location
@@ -58,11 +63,6 @@ class Pawn < Piece
     double_rank = @location[0] + (rank_direction * 2)
     file = @location[1]
     [double_rank, file]
-  end
-
-  # White can only move up and Black can only move down
-  def rank_direction
-    color == :white ? -1 : 1
   end
 
   # Tested in current_captures
@@ -79,3 +79,5 @@ end
 
 # Removes the captures piece & places piece on square in front
 # (as if captured piece moved one square)
+
+# Add warning in game when en_passant is a possibility to know that piece will be in different square!
