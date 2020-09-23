@@ -23,7 +23,6 @@ class Board
   # Tested
   def active_piece_moveable?
     @valid_moves = @active_piece.current_moves(@data)
-    # Going to have to let pawns know of the previous piece!!!
     @valid_captures = @active_piece.current_captures(@data, @previous_piece)
     @valid_moves.size >= 1 || @valid_captures.size >= 1
   end
@@ -111,7 +110,11 @@ class Board
   end
 
   def en_passant_capture?(coords)
-    @previous_piece&.location == [coords[:row], coords[:column]]
+    @previous_piece&.location == [coords[:row], coords[:column]] && en_passant_pawn?
+  end
+
+  def en_passant_pawn?
+    @previous_piece.symbol == " \u265F " && @active_piece.symbol == " \u265F " && @previous_piece.en_passant
   end
 
   def update_en_passant(coords)

@@ -16,7 +16,6 @@ class Pawn < Piece
 
   def update_location(row, column)
     update_en_passant(row)
-    # check to see if en_passant capture is happening?
     @location = [row, column]
     @moved = true
   end
