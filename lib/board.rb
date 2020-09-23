@@ -68,6 +68,11 @@ class Board
   end
 
   # Tested
+  def possible_en_passant?
+    @valid_captures.include?(@previous_piece&.location) && en_passant_pawn?
+  end
+
+  # Tested
   def reset_board_values
     @previous_piece = @active_piece
     @active_piece = nil

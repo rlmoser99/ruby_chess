@@ -76,7 +76,6 @@ class Pawn < Piece
   end
 end
 
-# Removes the captures piece & places piece on square in front
-# (as if captured piece moved one square)
-
 # Add warning in game when en_passant is a possibility to know that piece will be in different square!
+
+# Clean up notes from en passant planning / thinking.

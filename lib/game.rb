@@ -71,6 +71,7 @@ class Game
   # Script Method -> No tests needed (test inside methods)
   # Need to test any outgoing command messages ??
   def select_move_coordinates
+    puts en_passant_warning if @board.possible_en_passant?
     input = user_input('Where would you like to move it?')
     validate_input(input)
     coords = translate_coordinates(input)
@@ -112,5 +113,9 @@ class Game
   def user_input(phrase)
     puts phrase
     gets.chomp
+  end
+
+  def en_passant_warning
+    "To capture this pawn en passant, enter the \e[91mcapture coordinates\e[0m. Your pawn will be moved to the square in front of it."
   end
 end

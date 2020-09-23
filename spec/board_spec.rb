@@ -429,4 +429,60 @@ RSpec.describe Board do
       end
     end
   end
+
+  describe 'possible_en_passant?' do
+    context 'when en_passant is possible' do
+      subject(:board) { described_class.new(data, black_pawn, [[5, 2]], [[4, 3]]) }
+      let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: true) }
+      let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, black_pawn, white_pawn, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      before do
+        board.instance_variable_set(:@previous_piece, white_pawn)
+      end
+
+      it 'returns true' do
+        result = board.possible_en_passant?
+        expect(result).to be true
+      end
+    end
+
+    context 'when en_passant is not possible' do
+      subject(:board) { described_class.new(data, black_pawn, [[5, 2]], [[4, 3]]) }
+      let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: false) }
+      let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, black_pawn, white_pawn, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      before do
+        board.instance_variable_set(:@previous_piece, white_pawn)
+      end
+
+      it 'returns false' do
+        result = board.possible_en_passant?
+        expect(result).to be false
+      end
+    end
+  end
 end
