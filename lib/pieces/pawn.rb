@@ -33,7 +33,6 @@ class Pawn < Piece
 
   # Tested
   def current_captures(board, previous_piece)
-    # Need to check for a piece that can be captured en_passant
     captures = []
     rank = @location[0] + rank_direction
     file = @location[1]
@@ -53,7 +52,7 @@ class Pawn < Piece
   private
 
   # Tested in update_location
-  # Determines whether a move was two spaces (true) or not.
+  # Changes en_passant value depending on if last move was two spaces (true) or not.
   def update_en_passant(row)
     @en_passant = (row - location[0]).abs == 2
   end
@@ -65,17 +64,14 @@ class Pawn < Piece
   end
 
   # Tested in current_captures
-  # Checks that a piece is a pawn & that is en_passant is true
+  # Checks that a piece is a pawn & that en_passant rank is valid
   def valid_en_passant?(piece)
     en_passant_rank? && symbol == piece.symbol && piece.en_passant
   end
 
-  # White Pawn must be in 3rd row or Black Pawn must be in 4th row
+  # Tested in current_captures
+  # Checks if black pawn is in 4th row or white pawn is in 3rd row
   def en_passant_rank?
     (location[0] == 4 && color == :black) || (location[0] == 3 && color == :white)
   end
 end
-
-# Add warning in game when en_passant is a possibility to know that piece will be in different square!
-
-# Clean up notes from en passant planning / thinking.

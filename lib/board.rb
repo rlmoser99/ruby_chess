@@ -114,10 +114,12 @@ class Board
     ]
   end
 
+  # Checks if there is a possible en_passant capture for game warning.
   def en_passant_capture?(coords)
     @previous_piece&.location == [coords[:row], coords[:column]] && en_passant_pawn?
   end
 
+  # Checks if previous and active pieces are pawns, and if previous is en passant.
   def en_passant_pawn?
     @previous_piece.symbol == " \u265F " && @active_piece.symbol == " \u265F " && @previous_piece.en_passant
   end
