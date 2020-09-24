@@ -41,3 +41,13 @@ class King < Piece
     [[0, 1], [0, -1], [-1, 0], [1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]]
   end
 end
+
+# Adding "check" to King.
+# Check -> When opponent piece can attack King.
+# Update legal moves -> Move can not put King in check.
+
+# Visualizing valid moves & captures
+# If a move would put King in check, it needs to be removed!!!
+
+# Game ->
+# Make a method inside #select_move_coordinates that has board check opponent pieces putting King into check.
