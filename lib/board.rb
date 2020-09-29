@@ -75,14 +75,14 @@ class Board
 
   # def remove_check_moves_captures; end
 
+  # Should this check if either king is in check?
+  # Tested
   def check?(king)
-    color = king.color
     @data.any? do |row|
       row.any? do |square|
-        next unless square && square.color != color
+        next unless square && square.color != king.color
 
-        captures = square.current_captures(@data, @previous_piece)
-        captures.include?(king.location)
+        square.current_captures(@data, @previous_piece).include?(king.location)
       end
     end
   end
