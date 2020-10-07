@@ -21,6 +21,8 @@ game.play
 # Check -> When opponent piece can attack King.
 # Update legal moves -> Move can not put King in check.
 
+# Remove each piece checking current_moves & current_captures at the beginning of each turn.
+
 # Visualizing valid moves & captures
 # If a move would put King in check, it needs to be removed!!!
 

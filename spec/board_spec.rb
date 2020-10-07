@@ -263,7 +263,7 @@ RSpec.describe Board do
   describe '#piece?' do
     subject(:board_piece) { described_class.new(data_piece, pawn) }
     let(:data_piece) { [[pawn, nil], [nil, nil]] }
-    let(:pawn) { Pawn.new({ color: :white, location: [0, 0] }) }
+    let(:pawn) { instance_double(Piece) }
 
     context 'when coordinates is a piece' do
       it 'returns true' do

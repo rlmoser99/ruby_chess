@@ -6,8 +6,8 @@ require_relative 'piece'
 class Rook < Piece
   attr_reader :color, :symbol
 
-  def initialize(args)
-    super(args)
+  def initialize(_board, args)
+    @color = args[:color]
     @location = args[:location]
     @symbol = " \u265C "
   end

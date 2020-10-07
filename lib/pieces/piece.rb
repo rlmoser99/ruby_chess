@@ -4,7 +4,8 @@
 class Piece
   attr_reader :location, :color, :symbol, :moves, :captures
 
-  def initialize(args)
+  def initialize(board, args)
+    board.add_observer(self)
     @color = args[:color]
     @location = args[:location]
     @symbol = nil
@@ -25,6 +26,11 @@ class Piece
 
   def current_captures(board, _previous_piece)
     @captures = find_valid_captures(board).compact
+  end
+
+  def update(board)
+    current_moves(board.data)
+    current_captures(board.data, board.previous_piece)
   end
 
   private

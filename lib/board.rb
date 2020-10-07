@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
+require 'observer'
 require_relative 'displayable.rb'
 
 # contains logic for chess board
 class Board
   include Displayable
+  include Observable
   attr_reader :data, :active_piece, :previous_piece
 
   def initialize(data = Array.new(8) { Array.new(8) }, active_piece = nil, valid_moves = [], valid_captures = [])
@@ -37,7 +39,7 @@ class Board
 
   # Tested
   def piece?(coords)
-    @data[coords[:row]][coords[:column]].is_a?(Piece)
+    @data[coords[:row]][coords[:column]] != nil
   end
 
   # Script Method -> No tests needed (test inside methods)
@@ -93,6 +95,8 @@ class Board
     @active_piece = nil
     @valid_moves = []
     @valid_captures = []
+    changed
+    notify_observers(self)
   end
 
   # Tested
@@ -124,20 +128,20 @@ class Board
 
   def initial_pawn_row(color, number)
     8.times do |index|
-      @data[number][index] = Pawn.new({ color: color, location: [number, index] })
+      @data[number][index] = Pawn.new(self, { color: color, location: [number, index] })
     end
   end
 
   def initial_row(color, number)
     @data[number] = [
-      Rook.new({ color: color, location: [number, 0] }),
-      Knight.new({ color: color, location: [number, 1] }),
-      Bishop.new({ color: color, location: [number, 2] }),
-      Queen.new({ color: color, location: [number, 3] }),
-      King.new({ color: color, location: [number, 4] }),
-      Bishop.new({ color: color, location: [number, 5] }),
-      Knight.new({ color: color, location: [number, 6] }),
-      Rook.new({ color: color, location: [number, 7] })
+      Rook.new(self, { color: color, location: [number, 0] }),
+      Knight.new(self, { color: color, location: [number, 1] }),
+      Bishop.new(self, { color: color, location: [number, 2] }),
+      Queen.new(self, { color: color, location: [number, 3] }),
+      King.new(self, { color: color, location: [number, 4] }),
+      Bishop.new(self, { color: color, location: [number, 5] }),
+      Knight.new(self, { color: color, location: [number, 6] }),
+      Rook.new(self, { color: color, location: [number, 7] })
     ]
   end
 

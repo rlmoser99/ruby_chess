@@ -6,10 +6,10 @@ require_relative 'piece'
 class Pawn < Piece
   attr_reader :color, :symbol, :location, :en_passant
 
-  def initialize(args)
-    super(args)
-    @symbol = " \u265F "
+  def initialize(_board, args)
+    @color = args[:color]
     @location = args[:location]
+    @symbol = " \u265F "
     @moved = false
     @en_passant = false
   end
