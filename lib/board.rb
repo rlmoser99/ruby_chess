@@ -22,8 +22,8 @@ class Board
 
   # Tested
   def active_piece_moveable?
-    @valid_moves = @active_piece.current_moves(@data)
-    @valid_captures = @active_piece.current_captures(@data, @previous_piece)
+    @valid_moves = @active_piece.moves
+    @valid_captures = @active_piece.captures
     # Remove any move that would put King in check!
     @valid_moves.size >= 1 || @valid_captures.size >= 1
   end
@@ -101,6 +101,18 @@ class Board
     initial_pawn_row(:black, 1)
     initial_pawn_row(:white, 6)
     initial_row(:white, 7)
+    update_all_moves_captures
+  end
+
+  def update_all_moves_captures
+    @data.each do |row|
+      row.each do |square|
+        next unless square
+
+        square.current_moves(@data)
+        square.current_captures(@data, @previous_piece)
+      end
+    end
   end
 
   # Only Puts Method -> No tests needed

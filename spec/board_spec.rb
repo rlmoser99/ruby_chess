@@ -147,8 +147,8 @@ RSpec.describe Board do
 
     context 'when there is one current_move' do
       before do
-        allow(piece).to receive(:current_moves).and_return([0, 1])
-        allow(piece).to receive(:current_captures)
+        allow(piece).to receive(:moves).and_return([0, 1])
+        allow(piece).to receive(:captures)
       end
 
       it 'returns true' do
@@ -159,8 +159,8 @@ RSpec.describe Board do
 
     context 'when there is one current_captures' do
       before do
-        allow(piece).to receive(:current_moves).and_return([])
-        allow(piece).to receive(:current_captures).and_return([1, 1])
+        allow(piece).to receive(:moves).and_return([])
+        allow(piece).to receive(:captures).and_return([1, 1])
       end
 
       it 'returns true' do
@@ -171,8 +171,8 @@ RSpec.describe Board do
 
     context 'when there is no current_move or current_capture' do
       before do
-        allow(piece).to receive(:current_moves).and_return([])
-        allow(piece).to receive(:current_captures).and_return([])
+        allow(piece).to receive(:moves).and_return([])
+        allow(piece).to receive(:captures).and_return([])
       end
 
       it 'returns false' do

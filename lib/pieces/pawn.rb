@@ -21,6 +21,7 @@ class Pawn < Piece
   end
 
   # Tested
+  # Can refactor!
   def current_moves(board)
     moves = []
     rank = @location[0] + rank_direction
@@ -28,10 +29,11 @@ class Pawn < Piece
     moves << [rank, file] unless board[rank][file]
     bonus = first_move_bonus
     moves << bonus unless @moved || board[bonus[0]][bonus[1]]
-    moves
+    @moves = moves
   end
 
   # Tested
+  # Can refactor!
   def current_captures(board, previous_piece)
     captures = []
     rank = @location[0] + rank_direction
@@ -41,7 +43,7 @@ class Pawn < Piece
     captures << [rank, lower_file] if opposing_piece?(rank, lower_file, board)
     captures << [rank, higher_file] if opposing_piece?(rank, higher_file, board)
     captures << previous_piece.location if valid_en_passant?(previous_piece)
-    captures
+    @captures = captures
   end
 
   # White can only move up and Black can only move down

@@ -12,6 +12,7 @@ class Knight < Piece
     @symbol = " \u265E "
   end
 
+  # refactor!!!
   def current_moves(board)
     moves = move_possibilities
     result = []
@@ -22,9 +23,10 @@ class Knight < Piece
 
       result << [rank, file] unless board[rank][file]
     end
-    result
+    @moves = result
   end
 
+  # refactor!!!
   def current_captures(board, _previous_piece)
     moves = move_possibilities
     result = []
@@ -35,7 +37,7 @@ class Knight < Piece
 
       result << [rank, file] if opposing_piece?(rank, file, board)
     end
-    result
+    @captures = result
   end
 
   private
