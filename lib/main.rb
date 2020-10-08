@@ -6,6 +6,7 @@ require_relative 'board.rb'
 require_relative 'displayable.rb'
 require_relative 'game.rb'
 require_relative 'notation_translator.rb'
+require_relative 'move_validator.rb'
 require_relative 'pieces/piece.rb'
 require_relative 'pieces/king.rb'
 require_relative 'pieces/queen.rb'
@@ -16,6 +17,10 @@ require_relative 'pieces/pawn.rb'
 
 game = Game.new
 game.play
+
+# When does "checking" for check happen?
+# 1. Each piece needs to remove any moves that could put their King in check.
+# 2. At the beginning of a turn, if the King is in check, the move must un-check the King.
 
 # Adding "check" to King.
 # Check -> When opponent piece can attack King.
@@ -33,5 +38,10 @@ game.play
 
 # Should Board#active_piece_moveable? remove any move that would put King in check?
 # Does Board#check?(king)? Do what we need it to do? Should it do both kings in one check?
+
+# Board.initial_placement tests are failing!!!
+
+# current_moves = piece.moves only works in ones that inherit that from piece.
+# need to change king, knight, pawn
 
 # BUG: white pawn c4, black pawn in d5 -> triggered en passsant incorrectly!

@@ -7,7 +7,7 @@ require_relative 'displayable.rb'
 class Board
   include Displayable
   include Observable
-  attr_reader :data, :active_piece, :previous_piece
+  attr_reader :data, :active_piece, :previous_piece, :black_king, :white_king
 
   def initialize(data = Array.new(8) { Array.new(8) }, active_piece = nil, valid_moves = [], valid_captures = [])
     @data = data
@@ -15,6 +15,8 @@ class Board
     @valid_moves = valid_moves
     @valid_captures = valid_captures
     @previous_piece = nil
+    @black_king = nil
+    @white_king = nil
   end
 
   # Tested
@@ -84,10 +86,31 @@ class Board
       row.any? do |square|
         next unless square && square.color != king.color
 
-        square.current_captures(@data, @previous_piece).include?(king.location)
+        square.captures.include?(king.location)
       end
     end
   end
+
+  # def validate_moves?(data, piece)
+  #   king = data.select do |row|
+  #     next unless row.contains?
+
+  #     row.select do |square|
+  #       square && square.color == piece.color && square.class == King
+  #     end
+  #   end
+  #   possible_check?(data, king)
+  # end
+
+  # def possible_check?(data, king)
+  #   data.any? do |row|
+  #     row.any? do |square|
+  #       next unless square && square.color != king.color
+
+  #       square.captures.include?(king.location)
+  #     end
+  #   end
+  # end
 
   # Tested
   def reset_board_values
@@ -105,15 +128,21 @@ class Board
     initial_pawn_row(:black, 1)
     initial_pawn_row(:white, 6)
     initial_row(:white, 7)
+    @white_king = @data[7][4]
+    @black_king = @data[0][4]
     update_all_moves_captures
   end
 
+  # This needs to happen at the beginning of the game...
+  # MOVES AND CAPTURES (SELF) ???
   def update_all_moves_captures
+    # TESTS ARE FAILING FROM THIS METHOD!!!
     @data.each do |row|
       row.each do |square|
         next unless square
 
-        square.current_moves(@data)
+        # binding.pry
+        square.current_moves(self)
         square.current_captures(@data, @previous_piece)
       end
     end

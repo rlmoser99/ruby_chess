@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../../lib/pieces/queen'
+require_relative '../../lib/pieces/king'
 require_relative '../../lib/pieces/piece'
 require_relative '../../lib/board'
 
@@ -12,7 +13,7 @@ RSpec.describe Queen do
   end
 
   describe '#current_moves' do
-    let(:piece) { instance_double(Piece) }
+    let(:piece) { instance_double(Piece, color: :black) }
 
     context 'queen is surrounded by pieces' do
       subject(:black_queen) { described_class.new(board, { color: :black, location: [0, 3] }) }
@@ -29,17 +30,23 @@ RSpec.describe Queen do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has no moves' do
-        results = black_queen.current_moves(data)
-        expect(results).to be_empty
+        black_queen.current_moves(board)
+        moves = black_queen.moves
+        expect(moves).to be_empty
       end
     end
 
     context 'queen can only move up rank' do
       subject(:black_queen) { described_class.new(board, { color: :black, location: [0, 3] }) }
+      let(:black_king) { instance_double(King, color: :black) }
       let(:data) do
         [
-          [nil, nil, piece, black_queen, piece, nil, nil, nil],
+          [nil, nil, piece, black_queen, black_king, nil, nil, nil],
           [nil, nil, piece, nil, piece, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -50,9 +57,14 @@ RSpec.describe Queen do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has seven moves' do
-        results = black_queen.current_moves(data)
-        expect(results).to contain_exactly([1, 3], [2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3])
+        black_queen.current_moves(board)
+        moves = black_queen.moves
+        expect(moves).to contain_exactly([1, 3], [2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3])
       end
     end
 
@@ -71,9 +83,14 @@ RSpec.describe Queen do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has seven moves' do
-        results = black_queen.current_moves(data)
-        expect(results).to contain_exactly([1, 2], [1, 4], [2, 1], [2, 5], [3, 0], [3, 6], [4, 7])
+        black_queen.current_moves(board)
+        moves = black_queen.moves
+        expect(moves).to contain_exactly([1, 2], [1, 4], [2, 1], [2, 5], [3, 0], [3, 6], [4, 7])
       end
     end
 
@@ -92,11 +109,44 @@ RSpec.describe Queen do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has 25 moves' do
-        results = black_queen.current_moves(data)
-        expect(results).to contain_exactly([3, 0], [3, 1], [3, 2], [3, 4], [3, 5], [3, 6], [1, 3], [2, 3], [4, 3], [5, 3], [6, 3], [7, 3], [2, 2], [2, 4], [1, 1], [1, 5], [0, 0], [0, 6], [4, 2], [4, 4], [5, 1], [5, 5], [6, 0], [6, 6], [7, 7])
+        black_queen.current_moves(board)
+        moves = black_queen.moves
+        expect(moves).to contain_exactly([3, 0], [3, 1], [3, 2], [3, 4], [3, 5], [3, 6], [1, 3], [2, 3], [4, 3], [5, 3], [6, 3], [7, 3], [2, 2], [2, 4], [1, 1], [1, 5], [0, 0], [0, 6], [4, 2], [4, 4], [5, 1], [5, 5], [6, 0], [6, 6], [7, 7])
       end
     end
+
+    # context 'queen can put king in check' do
+    #   subject(:black_queen) { described_class.new(board, { color: :black, location: [2, 4] }) }
+    #   let(:black_king) { instance_double(King) }
+    #   let(:white_queen) { instance_double(Queen) }
+    #   let(:data) do
+    #     [
+    #       [nil, nil, nil, nil, black_king, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil],
+    #       [nil, nil, nil, nil, black_queen, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil],
+    #       [nil, nil, nil, nil, white_queen, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil]
+    #     ]
+    #   end
+
+    #   before do
+    #     allow(board).to receive(:data).and_return(data)
+    #   end
+
+    #   it 'removes position that would put king in check' do
+    #     black_queen.current_moves(board)
+    #     moves = black_queen.moves
+    #     expect(moves).to contain_exactly([1, 4], [3, 4], [4, 4], [5, 4])
+    #   end
+    # end
   end
 
   describe '#current_captures' do

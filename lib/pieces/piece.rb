@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../board'
+
 # logic for each chess piece
 class Piece
   attr_reader :location, :color, :symbol, :moves, :captures
@@ -21,15 +23,27 @@ class Piece
   end
 
   def current_moves(board)
-    @moves = find_valid_moves(board).compact.flatten(1)
+    possibilities = find_valid_moves(board.data).compact.flatten(1)
+    @moves = possibilities
+    # @moves = king_check_possibilities(board, possibilities)
   end
 
-  def current_captures(board, _previous_piece)
-    @captures = find_valid_captures(board).compact
+  # DATA WILL BE UPDATED TO SELF!!!
+  # Update other pieces moves & captures to be data instead of board
+  def current_captures(data, _previous_piece)
+    @captures = find_valid_captures(data).compact
+  end
+
+  # Checks all board move possibilities if a move would put king in check
+  def king_check_possibilities(_board, moves)
+    return moves unless moves.size > 1
+
+    # check = MoveValidator.new(self, board, moves)
+    # check.run_possibilities
   end
 
   def update(board)
-    current_moves(board.data)
+    current_moves(board)
     current_captures(board.data, board.previous_piece)
   end
 

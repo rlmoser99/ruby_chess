@@ -25,9 +25,14 @@ RSpec.describe Bishop do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has two moves' do
-        results = black_bishop.current_moves(data)
-        expect(results).to contain_exactly([1, 1], [2, 0])
+        black_bishop.current_moves(board)
+        moves = black_bishop.moves
+        expect(moves).to contain_exactly([1, 1], [2, 0])
       end
     end
 
@@ -46,9 +51,14 @@ RSpec.describe Bishop do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has two moves' do
-        results = black_bishop.current_moves(data)
-        expect(results).to contain_exactly([1, 6], [2, 7])
+        black_bishop.current_moves(board)
+        moves = black_bishop.moves
+        expect(moves).to contain_exactly([1, 6], [2, 7])
       end
     end
 
@@ -67,9 +77,14 @@ RSpec.describe Bishop do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has four moves' do
-        results = black_bishop.current_moves(data)
-        expect(results).to contain_exactly([4, 4], [3, 5], [2, 6], [1, 7])
+        black_bishop.current_moves(board)
+        moves = black_bishop.moves
+        expect(moves).to contain_exactly([4, 4], [3, 5], [2, 6], [1, 7])
       end
     end
 
@@ -88,9 +103,14 @@ RSpec.describe Bishop do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has four moves' do
-        results = black_bishop.current_moves(data)
-        expect(results).to contain_exactly([4, 2], [3, 1], [2, 0])
+        black_bishop.current_moves(board)
+        moves = black_bishop.moves
+        expect(moves).to contain_exactly([4, 2], [3, 1], [2, 0])
       end
     end
 
@@ -109,9 +129,14 @@ RSpec.describe Bishop do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has two moves' do
-        results = white_bishop.current_moves(data)
-        expect(results).to contain_exactly([3, 1], [5, 1])
+        white_bishop.current_moves(board)
+        moves = white_bishop.moves
+        expect(moves).to contain_exactly([3, 1], [5, 1])
       end
     end
 
@@ -130,9 +155,14 @@ RSpec.describe Bishop do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has no moves' do
-        results = white_bishop.current_moves(data)
-        expect(results).to be_empty
+        white_bishop.current_moves(board)
+        moves = white_bishop.moves
+        expect(moves).to be_empty
       end
     end
 
@@ -151,9 +181,14 @@ RSpec.describe Bishop do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has thirteen moves' do
-        results = white_bishop.current_moves(data)
-        expect(results).to contain_exactly([0, 0], [0, 6], [1, 1], [1, 5], [2, 2], [2, 4], [4, 2], [4, 4], [5, 1], [5, 5], [6, 0], [6, 6], [7, 7])
+        white_bishop.current_moves(board)
+        moves = white_bishop.moves
+        expect(moves).to contain_exactly([0, 0], [0, 6], [1, 1], [1, 5], [2, 2], [2, 4], [4, 2], [4, 4], [5, 1], [5, 5], [6, 0], [6, 6], [7, 7])
       end
     end
   end
