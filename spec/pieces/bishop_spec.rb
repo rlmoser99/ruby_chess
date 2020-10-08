@@ -16,9 +16,10 @@ RSpec.describe Bishop do
 
     context 'when there are 2 spaces up rank/down file' do
       subject(:black_bishop) { described_class.new(board, { color: :black, location: [0, 2] }) }
+      let(:black_king) { instance_double(Piece, color: :black, location: [0, 3]) }
       let(:data) do
         [
-          [nil, nil, black_bishop, nil, nil, nil, nil, nil],
+          [nil, nil, black_bishop, black_king, nil, nil, nil, nil],
           [nil, nil, nil, piece, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil]
@@ -27,6 +28,8 @@ RSpec.describe Bishop do
 
       before do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
+        allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has two moves' do
@@ -38,9 +41,10 @@ RSpec.describe Bishop do
 
     context 'when there are 2 spaces up rank/up file' do
       subject(:black_bishop) { described_class.new(board, { color: :black, location: [0, 5] }) }
+      let(:black_king) { instance_double(Piece, color: :black, location: [0, 0]) }
       let(:data) do
         [
-          [nil, nil, nil, nil, nil, black_bishop, nil, nil],
+          [black_king, nil, nil, nil, nil, black_bishop, nil, nil],
           [nil, nil, nil, nil, piece, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -53,6 +57,8 @@ RSpec.describe Bishop do
 
       before do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
+        allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has two moves' do
@@ -64,9 +70,10 @@ RSpec.describe Bishop do
 
     context 'when there are 4 spaces down rank/up file' do
       subject(:black_bishop) { described_class.new(board, { color: :black, location: [5, 3] }) }
+      let(:black_king) { instance_double(Piece, color: :black, location: [0, 0]) }
       let(:data) do
         [
-          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [black_king, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -79,6 +86,8 @@ RSpec.describe Bishop do
 
       before do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
+        allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has four moves' do
@@ -90,9 +99,10 @@ RSpec.describe Bishop do
 
     context 'when there are 3 spaces down rank/down file' do
       subject(:black_bishop) { described_class.new(board, { color: :black, location: [5, 3] }) }
+      let(:black_king) { instance_double(Piece, color: :black, location: [0, 0]) }
       let(:data) do
         [
-          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [black_king, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -105,6 +115,8 @@ RSpec.describe Bishop do
 
       before do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
+        allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has four moves' do
@@ -116,6 +128,7 @@ RSpec.describe Bishop do
 
     context 'when there are 2 spaces in up file' do
       subject(:white_bishop) { described_class.new(board, { color: :white, location: [4, 0] }) }
+      let(:white_king) { instance_double(Piece, color: :white, location: [7, 4]) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -125,12 +138,14 @@ RSpec.describe Bishop do
           [white_bishop, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, piece, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil]
+          [nil, nil, nil, nil, white_king, nil, nil, nil]
         ]
       end
 
       before do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:white_king).and_return(white_king)
+        allow(piece).to receive(:color).and_return(:white)
       end
 
       it 'has two moves' do
@@ -168,6 +183,7 @@ RSpec.describe Bishop do
 
     context 'when there are board is completely empty' do
       subject(:white_bishop) { described_class.new(board, { color: :white, location: [3, 3] }) }
+      let(:white_king) { instance_double(Piece, color: :white, location: [7, 4]) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -177,12 +193,14 @@ RSpec.describe Bishop do
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil]
+          [nil, nil, nil, nil, white_king, nil, nil, nil]
         ]
       end
 
       before do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:white_king).and_return(white_king)
+        allow(piece).to receive(:color).and_return(:white)
       end
 
       it 'has thirteen moves' do

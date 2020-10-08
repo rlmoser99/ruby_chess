@@ -43,7 +43,7 @@ RSpec.describe Queen do
 
     context 'queen can only move up rank' do
       subject(:black_queen) { described_class.new(board, { color: :black, location: [0, 3] }) }
-      let(:black_king) { instance_double(King, color: :black) }
+      let(:black_king) { instance_double(King, color: :black, location: [0, 4]) }
       let(:data) do
         [
           [nil, nil, piece, black_queen, black_king, nil, nil, nil],
@@ -59,6 +59,7 @@ RSpec.describe Queen do
 
       before do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
       end
 
       it 'has seven moves' do
@@ -70,9 +71,10 @@ RSpec.describe Queen do
 
     context 'queen can only move diagonally' do
       subject(:black_queen) { described_class.new(board, { color: :black, location: [0, 3] }) }
+      let(:black_king) { instance_double(King, color: :black, location: [0, 4]) }
       let(:data) do
         [
-          [nil, nil, piece, black_queen, piece, nil, nil, nil],
+          [nil, nil, piece, black_queen, black_king, nil, nil, nil],
           [nil, nil, nil, piece, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -85,6 +87,7 @@ RSpec.describe Queen do
 
       before do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
       end
 
       it 'has seven moves' do
@@ -96,9 +99,10 @@ RSpec.describe Queen do
 
     context 'queen can move any direction' do
       subject(:black_queen) { described_class.new(board, { color: :black, location: [3, 3] }) }
+      let(:black_king) { instance_double(King, color: :black, location: [0, 3]) }
       let(:data) do
         [
-          [nil, nil, nil, piece, nil, nil, nil, nil],
+          [nil, nil, nil, black_king, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, black_queen, nil, nil, nil, piece],
@@ -111,6 +115,7 @@ RSpec.describe Queen do
 
       before do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
       end
 
       it 'has 25 moves' do
@@ -119,34 +124,6 @@ RSpec.describe Queen do
         expect(moves).to contain_exactly([3, 0], [3, 1], [3, 2], [3, 4], [3, 5], [3, 6], [1, 3], [2, 3], [4, 3], [5, 3], [6, 3], [7, 3], [2, 2], [2, 4], [1, 1], [1, 5], [0, 0], [0, 6], [4, 2], [4, 4], [5, 1], [5, 5], [6, 0], [6, 6], [7, 7])
       end
     end
-
-    # context 'queen can put king in check' do
-    #   subject(:black_queen) { described_class.new(board, { color: :black, location: [2, 4] }) }
-    #   let(:black_king) { instance_double(King) }
-    #   let(:white_queen) { instance_double(Queen) }
-    #   let(:data) do
-    #     [
-    #       [nil, nil, nil, nil, black_king, nil, nil, nil],
-    #       [nil, nil, nil, nil, nil, nil, nil, nil],
-    #       [nil, nil, nil, nil, black_queen, nil, nil, nil],
-    #       [nil, nil, nil, nil, nil, nil, nil, nil],
-    #       [nil, nil, nil, nil, nil, nil, nil, nil],
-    #       [nil, nil, nil, nil, nil, nil, nil, nil],
-    #       [nil, nil, nil, nil, white_queen, nil, nil, nil],
-    #       [nil, nil, nil, nil, nil, nil, nil, nil]
-    #     ]
-    #   end
-
-    #   before do
-    #     allow(board).to receive(:data).and_return(data)
-    #   end
-
-    #   it 'removes position that would put king in check' do
-    #     black_queen.current_moves(board)
-    #     moves = black_queen.moves
-    #     expect(moves).to contain_exactly([1, 4], [3, 4], [4, 4], [5, 4])
-    #   end
-    # end
   end
 
   describe '#current_captures' do

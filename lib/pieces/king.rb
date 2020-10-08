@@ -13,7 +13,8 @@ class King < Piece
   end
 
   def current_moves(board)
-    @moves = find_valid_moves(board).compact
+    possibilities = find_valid_moves(board.data).compact
+    @moves = remove_king_check_moves(board, possibilities)
   end
 
   def current_captures(board, _previous_piece)

@@ -45,3 +45,6 @@ game.play
 # need to change king, knight, pawn
 
 # BUG: white pawn c4, black pawn in d5 -> triggered en passsant incorrectly!
+
+# refactor current_moves for Pawn, Knight, others? -> ABC complexity!!
+# Remove unneccessary tests from the different pieces.

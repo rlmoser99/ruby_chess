@@ -15,24 +15,40 @@ RSpec.describe Pawn do
     let(:piece) { instance_double(Piece) }
 
     context 'when pawn is black' do
+      let(:black_king) { instance_double(Piece, color: :black, location: [0, 0]) }
+
       context 'when pawn has not moved' do
         subject(:black_pawn) { described_class.new(board, { color: :black, location: [1, 0] }) }
 
         context 'when bonus square is empty' do
-          let(:data) { [[nil, nil], [black_pawn, nil], [nil, nil], [nil, nil]] }
+          let(:data) { [[black_king, nil], [black_pawn, nil], [nil, nil], [nil, nil]] }
+
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:black_king).and_return(black_king)
+            # allow(piece).to receive(:color).and_return(:black)
+          end
 
           it 'has two moves' do
-            results = black_pawn.current_moves(data)
-            expect(results).to contain_exactly([2, 0], [3, 0])
+            black_pawn.current_moves(board)
+            moves = black_pawn.moves
+            expect(moves).to contain_exactly([2, 0], [3, 0])
           end
         end
 
         context 'when bonus square is occupied' do
-          let(:board_occupied) { [[nil, nil], [black_pawn, nil], [nil, nil], [piece, nil]] }
+          let(:data) { [[black_king, nil], [black_pawn, nil], [nil, nil], [piece, nil]] }
+
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:black_king).and_return(black_king)
+            allow(piece).to receive(:color).and_return(:black)
+          end
 
           it 'has one move' do
-            results = black_pawn.current_moves(board_occupied)
-            expect(results).to contain_exactly([2, 0])
+            black_pawn.current_moves(board)
+            moves = black_pawn.moves
+            expect(moves).to contain_exactly([2, 0])
           end
         end
       end
@@ -45,44 +61,74 @@ RSpec.describe Pawn do
         end
 
         context 'when next square is empty' do
-          let(:data) { [[nil, nil], [black_pawn, nil], [nil, nil], [nil, nil]] }
+          let(:data) { [[black_king, nil], [black_pawn, nil], [nil, nil], [nil, nil]] }
+
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:black_king).and_return(black_king)
+            allow(piece).to receive(:color).and_return(:black)
+          end
 
           it 'has one move' do
-            results = black_pawn.current_moves(data)
-            expect(results).to contain_exactly([3, 0])
+            black_pawn.current_moves(board)
+            moves = black_pawn.moves
+            expect(moves).to contain_exactly([3, 0])
           end
         end
 
         context 'when next square is occupied' do
-          let(:board_occupied) { [[nil, nil], [black_pawn, nil], [nil, nil], [piece, nil]] }
+          let(:data) { [[black_king, nil], [black_pawn, nil], [nil, nil], [piece, nil]] }
+
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:black_king).and_return(black_king)
+            allow(piece).to receive(:color).and_return(:black)
+          end
 
           it 'has no moves' do
-            results = black_pawn.current_moves(board_occupied)
-            expect(results).to be_empty
+            black_pawn.current_moves(board)
+            moves = black_pawn.moves
+            expect(moves).to be_empty
           end
         end
       end
     end
 
     context 'when pawn is white' do
+      let(:white_king) { instance_double(Piece, color: :white, location: [3, 1]) }
+
       context 'when pawn has not moved' do
         subject(:white_pawn) { described_class.new(board, { color: :white, location: [2, 0] }) }
 
         context 'when bonus square is empty' do
-          let(:data) { [[nil, nil], [nil, nil], [white_pawn, nil], [nil, nil]] }
+          let(:data) { [[nil, nil], [nil, nil], [white_pawn, nil], [nil, white_king]] }
+
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:white_king).and_return(white_king)
+            # allow(piece).to receive(:color).and_return(:white)
+          end
 
           it 'has two moves' do
-            results = white_pawn.current_moves(data)
-            expect(results).to contain_exactly([0, 0], [1, 0])
+            white_pawn.current_moves(board)
+            moves = white_pawn.moves
+            expect(moves).to contain_exactly([0, 0], [1, 0])
           end
         end
 
         context 'when bonus square is occupied' do
-          let(:board_bonus) { [[nil, nil], [white_pawn, nil], [nil, nil], [piece, nil]] }
+          let(:data) { [[piece, nil], [nil, nil], [white_pawn, nil], [nil, white_king]] }
+
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:white_king).and_return(white_king)
+            allow(piece).to receive(:color).and_return(:white)
+          end
 
           it 'has one move' do
-            results = white_pawn.current_moves(board_bonus)
-            expect(results).to contain_exactly([0, 0])
+            white_pawn.current_moves(board)
+            moves = white_pawn.moves
+            expect(moves).to contain_exactly([1, 0])
           end
         end
       end
@@ -95,20 +141,34 @@ RSpec.describe Pawn do
         end
 
         context 'when next square is empty' do
-          let(:data) { [[nil, nil], [nil, nil], [white_pawn, nil], [nil, nil]] }
+          let(:data) { [[nil, nil], [nil, nil], [white_pawn, nil], [nil, white_king]] }
+
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:white_king).and_return(white_king)
+            # allow(piece).to receive(:color).and_return(:white)
+          end
 
           it 'has one move' do
-            results = white_pawn.current_moves(data)
-            expect(results).to contain_exactly([0, 0])
+            white_pawn.current_moves(board)
+            moves = white_pawn.moves
+            expect(moves).to contain_exactly([0, 0])
           end
         end
 
         context 'when next square is occupied' do
-          let(:board_occupied) { [[piece, nil], [nil, nil], [white_pawn, nil], [nil, nil]] }
+          let(:data) { [[piece, nil], [nil, nil], [white_pawn, nil], [nil, white_king]] }
+
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:white_king).and_return(white_king)
+            allow(piece).to receive(:color).and_return(:white)
+          end
 
           it 'has no moves' do
-            results = white_pawn.current_moves(board_occupied)
-            expect(results).to be_empty
+            white_pawn.current_moves(board)
+            moves = white_pawn.moves
+            expect(moves).to be_empty
           end
         end
       end

@@ -15,15 +15,18 @@ RSpec.describe Rook do
   describe '#current_moves' do
     context 'when 2 increasing ranks are empty before a piece' do
       subject(:black_rook) { described_class.new(board, { color: :black, location: [0, 0] }) }
+      let(:black_king) { instance_double(Piece, color: :black, location: [0, 7]) }
       let(:data) do
         [
-          [black_rook, nil, nil, piece, nil, nil, nil, nil],
+          [black_rook, nil, nil, piece, nil, nil, nil, black_king],
           [piece, nil, nil, nil, nil, nil, nil, nil]
         ]
       end
 
       before do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
+        allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has two moves' do
@@ -35,15 +38,18 @@ RSpec.describe Rook do
 
     context 'when 2 increasing ranks are empty before the end of the data' do
       subject(:black_rook) { described_class.new(board, { color: :black, location: [0, 5] }) }
+      let(:black_king) { instance_double(Piece, color: :black, location: [0, 0]) }
       let(:data) do
         [
-          [nil, nil, nil, nil, piece, black_rook, nil, nil],
+          [black_king, nil, nil, nil, piece, black_rook, nil, nil],
           [nil, nil, nil, nil, nil, piece, nil, nil]
         ]
       end
 
       before do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
+        allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has two moves' do
@@ -55,15 +61,18 @@ RSpec.describe Rook do
 
     context 'when 2 increasing ranks to piece & 2 decreasing ranks to end are empty' do
       subject(:black_rook) { described_class.new(board, { color: :black, location: [0, 2] }) }
+      let(:black_king) { instance_double(Piece, color: :black, location: [0, 7]) }
       let(:data) do
         [
-          [nil, nil, black_rook, nil, nil, piece, nil, nil],
+          [nil, nil, black_rook, nil, nil, piece, nil, black_king],
           [nil, nil, piece, nil, nil, nil, nil, nil]
         ]
       end
 
       before do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
+        allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has four moves' do
@@ -75,9 +84,10 @@ RSpec.describe Rook do
 
     context 'when 2 increasing files are empty before a piece' do
       subject(:black_rook) { described_class.new(board, { color: :black, location: [0, 2] }) }
+      let(:black_king) { instance_double(Piece, color: :black, location: [0, 7]) }
       let(:data) do
         [
-          [nil, piece, black_rook, piece, nil, nil, nil, nil],
+          [nil, piece, black_rook, piece, nil, nil, nil, black_king],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, piece, nil, nil, nil, nil, nil]
@@ -86,6 +96,8 @@ RSpec.describe Rook do
 
       before do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
+        allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has two moves' do
@@ -97,9 +109,10 @@ RSpec.describe Rook do
 
     context 'when 2 decreasing ranks to end & 2 increasing file to end are empty' do
       subject(:black_rook) { described_class.new(board, { color: :black, location: [5, 2] }) }
+      let(:black_king) { instance_double(Piece, color: :black, location: [0, 7]) }
       let(:data) do
         [
-          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, black_king],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -112,6 +125,8 @@ RSpec.describe Rook do
 
       before do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
+        allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has four moves' do
@@ -123,6 +138,7 @@ RSpec.describe Rook do
 
     context 'when 3 increasing ranks to end & 3 decreasing files to end are empty' do
       subject(:white_rook) { described_class.new(board, { color: :white, location: [3, 4] }) }
+      let(:white_king) { instance_double(Piece, color: :white, location: [7, 4]) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -132,12 +148,14 @@ RSpec.describe Rook do
           [nil, nil, nil, nil, piece, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil]
+          [nil, nil, nil, nil, white_king, nil, nil, nil]
         ]
       end
 
       before do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:white_king).and_return(white_king)
+        allow(piece).to receive(:color).and_return(:white)
       end
 
       it 'has six moves' do

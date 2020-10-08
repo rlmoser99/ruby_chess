@@ -29,9 +29,16 @@ RSpec.describe King do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
+        allow(piece).to receive(:color).and_return(:black)
+      end
+
       it 'has no moves' do
-        results = black_king.current_moves(data)
-        expect(results).to be_empty
+        black_king.current_moves(board)
+        moves = black_king.moves
+        expect(moves).to be_empty
       end
     end
 
@@ -50,9 +57,16 @@ RSpec.describe King do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
+        allow(piece).to receive(:color).and_return(:black)
+      end
+
       it 'has two moves' do
-        results = black_king.current_moves(data)
-        expect(results).to contain_exactly([0, 3], [1, 5])
+        black_king.current_moves(board)
+        moves = black_king.moves
+        expect(moves).to contain_exactly([0, 3], [1, 5])
       end
     end
 
@@ -71,9 +85,16 @@ RSpec.describe King do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
+        allow(piece).to receive(:color).and_return(:black)
+      end
+
       it 'has five moves' do
-        results = black_king.current_moves(data)
-        expect(results).to contain_exactly([2, 7], [2, 6], [3, 6], [4, 6], [4, 7])
+        black_king.current_moves(board)
+        moves = black_king.moves
+        expect(moves).to contain_exactly([2, 7], [2, 6], [3, 6], [4, 6], [4, 7])
       end
     end
   end

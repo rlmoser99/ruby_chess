@@ -16,9 +16,10 @@ RSpec.describe Knight do
 
     context 'during initial data setup' do
       subject(:black_knight) { described_class.new(board, { color: :black, location: [0, 1] }) }
+      let(:black_king) { instance_double(Piece, color: :black, location: [0, 4]) }
       let(:data) do
         [
-          [piece, black_knight, piece, piece, piece, piece, piece, piece],
+          [piece, black_knight, piece, piece, black_king, piece, piece, piece],
           [piece, piece, piece, piece, piece, piece, piece, piece],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -29,17 +30,25 @@ RSpec.describe Knight do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
+        allow(piece).to receive(:color).and_return(:black)
+      end
+
       it 'has two moves' do
-        results = black_knight.current_moves(data)
-        expect(results).to contain_exactly([2, 0], [2, 2])
+        black_knight.current_moves(board)
+        moves = black_knight.moves
+        expect(moves).to contain_exactly([2, 0], [2, 2])
       end
     end
 
     context 'when data is empty' do
       subject(:black_knight) { described_class.new(board, { color: :black, location: [3, 3] }) }
+      let(:black_king) { instance_double(Piece, color: :black, location: [0, 4]) }
       let(:data) do
         [
-          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, black_king, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, black_knight, nil, nil, nil, nil],
@@ -50,14 +59,22 @@ RSpec.describe Knight do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
+        allow(piece).to receive(:color).and_return(:black)
+      end
+
       it 'has eight moves' do
-        results = black_knight.current_moves(data)
-        expect(results).to contain_exactly([1, 2], [1, 4], [2, 1], [2, 5], [4, 1], [4, 5], [5, 2], [5, 4])
+        black_knight.current_moves(board)
+        moves = black_knight.moves
+        expect(moves).to contain_exactly([1, 2], [1, 4], [2, 1], [2, 5], [4, 1], [4, 5], [5, 2], [5, 4])
       end
     end
 
     context 'during initial data setup' do
-      subject(:white_knight) { described_class.new(board, { color: :whilte, location: [7, 6] }) }
+      subject(:white_knight) { described_class.new(board, { color: :white, location: [7, 6] }) }
+      let(:white_king) { instance_double(Piece, color: :white, location: [7, 4]) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -67,21 +84,29 @@ RSpec.describe Knight do
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [piece, piece, piece, piece, piece, piece, piece, piece],
-          [piece, piece, piece, piece, piece, piece, white_knight, piece]
+          [piece, piece, piece, piece, white_king, piece, white_knight, piece]
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:white_king).and_return(white_king)
+        allow(piece).to receive(:color).and_return(:white)
+      end
+
       it 'has two moves' do
-        results = white_knight.current_moves(data)
-        expect(results).to contain_exactly([5, 5], [5, 7])
+        white_knight.current_moves(board)
+        moves = white_knight.moves
+        expect(moves).to contain_exactly([5, 5], [5, 7])
       end
     end
 
     context 'when all moves are blocked' do
       subject(:black_knight) { described_class.new(board, { color: :black, location: [3, 3] }) }
+      let(:black_king) { instance_double(Piece, color: :black, location: [0, 4]) }
       let(:data) do
         [
-          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, black_king, nil, nil, nil],
           [nil, nil, piece, nil, piece, nil, nil, nil],
           [nil, piece, nil, nil, nil, piece, nil, nil],
           [nil, nil, nil, black_knight, nil, nil, nil, nil],
@@ -92,9 +117,16 @@ RSpec.describe Knight do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:black_king).and_return(black_king)
+        allow(piece).to receive(:color).and_return(:black)
+      end
+
       it 'has no moves' do
-        results = black_knight.current_moves(data)
-        expect(results).to be_empty
+        black_knight.current_moves(board)
+        moves = black_knight.moves
+        expect(moves).to be_empty
       end
     end
   end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../board'
+require_relative '../move_validator'
 
 # logic for each chess piece
 class Piece
@@ -24,8 +25,7 @@ class Piece
 
   def current_moves(board)
     possibilities = find_valid_moves(board.data).compact.flatten(1)
-    @moves = possibilities
-    # @moves = king_check_possibilities(board, possibilities)
+    @moves = remove_king_check_moves(board, possibilities)
   end
 
   # DATA WILL BE UPDATED TO SELF!!!
@@ -35,11 +35,11 @@ class Piece
   end
 
   # Checks all board move possibilities if a move would put king in check
-  def king_check_possibilities(_board, moves)
-    return moves unless moves.size > 1
+  def remove_king_check_moves(board, moves)
+    return moves unless moves.size.positive?
 
-    # check = MoveValidator.new(self, board, moves)
-    # check.run_possibilities
+    check = MoveValidator.new(self, board, moves)
+    check.verify_possible_moves
   end
 
   def update(board)
