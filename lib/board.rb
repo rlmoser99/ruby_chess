@@ -143,7 +143,8 @@ class Board
 
         # binding.pry
         square.current_moves(self)
-        square.current_captures(@data, @previous_piece)
+        # square.current_captures(@data, @previous_piece)
+        square.current_captures(self)
       end
     end
   end

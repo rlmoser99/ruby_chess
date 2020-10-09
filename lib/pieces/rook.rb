@@ -4,7 +4,7 @@ require_relative 'piece'
 
 # logic for each chess piece
 class Rook < Piece
-  attr_reader :color, :symbol
+  attr_reader :color, :symbol, :moves, :captures
 
   def initialize(_board, args)
     @color = args[:color]

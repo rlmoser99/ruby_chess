@@ -4,7 +4,7 @@ require_relative 'piece'
 
 # logic for each chess piece
 class Pawn < Piece
-  attr_reader :color, :symbol, :location, :en_passant
+  attr_reader :color, :symbol, :location, :en_passant, :moves, :captures
 
   def initialize(_board, args)
     @color = args[:color]
@@ -12,6 +12,8 @@ class Pawn < Piece
     @symbol = " \u265F "
     @moved = false
     @en_passant = false
+    @moves = []
+    @captures = []
   end
 
   def update_location(row, column)
@@ -34,15 +36,20 @@ class Pawn < Piece
 
   # Tested
   # Can refactor!
-  def current_captures(board, previous_piece)
+  def current_captures(board)
+    previous_location = board.previous_piece.location if board.previous_piece
     captures = []
     rank = @location[0] + rank_direction
     file = @location[1]
     lower_file = file - 1
     higher_file = file + 1
-    captures << [rank, lower_file] if opposing_piece?(rank, lower_file, board)
-    captures << [rank, higher_file] if opposing_piece?(rank, higher_file, board)
-    captures << previous_piece.location if valid_en_passant?(previous_piece)
+    if opposing_piece?(rank, lower_file, board.data)
+      captures << [rank, lower_file]
+    end
+    if opposing_piece?(rank, higher_file, board.data)
+      captures << [rank, higher_file]
+    end
+    captures << previous_location if valid_en_passant?(board.previous_piece)
     @captures = captures
   end
 

@@ -197,9 +197,15 @@ RSpec.describe Pawn do
             ]
           end
 
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:previous_piece)
+          end
+
           it 'has no captures' do
-            results = black_pawn.current_captures(data, white_piece)
-            expect(results).to be_empty
+            black_pawn.current_captures(board)
+            captures = black_pawn.captures
+            expect(captures).to be_empty
           end
         end
 
@@ -217,9 +223,15 @@ RSpec.describe Pawn do
             ]
           end
 
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:previous_piece)
+          end
+
           it 'has no captures' do
-            results = black_pawn.current_captures(data, white_piece)
-            expect(results).to be_empty
+            black_pawn.current_captures(board)
+            captures = black_pawn.captures
+            expect(captures).to be_empty
           end
         end
 
@@ -237,9 +249,15 @@ RSpec.describe Pawn do
             ]
           end
 
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:previous_piece)
+          end
+
           it 'has one capture' do
-            results = black_pawn.current_captures(data, white_piece)
-            expect(results).to contain_exactly([2, 1])
+            black_pawn.current_captures(board)
+            captures = black_pawn.captures
+            expect(captures).to contain_exactly([2, 1])
           end
         end
       end
@@ -260,9 +278,15 @@ RSpec.describe Pawn do
             ]
           end
 
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:previous_piece)
+          end
+
           it 'has one capture' do
-            results = black_pawn.current_captures(data, white_piece)
-            expect(results).to contain_exactly([2, 0])
+            black_pawn.current_captures(board)
+            captures = black_pawn.captures
+            expect(captures).to contain_exactly([2, 0])
           end
         end
       end
@@ -283,9 +307,15 @@ RSpec.describe Pawn do
           ]
         end
 
+        before do
+          allow(board).to receive(:data).and_return(data)
+          allow(board).to receive(:previous_piece).and_return(white_pawn)
+        end
+
         it 'has one capture' do
-          results = black_pawn.current_captures(data, white_pawn)
-          expect(results).to contain_exactly([4, 2])
+          black_pawn.current_captures(board)
+          captures = black_pawn.captures
+          expect(captures).to contain_exactly([4, 2])
         end
       end
 
@@ -305,9 +335,15 @@ RSpec.describe Pawn do
           ]
         end
 
+        before do
+          allow(board).to receive(:data).and_return(data)
+          allow(board).to receive(:previous_piece).and_return(white_pawn)
+        end
+
         it 'has one capture' do
-          results = black_pawn.current_captures(data, white_pawn)
-          expect(results).to contain_exactly([5, 0])
+          black_pawn.current_captures(board)
+          captures = black_pawn.captures
+          expect(captures).to contain_exactly([5, 0])
         end
       end
     end
@@ -330,9 +366,15 @@ RSpec.describe Pawn do
             ]
           end
 
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:previous_piece)
+          end
+
           it 'has no captures' do
-            results = white_pawn.current_captures(data, black_piece)
-            expect(results).to be_empty
+            white_pawn.current_captures(board)
+            captures = white_pawn.captures
+            expect(captures).to be_empty
           end
         end
 
@@ -350,9 +392,15 @@ RSpec.describe Pawn do
             ]
           end
 
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:previous_piece)
+          end
+
           it 'has no captures' do
-            results = white_pawn.current_captures(data, black_piece)
-            expect(results).to be_empty
+            white_pawn.current_captures(board)
+            captures = white_pawn.captures
+            expect(captures).to be_empty
           end
         end
 
@@ -370,9 +418,15 @@ RSpec.describe Pawn do
             ]
           end
 
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:previous_piece)
+          end
+
           it 'has one capture' do
-            results = white_pawn.current_captures(data, black_piece)
-            expect(results).to contain_exactly([5, 6])
+            white_pawn.current_captures(board)
+            captures = white_pawn.captures
+            expect(captures).to contain_exactly([5, 6])
           end
         end
       end
@@ -394,9 +448,15 @@ RSpec.describe Pawn do
             ]
           end
 
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:previous_piece)
+          end
+
           it 'has no captures' do
-            results = white_pawn.current_captures(data, black_piece)
-            expect(results).to be_empty
+            white_pawn.current_captures(board)
+            captures = white_pawn.captures
+            expect(captures).to be_empty
           end
         end
 
@@ -414,9 +474,15 @@ RSpec.describe Pawn do
             ]
           end
 
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:previous_piece)
+          end
+
           it 'has no captures' do
-            results = white_pawn.current_captures(data, black_piece)
-            expect(results).to be_empty
+            white_pawn.current_captures(board)
+            captures = white_pawn.captures
+            expect(captures).to be_empty
           end
         end
 
@@ -434,9 +500,15 @@ RSpec.describe Pawn do
             ]
           end
 
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:previous_piece)
+          end
+
           it 'has one capture' do
-            results = white_pawn.current_captures(data, black_piece)
-            expect(results).to contain_exactly([5, 5])
+            white_pawn.current_captures(board)
+            captures = white_pawn.captures
+            expect(captures).to contain_exactly([5, 5])
           end
         end
 
@@ -454,9 +526,15 @@ RSpec.describe Pawn do
             ]
           end
 
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:previous_piece)
+          end
+
           it 'has two captures' do
-            results = white_pawn.current_captures(data, black_piece)
-            expect(results).to contain_exactly([5, 5], [5, 3])
+            white_pawn.current_captures(board)
+            captures = white_pawn.captures
+            expect(captures).to contain_exactly([5, 5], [5, 3])
           end
         end
 
@@ -476,9 +554,15 @@ RSpec.describe Pawn do
             ]
           end
 
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:previous_piece).and_return(black_pawn)
+          end
+
           it 'has two captures' do
-            results = white_pawn.current_captures(data, black_pawn)
-            expect(results).to contain_exactly([3, 4], [2, 2])
+            white_pawn.current_captures(board)
+            captures = white_pawn.captures
+            expect(captures).to contain_exactly([3, 4], [2, 2])
           end
         end
 
@@ -498,9 +582,16 @@ RSpec.describe Pawn do
             ]
           end
 
+          before do
+            allow(board).to receive(:data).and_return(data)
+            allow(board).to receive(:previous_piece).and_return(black_piece)
+            allow(black_piece).to receive(:location).and_return([2, 2])
+          end
+
           it 'has one capture' do
-            results = white_pawn.current_captures(data, black_piece)
-            expect(results).to contain_exactly([2, 2])
+            white_pawn.current_captures(board)
+            captures = white_pawn.captures
+            expect(captures).to contain_exactly([2, 2])
           end
         end
       end

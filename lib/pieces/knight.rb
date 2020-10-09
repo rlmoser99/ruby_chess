@@ -4,12 +4,14 @@ require_relative 'piece'
 
 # logic for each chess piece
 class Knight < Piece
-  attr_reader :color, :symbol
+  attr_reader :color, :symbol, :moves, :captures
 
   def initialize(_board, args)
     @color = args[:color]
     @location = args[:location]
     @symbol = " \u265E "
+    @moves = []
+    @captures = []
   end
 
   # refactor!!!
@@ -27,7 +29,7 @@ class Knight < Piece
   end
 
   # refactor!!!
-  def current_captures(board, _previous_piece)
+  def current_captures(board)
     moves = move_possibilities
     result = []
     moves.each do |move|
@@ -35,7 +37,7 @@ class Knight < Piece
       file = @location[1] + move[1]
       next unless rank.between?(0, 7) && file.between?(0, 7)
 
-      result << [rank, file] if opposing_piece?(rank, file, board)
+      result << [rank, file] if opposing_piece?(rank, file, board.data)
     end
     @captures = result
   end
@@ -48,8 +50,8 @@ class Knight < Piece
     ]
   end
 
-  def opposing_piece?(rank, file, board)
-    piece = board[rank][file]
+  def opposing_piece?(rank, file, data)
+    piece = data[rank][file]
     piece && piece.color != color
   end
 end

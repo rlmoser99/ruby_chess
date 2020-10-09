@@ -3,7 +3,7 @@
 # contains logic for chess board
 class MoveValidator
   def initialize(piece, board, moves)
-    @current_piece = piece
+    @current_piece = piece.clone
     @possible_board = board.clone
     @possible_moves = moves
   end
@@ -33,7 +33,8 @@ class MoveValidator
       row.any? do |square|
         next unless square && square.color != @current_piece.color
 
-        square.captures.include?(location)
+        puts "square is #{square.location} and location is #{location}"
+        # square.captures.include?(location)
       end
     end
   end

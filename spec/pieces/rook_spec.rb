@@ -211,9 +211,14 @@ RSpec.describe Rook do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has one capture' do
-        results = black_rook.current_captures(data, white_piece)
-        expect(results).to contain_exactly([1, 5])
+        black_rook.current_captures(board)
+        captures = black_rook.captures
+        expect(captures).to contain_exactly([1, 5])
       end
     end
 
@@ -227,9 +232,14 @@ RSpec.describe Rook do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has one capture' do
-        results = black_rook.current_captures(data, white_piece)
-        expect(results).to contain_exactly([1, 0])
+        black_rook.current_captures(board)
+        captures = black_rook.captures
+        expect(captures).to contain_exactly([1, 0])
       end
     end
 
@@ -243,9 +253,14 @@ RSpec.describe Rook do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has no captures' do
-        results = black_rook.current_captures(data, white_piece)
-        expect(results).to be_empty
+        black_rook.current_captures(board)
+        captures = black_rook.captures
+        expect(captures).to be_empty
       end
     end
 
@@ -264,9 +279,14 @@ RSpec.describe Rook do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has 1 captures' do
-        results = white_rook.current_captures(data, black_piece)
-        expect(results).to contain_exactly([7, 7])
+        white_rook.current_captures(board)
+        captures = white_rook.captures
+        expect(captures).to contain_exactly([7, 7])
       end
     end
 
@@ -285,9 +305,14 @@ RSpec.describe Rook do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has 1 captures' do
-        results = white_rook.current_captures(data, black_piece)
-        expect(results).to contain_exactly([0, 2])
+        white_rook.current_captures(board)
+        captures = white_rook.captures
+        expect(captures).to contain_exactly([0, 2])
       end
     end
 
@@ -306,9 +331,14 @@ RSpec.describe Rook do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has 2 captures' do
-        results = white_rook.current_captures(data, black_piece)
-        expect(results).to contain_exactly([3, 1], [6, 3])
+        white_rook.current_captures(board)
+        captures = white_rook.captures
+        expect(captures).to contain_exactly([3, 1], [6, 3])
       end
     end
 
@@ -327,9 +357,14 @@ RSpec.describe Rook do
         ]
       end
 
+      before do
+        allow(board).to receive(:data).and_return(data)
+      end
+
       it 'has 1 captures' do
-        results = white_rook.current_captures(data, black_piece)
-        expect(results).to contain_exactly([1, 4])
+        white_rook.current_captures(board)
+        captures = white_rook.captures
+        expect(captures).to contain_exactly([1, 4])
       end
     end
   end
