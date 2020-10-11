@@ -6,10 +6,13 @@ require_relative 'piece'
 class Rook < Piece
   attr_reader :color, :symbol, :moves, :captures
 
-  def initialize(_board, args)
+  def initialize(board, args)
+    board.add_observer(self)
     @color = args[:color]
     @location = args[:location]
     @symbol = " \u265C "
+    @moves = []
+    @captures = []
   end
 
   private

@@ -41,7 +41,7 @@ class Game
     @board.to_s
     player_turn
     # Need to switch current player
-    # 12.times { player_turn }
+    # 16.times { player_turn }
   end
 
   # Script Method -> Test methods inside
@@ -60,7 +60,6 @@ class Game
     input = user_input('What piece would you like to move?')
     validate_input(input)
     coords = translate_coordinates(input)
-    # Look into creating an arry of pieces with moves/captures for below method.
     validate_piece_coordinates(coords)
     @board.update_active_piece(coords)
     validate_active_piece

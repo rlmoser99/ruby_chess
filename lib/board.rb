@@ -24,13 +24,20 @@ class Board
     @active_piece = data[coordinates[:row]][coordinates[:column]]
   end
 
-  # Tested
   def active_piece_moveable?
+    @active_piece.update(self)
     @valid_moves = @active_piece.moves
     @valid_captures = @active_piece.captures
-    # Remove any move that would put King in check!
     @valid_moves.size >= 1 || @valid_captures.size >= 1
   end
+
+  # Tested -> CHECK TESTING OF THIS METHOD
+  # def active_piece_moveable?
+  #   @valid_moves = @active_piece.moves
+  #   @valid_captures = @active_piece.captures
+  #   # Remove any move that would put King in check!
+  #   @valid_moves.size >= 1 || @valid_captures.size >= 1
+  # end
 
   # Tested
   def valid_piece_movement?(coords)
@@ -70,6 +77,7 @@ class Board
   # Tested
   def update_active_piece_location(coords)
     @active_piece.update_location(coords[:row], coords[:column])
+    @active_piece.current_captures(self)
   end
 
   # Tested
@@ -77,9 +85,7 @@ class Board
     @valid_captures.include?(@previous_piece&.location) && en_passant_pawn?
   end
 
-  # def remove_check_moves_captures; end
-
-  # Should this check if either king is in check?
+  # Should this check if either king is in check? IS THIS USED???
   # Tested
   def check?(king)
     @data.any? do |row|
@@ -90,27 +96,6 @@ class Board
       end
     end
   end
-
-  # def validate_moves?(data, piece)
-  #   king = data.select do |row|
-  #     next unless row.contains?
-
-  #     row.select do |square|
-  #       square && square.color == piece.color && square.class == King
-  #     end
-  #   end
-  #   possible_check?(data, king)
-  # end
-
-  # def possible_check?(data, king)
-  #   data.any? do |row|
-  #     row.any? do |square|
-  #       next unless square && square.color != king.color
-
-  #       square.captures.include?(king.location)
-  #     end
-  #   end
-  # end
 
   # Tested
   def reset_board_values
@@ -133,18 +118,12 @@ class Board
     update_all_moves_captures
   end
 
-  # This needs to happen at the beginning of the game...
-  # MOVES AND CAPTURES (SELF) ???
   def update_all_moves_captures
-    # TESTS ARE FAILING FROM THIS METHOD!!!
     @data.each do |row|
       row.each do |square|
         next unless square
 
-        # binding.pry
-        square.current_moves(self)
-        # square.current_captures(@data, @previous_piece)
-        square.current_captures(self)
+        square.update(self)
       end
     end
   end

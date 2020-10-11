@@ -28,24 +28,22 @@ class Piece
     @moves = remove_king_check_moves(board, possibilities)
   end
 
-  # DATA WILL BE UPDATED TO SELF!!!
-  # Update other pieces moves & captures to be data instead of board
-  # def current_captures(data, _previous_piece)
   def current_captures(board)
     @captures = find_valid_captures(board.data).compact
   end
 
-  # Checks all board move possibilities if a move would put king in check
+  # Checks a move if it would put the king in check
   def remove_king_check_moves(board, moves)
     return moves unless moves.size.positive?
 
-    check = MoveValidator.new(self, board, moves)
+    temp_board = Marshal.load(Marshal.dump(board))
+    check = MoveValidator.new(@location, temp_board, moves)
     check.verify_possible_moves
   end
 
   def update(board)
-    current_moves(board)
     current_captures(board)
+    current_moves(board)
   end
 
   private

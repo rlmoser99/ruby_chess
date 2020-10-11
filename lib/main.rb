@@ -18,6 +18,9 @@ require_relative 'pieces/pawn.rb'
 game = Game.new
 game.play
 
+# Maybe need to separate the piece testing current moves & current captures,
+# so that testing does not need to use king in check portion of method.
+
 # When does "checking" for check happen?
 # 1. Each piece needs to remove any moves that could put their King in check.
 # 2. At the beginning of a turn, if the King is in check, the move must un-check the King.
@@ -28,8 +31,7 @@ game.play
 
 # Remove each piece checking current_moves & current_captures at the beginning of each turn.
 
-# Visualizing valid moves & captures
-# If a move would put King in check, it needs to be removed!!!
+# Update visualizing valid moves & captures -> current_piece, not in Board
 
 # Game ->
 # Make a method inside #select_move_coordinates that has board check opponent pieces putting King into check.
@@ -46,5 +48,13 @@ game.play
 
 # BUG: white pawn c4, black pawn in d5 -> triggered en passsant incorrectly!
 
-# refactor current_moves for Pawn, Knight, others? -> ABC complexity!!
 # Remove unneccessary tests from the different pieces.
+
+# Look into creating 2 array of pieces with moves/captures for #validate_active_piece
+
+# refactor current_moves for Pawn, Knight, others? -> ABC complexity!!
+# Pawn #current_moves & #current_captures -> Need refactored
+# Knight #current_moves & #current_captures -> Need refactored
+
+# Determine if King is in check at the beginning of the turn. Only pieces can move that can block it.
+# Will need to remove captures if a King is in check at the beginning of a turn.
