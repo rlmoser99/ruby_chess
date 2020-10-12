@@ -233,10 +233,20 @@ RSpec.describe Board do
     let(:data_location) { [[piece, nil], [nil, nil]] }
     let(:piece) { double(Piece, location: [0, 0]) }
 
-    it 'sends coordinates to piece' do
-      allow(piece).to receive(:current_captures)
+    before do
+      allow(piece).to receive(:update).with(board_location)
+      allow(piece).to receive(:update_location).with(1, 0)
+    end
+
+    it 'sends update_location with coordinates to piece' do
       coordinates = { row: 1, column: 0 }
       expect(piece).to receive(:update_location).with(1, 0)
+      board_location.update_active_piece_location(coordinates)
+    end
+
+    it 'sends update with board.self to piece' do
+      coordinates = { row: 1, column: 0 }
+      expect(piece).to receive(:update).with(board_location)
       board_location.update_active_piece_location(coordinates)
     end
   end
@@ -329,7 +339,7 @@ RSpec.describe Board do
         before do
           board.instance_variable_set(:@previous_piece, white_pawn)
           allow(black_pawn).to receive(:update_location)
-          allow(black_pawn).to receive(:current_captures)
+          allow(black_pawn).to receive(:update)
         end
 
         it 'does not call update_en_passant' do
@@ -359,7 +369,7 @@ RSpec.describe Board do
         before do
           board.instance_variable_set(:@previous_piece, white_rook)
           allow(black_pawn).to receive(:update_location)
-          allow(black_pawn).to receive(:current_captures)
+          allow(black_pawn).to receive(:update)
         end
 
         it 'does not call update_en_passant' do
@@ -389,7 +399,7 @@ RSpec.describe Board do
         before do
           board.instance_variable_set(:@previous_piece, white_pawn)
           allow(black_rook).to receive(:update_location)
-          allow(black_rook).to receive(:current_captures)
+          allow(black_rook).to receive(:update)
         end
 
         it 'does not call update_en_passant' do
@@ -419,7 +429,7 @@ RSpec.describe Board do
         before do
           board.instance_variable_set(:@previous_piece, white_pawn)
           allow(black_pawn).to receive(:update_location)
-          allow(black_pawn).to receive(:current_captures)
+          allow(black_pawn).to receive(:update)
         end
 
         it 'does not call update_en_passant' do

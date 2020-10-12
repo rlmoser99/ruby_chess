@@ -12,8 +12,6 @@ class Board
   def initialize(data = Array.new(8) { Array.new(8) }, active_piece = nil)
     @data = data
     @active_piece = active_piece
-    # @valid_moves = nil
-    # @valid_captures = nil
     @previous_piece = nil
     @black_king = nil
     @white_king = nil
@@ -26,7 +24,6 @@ class Board
 
   # Tested
   def active_piece_moveable?
-    @active_piece.update(self)
     @active_piece.moves.size >= 1 || @active_piece.captures.size >= 1
   end
 
@@ -68,7 +65,7 @@ class Board
   # Tested
   def update_active_piece_location(coords)
     @active_piece.update_location(coords[:row], coords[:column])
-    @active_piece.current_captures(self)
+    @active_piece.update(self)
   end
 
   # Tested
@@ -76,17 +73,18 @@ class Board
     @active_piece&.captures&.include?(@previous_piece&.location) && en_passant_pawn?
   end
 
-  # Should this check if either king is in check? IS THIS USED???
+  # Should this check if either king is in check?
+  # IS THIS USED???
   # Tested
-  def check?(king)
-    @data.any? do |row|
-      row.any? do |square|
-        next unless square && square.color != king.color
+  # def check?(king)
+  #   @data.any? do |row|
+  #     row.any? do |square|
+  #       next unless square && square.color != king.color
 
-        square.captures.include?(king.location)
-      end
-    end
-  end
+  #       square.captures.include?(king.location)
+  #     end
+  #   end
+  # end
 
   # Tested
   def reset_board_values
@@ -105,16 +103,6 @@ class Board
     @white_king = @data[7][4]
     @black_king = @data[0][4]
     update_all_moves_captures
-  end
-
-  def update_all_moves_captures
-    @data.each do |row|
-      row.each do |square|
-        next unless square
-
-        square.update(self)
-      end
-    end
   end
 
   # Only Puts Method -> No tests needed
@@ -141,6 +129,16 @@ class Board
       Knight.new(self, { color: color, location: [number, 6] }),
       Rook.new(self, { color: color, location: [number, 7] })
     ]
+  end
+
+  def update_all_moves_captures
+    @data.each do |row|
+      row.each do |square|
+        next unless square
+
+        square.update(self)
+      end
+    end
   end
 
   # Checks if there is a possible en_passant capture for game warning.

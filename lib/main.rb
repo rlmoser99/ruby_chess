@@ -18,45 +18,37 @@ require_relative 'pieces/pawn.rb'
 game = Game.new
 game.play
 
-# When does "checking" for check happen?
-# (done) Each piece needs to remove any moves that could put their King in check.
-# 2. At the beginning of a turn, if the King is in check, the move must un-check the King.
+# KING-CHECK BRANCH
+# (done) Each piece removes any moves that could put their King in check.
+# 2. Each piece removes any captures that could put their King in check.
+# -> creates two different methods, tested separately.
+# 3. Beginning turns, if King is in check, the move must un-check the King.
+# 4. Visually warn player when King is in check (start of turn)
 
-# BUG: Just like when a piece's moves can put King in check.
-# That piece's current captures need to check that that capture won't put king in check!
+# ? Does there need to be a "check" instance variable to King, or Player?
+# ? Is Board#check?(king) needed? Should it do both kings in one check?
+# ? If not, remove Board#check? tests
 
-# Adding "check" instance variable to King?
-
-# Remove each piece checking current_moves & current_captures at the beginning of each turn.
-
-# Game ->
-# Make a method inside #select_move_coordinates that has board check opponent pieces putting King into check.
-
-# Should Game#select_piece_coordinates have an arry of pieces with moves/captures?
-
-# Should Board#active_piece_moveable? remove any move that would put King in check?
-# Does Board#check?(king)? Do what we need it to do? Should it do both kings in one check?
-
-# Board.initial_placement tests are failing!!!
-
-# current_moves = piece.moves only works in ones that inherit that from piece.
-# need to change king, knight, pawn
-
-# BUG: white pawn c4, black pawn in d5 -> triggered en passsant incorrectly!
-
-# Remove unneccessary tests from the different pieces.
-
-# Look into creating 2 array of pieces with moves/captures for #validate_active_piece
+# PLAYER TURNS
+# 1. Create 2 arrays of black & white pieces Game#select_piece_coordinates
+# 2. Need to add 'Game Over' checks
 
 # PIECE REFACTOR:
-# Re-name methods for how they currently function.
-# Refactor Pawn #current_moves & #current_captures
-# Refactor Knight #current_moves & #current_captures
+# 1. Refactor Pawn #current_moves & #current_captures
+# 2. Refactor Knight #current_moves & #current_captures
+# 3. Does King need to be refactored?
+# 4. Re-name methods for how they currently function.
+# 5. Look closer at Piece Inheritance and instance variables?
+# BUG: white pawn c4, black pawn in d5 -> triggered en passsant incorrectly!
 
-# Determine if King is in check at the beginning of the turn. Only pieces can move that can block it.
-# Will need to remove captures if a King is in check at the beginning of a turn.
-
-# Organize & Test code
-# 1. Public vs. Private
+# GENERAL REFACTOR:
+# 1. Review all methods to see if they should be Public or Private
 # 2. Make sure public ones are tested
-# 3. Piece Inheritance and instance variables?
+# 3. Review all tests & remove unneccessary/repetitive tests.
+
+# CASTLING:
+
+# PROMOTION:
+
+# SAVE & LOAD GAME:
+# 1. Make a saved game for "new" with pieces in original spots. ??
