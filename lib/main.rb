@@ -20,12 +20,12 @@ game.play
 
 # KING-CHECK BRANCH
 # (done) Each piece removes any moves that could put their King in check.
-# 2. Each piece removes any captures that could put their King in check.
-# -> creates two different methods, tested separately.
+# (done) Each piece removes any captures that could put their King in check.
 # 3. Beginning turns, if King is in check, the move must un-check the King.
 # 4. Visually warn player when King is in check (start of turn)
 
-# ? Does there need to be a "check" instance variable to King, or Player?
+# Re-arrange MoveValidator.verify_possible_moves to not need all 3 at new
+# ? Does there need to be a "check"?
 # ? Is Board#check?(king) needed? Should it do both kings in one check?
 # ? If not, remove Board#check? tests
 

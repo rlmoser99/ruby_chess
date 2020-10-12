@@ -37,8 +37,8 @@ class MoveValidator
       row.any? do |square|
         next unless square && square.color != @current_piece.color
 
-        square.current_captures(board)
-        square.captures.include?(location)
+        captures = square.format_valid_captures(board)
+        captures.include?(location)
       end
     end
   end

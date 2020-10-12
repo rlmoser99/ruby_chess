@@ -93,7 +93,7 @@ RSpec.describe King do
     end
   end
 
-  describe '#current_captures' do
+  describe '#format_valid_captures' do
     let(:black_piece) { instance_double(Piece) }
     let(:white_piece) { instance_double(Piece) }
 
@@ -122,9 +122,8 @@ RSpec.describe King do
       end
 
       it 'has no captures' do
-        white_king.current_captures(board)
-        captures = white_king.captures
-        expect(captures).to be_empty
+        result = white_king.format_valid_captures(board)
+        expect(result).to be_empty
       end
     end
 
@@ -148,9 +147,8 @@ RSpec.describe King do
       end
 
       it 'has one capture' do
-        white_king.current_captures(board)
-        captures = white_king.captures
-        expect(captures).to contain_exactly([6, 3])
+        result = white_king.format_valid_captures(board)
+        expect(result).to contain_exactly([6, 3])
       end
     end
 
@@ -174,9 +172,8 @@ RSpec.describe King do
       end
 
       it 'has two captures' do
-        white_king.current_captures(board)
-        captures = white_king.captures
-        expect(captures).to contain_exactly([4, 3], [5, 1])
+        result = white_king.format_valid_captures(board)
+        expect(result).to contain_exactly([4, 3], [5, 1])
       end
     end
   end

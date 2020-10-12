@@ -65,7 +65,11 @@ class Board
   # Tested
   def update_active_piece_location(coords)
     @active_piece.update_location(coords[:row], coords[:column])
-    @active_piece.update(self)
+    # Is having these pieces updated, or captures updated causing the problem?
+    # Thought these were needed - incomplete data for future turns.
+    # Remove test if not needed?
+    # @active_piece.update(self)
+    # @active_piece.current_captures(self)
   end
 
   # Tested

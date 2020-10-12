@@ -36,6 +36,11 @@ class Knight < Piece
 
   # refactor!!!
   def current_captures(board)
+    possibilities = format_valid_captures(board)
+    @captures = remove_king_check_moves(board, possibilities)
+  end
+
+  def format_valid_captures(board)
     moves = move_possibilities
     result = []
     moves.each do |move|

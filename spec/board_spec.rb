@@ -244,11 +244,11 @@ RSpec.describe Board do
       board_location.update_active_piece_location(coordinates)
     end
 
-    it 'sends update with board.self to piece' do
-      coordinates = { row: 1, column: 0 }
-      expect(piece).to receive(:update).with(board_location)
-      board_location.update_active_piece_location(coordinates)
-    end
+    # it 'sends update with board.self to piece' do
+    #   coordinates = { row: 1, column: 0 }
+    #   expect(piece).to receive(:update).with(board_location)
+    #   board_location.update_active_piece_location(coordinates)
+    # end
   end
 
   describe '#reset_board_values' do

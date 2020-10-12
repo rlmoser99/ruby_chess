@@ -26,7 +26,7 @@ class Game
   # Declares error message when user enters invalid move
   class PieceError < StandardError
     def message
-      'Invalid piece! This piece can not move. Please enter a different column & row.'
+      'Invalid piece! This piece does not have any valid moves. Please enter a different column & row.'
     end
   end
 
@@ -39,9 +39,9 @@ class Game
   def play
     @board.initial_placement
     @board.to_s
-    player_turn
+    # player_turn
     # Need to switch current player
-    # 16.times { player_turn }
+    16.times { player_turn }
   end
 
   # Script Method -> Test methods inside

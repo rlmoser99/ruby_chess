@@ -30,8 +30,7 @@ RSpec.describe MoveValidator do
       before do
         allow(board).to receive(:data).and_return(data)
         allow(board).to receive(:black_king).and_return(black_king)
-        allow(white_queen).to receive(:captures).and_return([[2, 4]], [[2, 4]], [[2, 4]], [[2, 4]], [[2, 4], [0, 4]])
-        allow(white_queen).to receive(:current_captures)
+        allow(white_queen).to receive(:format_valid_captures).and_return([[2, 4]], [[2, 4]], [[2, 4]], [[2, 4]], [[2, 4], [0, 4]])
       end
 
       it 'does not return move that put King in check' do
@@ -64,8 +63,7 @@ RSpec.describe MoveValidator do
         allow(board).to receive(:data).and_return(data)
         allow(board).to receive(:black_king).and_return(black_king)
         allow(board).to receive(:white_king).and_return(nil)
-        allow(white_queen).to receive(:captures).and_return([], [], [], [], [[0, 4]], [[0, 4]])
-        allow(white_queen).to receive(:current_captures)
+        allow(white_queen).to receive(:format_valid_captures).and_return([], [], [], [], [[0, 4]], [[0, 4]])
       end
 
       it 'does not return moves that put King in check' do
