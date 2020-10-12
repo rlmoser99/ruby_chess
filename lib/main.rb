@@ -18,20 +18,16 @@ require_relative 'pieces/pawn.rb'
 game = Game.new
 game.play
 
-# Maybe need to separate the piece testing current moves & current captures,
-# so that testing does not need to use king in check portion of method.
-
 # When does "checking" for check happen?
-# 1. Each piece needs to remove any moves that could put their King in check.
+# (done) Each piece needs to remove any moves that could put their King in check.
 # 2. At the beginning of a turn, if the King is in check, the move must un-check the King.
 
-# Adding "check" to King.
-# Check -> When opponent piece can attack King.
-# Update legal moves -> Move can not put King in check.
+# BUG: Just like when a piece's moves can put King in check.
+# That piece's current captures need to check that that capture won't put king in check!
+
+# Adding "check" instance variable to King?
 
 # Remove each piece checking current_moves & current_captures at the beginning of each turn.
-
-# Update visualizing valid moves & captures -> current_piece, not in Board
 
 # Game ->
 # Make a method inside #select_move_coordinates that has board check opponent pieces putting King into check.
@@ -52,9 +48,15 @@ game.play
 
 # Look into creating 2 array of pieces with moves/captures for #validate_active_piece
 
-# refactor current_moves for Pawn, Knight, others? -> ABC complexity!!
-# Pawn #current_moves & #current_captures -> Need refactored
-# Knight #current_moves & #current_captures -> Need refactored
+# PIECE REFACTOR:
+# Re-name methods for how they currently function.
+# Refactor Pawn #current_moves & #current_captures
+# Refactor Knight #current_moves & #current_captures
 
 # Determine if King is in check at the beginning of the turn. Only pieces can move that can block it.
 # Will need to remove captures if a King is in check at the beginning of a turn.
+
+# Organize & Test code
+# 1. Public vs. Private
+# 2. Make sure public ones are tested
+# 3. Piece Inheritance and instance variables?

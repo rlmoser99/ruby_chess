@@ -187,11 +187,12 @@ RSpec.describe Board do
 
   describe '#valid_piece_movement?' do
     context 'when coordinates matches a valid move' do
-      subject(:board_valid) { described_class.new(data_valid, piece, [[1, 0]]) }
+      subject(:board_valid) { described_class.new(data_valid, piece) }
       let(:data_valid) { [[piece, nil], [nil, nil]] }
       let(:piece) { double(Piece, location: [0, 0]) }
 
       it 'returns true' do
+        allow(piece).to receive(:moves).and_return([[1, 0]])
         coordinates = { row: 1, column: 0 }
         result = board_valid.valid_piece_movement?(coordinates)
         expect(result).to be true
@@ -199,11 +200,13 @@ RSpec.describe Board do
     end
 
     context 'when coordinates matches a valid capture' do
-      subject(:board_valid) { described_class.new(data_valid, piece, [], [[1, 0]]) }
+      subject(:board_valid) { described_class.new(data_valid, piece) }
       let(:data_valid) { [[piece, nil], [nil, nil]] }
       let(:piece) { double(Piece, location: [0, 0]) }
 
       it 'returns true' do
+        allow(piece).to receive(:moves).and_return([])
+        allow(piece).to receive(:captures).and_return([[1, 0]])
         coordinates = { row: 1, column: 0 }
         result = board_valid.valid_piece_movement?(coordinates)
         expect(result).to be true
@@ -211,11 +214,13 @@ RSpec.describe Board do
     end
 
     context 'when coordinates does not matches valid move or capture' do
-      subject(:board_valid) { described_class.new(data_valid, piece, [], [[1, 0]]) }
+      subject(:board_valid) { described_class.new(data_valid, piece) }
       let(:data_valid) { [[piece, nil], [nil, nil]] }
       let(:piece) { double(Piece, location: [0, 0]) }
 
       it 'returns false' do
+        allow(piece).to receive(:moves).and_return([])
+        allow(piece).to receive(:captures).and_return([1, 0])
         coordinates = { row: 2, column: 0 }
         result = board_valid.valid_piece_movement?(coordinates)
         expect(result).to be false
@@ -237,7 +242,7 @@ RSpec.describe Board do
   end
 
   describe '#reset_board_values' do
-    subject(:board_values) { described_class.new(data_values, piece, [[1, 1]], [[0, 1]]) }
+    subject(:board_values) { described_class.new(data_values, piece) }
     let(:data_values) { [[piece, nil], [nil, nil]] }
     let(:piece) { double(Piece, location: [0, 0]) }
 
@@ -249,18 +254,6 @@ RSpec.describe Board do
     it 'sets active_piece to nil' do
       board_values.reset_board_values
       expect(board_values.active_piece).to be_nil
-    end
-
-    it 'sets valid_moves to be an empty array' do
-      board_values.reset_board_values
-      valid_moves = board_values.instance_variable_get(:@valid_moves)
-      expect(valid_moves).to be_empty
-    end
-
-    it 'sets valid_captures to be an empty array' do
-      board_values.reset_board_values
-      valid_captures = board_values.instance_variable_get(:@valid_captures)
-      expect(valid_captures).to be_empty
     end
   end
 
@@ -440,7 +433,7 @@ RSpec.describe Board do
 
   describe 'possible_en_passant?' do
     context 'when en_passant is possible' do
-      subject(:board) { described_class.new(data, black_pawn, [[5, 2]], [[4, 3]]) }
+      subject(:board) { described_class.new(data, black_pawn) }
       let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: true) }
       let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
       let(:data) do
@@ -458,6 +451,7 @@ RSpec.describe Board do
 
       before do
         board.instance_variable_set(:@previous_piece, white_pawn)
+        allow(black_pawn).to receive(:captures).and_return([[4, 3]])
       end
 
       it 'returns true' do
@@ -467,7 +461,7 @@ RSpec.describe Board do
     end
 
     context 'when en_passant is not possible' do
-      subject(:board) { described_class.new(data, black_pawn, [[5, 2]], [[4, 3]]) }
+      subject(:board) { described_class.new(data, black_pawn) }
       let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: false) }
       let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
       let(:data) do
@@ -485,6 +479,7 @@ RSpec.describe Board do
 
       before do
         board.instance_variable_set(:@previous_piece, white_pawn)
+        allow(black_pawn).to receive(:captures).and_return([[4, 3]])
       end
 
       it 'returns false' do

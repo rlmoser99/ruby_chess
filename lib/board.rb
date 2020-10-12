@@ -9,11 +9,11 @@ class Board
   include Observable
   attr_reader :data, :active_piece, :previous_piece, :black_king, :white_king
 
-  def initialize(data = Array.new(8) { Array.new(8) }, active_piece = nil, valid_moves = [], valid_captures = [])
+  def initialize(data = Array.new(8) { Array.new(8) }, active_piece = nil)
     @data = data
     @active_piece = active_piece
-    @valid_moves = valid_moves
-    @valid_captures = valid_captures
+    # @valid_moves = nil
+    # @valid_captures = nil
     @previous_piece = nil
     @black_king = nil
     @white_king = nil
@@ -24,26 +24,17 @@ class Board
     @active_piece = data[coordinates[:row]][coordinates[:column]]
   end
 
+  # Tested
   def active_piece_moveable?
     @active_piece.update(self)
-    @valid_moves = @active_piece.moves
-    @valid_captures = @active_piece.captures
-    @valid_moves.size >= 1 || @valid_captures.size >= 1
+    @active_piece.moves.size >= 1 || @active_piece.captures.size >= 1
   end
-
-  # Tested -> CHECK TESTING OF THIS METHOD
-  # def active_piece_moveable?
-  #   @valid_moves = @active_piece.moves
-  #   @valid_captures = @active_piece.captures
-  #   # Remove any move that would put King in check!
-  #   @valid_moves.size >= 1 || @valid_captures.size >= 1
-  # end
 
   # Tested
   def valid_piece_movement?(coords)
     row = coords[:row]
     column = coords[:column]
-    @valid_moves.any?([row, column]) || @valid_captures.any?([row, column])
+    @active_piece.moves.any?([row, column]) || @active_piece.captures.any?([row, column])
   end
 
   # Tested
@@ -82,7 +73,7 @@ class Board
 
   # Tested
   def possible_en_passant?
-    @valid_captures.include?(@previous_piece&.location) && en_passant_pawn?
+    @active_piece&.captures&.include?(@previous_piece&.location) && en_passant_pawn?
   end
 
   # Should this check if either king is in check? IS THIS USED???
@@ -101,8 +92,6 @@ class Board
   def reset_board_values
     @previous_piece = @active_piece
     @active_piece = nil
-    @valid_moves = []
-    @valid_captures = []
     changed
     notify_observers(self)
   end
