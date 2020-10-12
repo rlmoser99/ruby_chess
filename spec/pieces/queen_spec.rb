@@ -12,7 +12,7 @@ RSpec.describe Queen do
     allow(board).to receive(:add_observer)
   end
 
-  describe '#current_moves' do
+  describe '#format_valid_moves' do
     let(:piece) { instance_double(Piece, color: :black) }
 
     context 'queen is surrounded by pieces' do
@@ -35,9 +35,8 @@ RSpec.describe Queen do
       end
 
       it 'has no moves' do
-        black_queen.current_moves(board)
-        moves = black_queen.moves
-        expect(moves).to be_empty
+        result = black_queen.format_valid_moves(board)
+        expect(result).to be_empty
       end
     end
 
@@ -59,13 +58,11 @@ RSpec.describe Queen do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
       end
 
       it 'has seven moves' do
-        black_queen.current_moves(board)
-        moves = black_queen.moves
-        expect(moves).to contain_exactly([1, 3], [2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3])
+        result = black_queen.format_valid_moves(board)
+        expect(result).to contain_exactly([1, 3], [2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3])
       end
     end
 
@@ -87,13 +84,11 @@ RSpec.describe Queen do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
       end
 
       it 'has seven moves' do
-        black_queen.current_moves(board)
-        moves = black_queen.moves
-        expect(moves).to contain_exactly([1, 2], [1, 4], [2, 1], [2, 5], [3, 0], [3, 6], [4, 7])
+        result = black_queen.format_valid_moves(board)
+        expect(result).to contain_exactly([1, 2], [1, 4], [2, 1], [2, 5], [3, 0], [3, 6], [4, 7])
       end
     end
 
@@ -115,13 +110,11 @@ RSpec.describe Queen do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
       end
 
       it 'has 25 moves' do
-        black_queen.current_moves(board)
-        moves = black_queen.moves
-        expect(moves).to contain_exactly([3, 0], [3, 1], [3, 2], [3, 4], [3, 5], [3, 6], [1, 3], [2, 3], [4, 3], [5, 3], [6, 3], [7, 3], [2, 2], [2, 4], [1, 1], [1, 5], [0, 0], [0, 6], [4, 2], [4, 4], [5, 1], [5, 5], [6, 0], [6, 6], [7, 7])
+        result = black_queen.format_valid_moves(board)
+        expect(result).to contain_exactly([3, 0], [3, 1], [3, 2], [3, 4], [3, 5], [3, 6], [1, 3], [2, 3], [4, 3], [5, 3], [6, 3], [7, 3], [2, 2], [2, 4], [1, 1], [1, 5], [0, 0], [0, 6], [4, 2], [4, 4], [5, 1], [5, 5], [6, 0], [6, 6], [7, 7])
       end
     end
   end

@@ -11,7 +11,7 @@ RSpec.describe King do
     allow(board).to receive(:add_observer)
   end
 
-  describe '#current_moves' do
+  describe '#format_valid_moves' do
     let(:piece) { instance_double(Piece) }
 
     context 'when the king is surrounded by pieces' do
@@ -31,14 +31,12 @@ RSpec.describe King do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has no moves' do
-        black_king.current_moves(board)
-        moves = black_king.moves
-        expect(moves).to be_empty
+        result = black_king.format_valid_moves(board)
+        expect(result).to be_empty
       end
     end
 
@@ -59,14 +57,12 @@ RSpec.describe King do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has two moves' do
-        black_king.current_moves(board)
-        moves = black_king.moves
-        expect(moves).to contain_exactly([0, 3], [1, 5])
+        result = black_king.format_valid_moves(board)
+        expect(result).to contain_exactly([0, 3], [1, 5])
       end
     end
 
@@ -87,14 +83,12 @@ RSpec.describe King do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has five moves' do
-        black_king.current_moves(board)
-        moves = black_king.moves
-        expect(moves).to contain_exactly([2, 7], [2, 6], [3, 6], [4, 6], [4, 7])
+        result = black_king.format_valid_moves(board)
+        expect(result).to contain_exactly([2, 7], [2, 6], [3, 6], [4, 6], [4, 7])
       end
     end
   end

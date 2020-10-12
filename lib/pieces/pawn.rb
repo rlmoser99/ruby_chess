@@ -26,13 +26,18 @@ class Pawn < Piece
   # Tested
   # Can refactor!
   def current_moves(board)
+    possibilities = find_valid_moves(board)
+    @moves = remove_king_check_moves(board, possibilities)
+  end
+
+  def find_valid_moves(board)
     possibilities = []
     rank = @location[0] + rank_direction
     file = @location[1]
     possibilities << [rank, file] unless board.data[rank][file]
     bonus = first_move_bonus
     possibilities << bonus unless @moved || board.data[bonus[0]][bonus[1]]
-    @moves = remove_king_check_moves(board, possibilities)
+    possibilities
   end
 
   # Tested

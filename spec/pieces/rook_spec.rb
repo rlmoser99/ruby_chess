@@ -12,7 +12,7 @@ RSpec.describe Rook do
     allow(board).to receive(:add_observer)
   end
 
-  describe '#current_moves' do
+  describe '#format_valid_moves' do
     context 'when 2 increasing ranks are empty before a piece' do
       subject(:black_rook) { described_class.new(board, { color: :black, location: [0, 0] }) }
       let(:black_king) { instance_double(Piece, color: :black, location: [0, 7]) }
@@ -25,14 +25,12 @@ RSpec.describe Rook do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has two moves' do
-        black_rook.current_moves(board)
-        moves = black_rook.moves
-        expect(moves).to contain_exactly([0, 1], [0, 2])
+        result = black_rook.format_valid_moves(board)
+        expect(result).to contain_exactly([0, 1], [0, 2])
       end
     end
 
@@ -48,14 +46,12 @@ RSpec.describe Rook do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has two moves' do
-        black_rook.current_moves(board)
-        moves = black_rook.moves
-        expect(moves).to contain_exactly([0, 6], [0, 7])
+        result = black_rook.format_valid_moves(board)
+        expect(result).to contain_exactly([0, 6], [0, 7])
       end
     end
 
@@ -71,14 +67,12 @@ RSpec.describe Rook do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has four moves' do
-        black_rook.current_moves(board)
-        moves = black_rook.moves
-        expect(moves).to contain_exactly([0, 0], [0, 1], [0, 3], [0, 4])
+        result = black_rook.format_valid_moves(board)
+        expect(result).to contain_exactly([0, 0], [0, 1], [0, 3], [0, 4])
       end
     end
 
@@ -96,14 +90,12 @@ RSpec.describe Rook do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has two moves' do
-        black_rook.current_moves(board)
-        moves = black_rook.moves
-        expect(moves).to contain_exactly([1, 2], [2, 2])
+        result = black_rook.format_valid_moves(board)
+        expect(result).to contain_exactly([1, 2], [2, 2])
       end
     end
 
@@ -125,14 +117,12 @@ RSpec.describe Rook do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has four moves' do
-        black_rook.current_moves(board)
-        moves = black_rook.moves
-        expect(moves).to contain_exactly([5, 0], [5, 1], [6, 2], [7, 2])
+        result = black_rook.format_valid_moves(board)
+        expect(result).to contain_exactly([5, 0], [5, 1], [6, 2], [7, 2])
       end
     end
 
@@ -154,14 +144,12 @@ RSpec.describe Rook do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:white_king).and_return(white_king)
         allow(piece).to receive(:color).and_return(:white)
       end
 
       it 'has six moves' do
-        white_rook.current_moves(board)
-        moves = white_rook.moves
-        expect(moves).to contain_exactly([3, 5], [3, 6], [3, 7], [2, 4], [1, 4], [0, 4])
+        result = white_rook.format_valid_moves(board)
+        expect(result).to contain_exactly([3, 5], [3, 6], [3, 7], [2, 4], [1, 4], [0, 4])
       end
     end
 
@@ -185,9 +173,8 @@ RSpec.describe Rook do
       end
 
       it 'has no moves' do
-        white_rook.current_moves(board)
-        moves = white_rook.moves
-        expect(moves).to be_empty
+        result = white_rook.format_valid_moves(board)
+        expect(result).to be_empty
       end
     end
   end

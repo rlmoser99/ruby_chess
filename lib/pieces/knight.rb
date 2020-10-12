@@ -17,6 +17,11 @@ class Knight < Piece
 
   # refactor!!!
   def current_moves(board)
+    possibilities = find_valid_moves(board)
+    @moves = remove_king_check_moves(board, possibilities)
+  end
+
+  def find_valid_moves(board)
     moves = move_possibilities
     possibilities = []
     moves.each do |move|
@@ -26,7 +31,7 @@ class Knight < Piece
 
       possibilities << [rank, file] unless board.data[rank][file]
     end
-    @moves = remove_king_check_moves(board, possibilities)
+    possibilities
   end
 
   # refactor!!!

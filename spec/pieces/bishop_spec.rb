@@ -11,7 +11,7 @@ RSpec.describe Bishop do
     allow(board).to receive(:add_observer)
   end
 
-  describe '#current_moves' do
+  describe '#format_valid_moves' do
     let(:piece) { instance_double(Piece) }
 
     context 'when there are 2 spaces up rank/down file' do
@@ -28,14 +28,12 @@ RSpec.describe Bishop do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has two moves' do
-        black_bishop.current_moves(board)
-        moves = black_bishop.moves
-        expect(moves).to contain_exactly([1, 1], [2, 0])
+        result = black_bishop.format_valid_moves(board)
+        expect(result).to contain_exactly([1, 1], [2, 0])
       end
     end
 
@@ -57,14 +55,12 @@ RSpec.describe Bishop do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has two moves' do
-        black_bishop.current_moves(board)
-        moves = black_bishop.moves
-        expect(moves).to contain_exactly([1, 6], [2, 7])
+        result = black_bishop.format_valid_moves(board)
+        expect(result).to contain_exactly([1, 6], [2, 7])
       end
     end
 
@@ -86,14 +82,12 @@ RSpec.describe Bishop do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has four moves' do
-        black_bishop.current_moves(board)
-        moves = black_bishop.moves
-        expect(moves).to contain_exactly([4, 4], [3, 5], [2, 6], [1, 7])
+        result = black_bishop.format_valid_moves(board)
+        expect(result).to contain_exactly([4, 4], [3, 5], [2, 6], [1, 7])
       end
     end
 
@@ -115,14 +109,12 @@ RSpec.describe Bishop do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has four moves' do
-        black_bishop.current_moves(board)
-        moves = black_bishop.moves
-        expect(moves).to contain_exactly([4, 2], [3, 1], [2, 0])
+        result = black_bishop.format_valid_moves(board)
+        expect(result).to contain_exactly([4, 2], [3, 1], [2, 0])
       end
     end
 
@@ -144,14 +136,12 @@ RSpec.describe Bishop do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:white_king).and_return(white_king)
         allow(piece).to receive(:color).and_return(:white)
       end
 
       it 'has two moves' do
-        white_bishop.current_moves(board)
-        moves = white_bishop.moves
-        expect(moves).to contain_exactly([3, 1], [5, 1])
+        result = white_bishop.format_valid_moves(board)
+        expect(result).to contain_exactly([3, 1], [5, 1])
       end
     end
 
@@ -175,9 +165,8 @@ RSpec.describe Bishop do
       end
 
       it 'has no moves' do
-        white_bishop.current_moves(board)
-        moves = white_bishop.moves
-        expect(moves).to be_empty
+        result = white_bishop.format_valid_moves(board)
+        expect(result).to be_empty
       end
     end
 
@@ -199,14 +188,12 @@ RSpec.describe Bishop do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:white_king).and_return(white_king)
         allow(piece).to receive(:color).and_return(:white)
       end
 
       it 'has thirteen moves' do
-        white_bishop.current_moves(board)
-        moves = white_bishop.moves
-        expect(moves).to contain_exactly([0, 0], [0, 6], [1, 1], [1, 5], [2, 2], [2, 4], [4, 2], [4, 4], [5, 1], [5, 5], [6, 0], [6, 6], [7, 7])
+        result = white_bishop.format_valid_moves(board)
+        expect(result).to contain_exactly([0, 0], [0, 6], [1, 1], [1, 5], [2, 2], [2, 4], [4, 2], [4, 4], [5, 1], [5, 5], [6, 0], [6, 6], [7, 7])
       end
     end
   end

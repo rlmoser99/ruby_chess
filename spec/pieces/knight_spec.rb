@@ -11,7 +11,7 @@ RSpec.describe Knight do
     allow(board).to receive(:add_observer)
   end
 
-  describe '#current_moves' do
+  describe '#find_valid_moves' do
     let(:piece) { instance_double(Piece) }
 
     context 'during initial data setup' do
@@ -32,14 +32,12 @@ RSpec.describe Knight do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has two moves' do
-        black_knight.current_moves(board)
-        moves = black_knight.moves
-        expect(moves).to contain_exactly([2, 0], [2, 2])
+        results = black_knight.find_valid_moves(board)
+        expect(results).to contain_exactly([2, 0], [2, 2])
       end
     end
 
@@ -61,14 +59,12 @@ RSpec.describe Knight do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has eight moves' do
-        black_knight.current_moves(board)
-        moves = black_knight.moves
-        expect(moves).to contain_exactly([1, 2], [1, 4], [2, 1], [2, 5], [4, 1], [4, 5], [5, 2], [5, 4])
+        results = black_knight.find_valid_moves(board)
+        expect(results).to contain_exactly([1, 2], [1, 4], [2, 1], [2, 5], [4, 1], [4, 5], [5, 2], [5, 4])
       end
     end
 
@@ -90,14 +86,12 @@ RSpec.describe Knight do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:white_king).and_return(white_king)
         allow(piece).to receive(:color).and_return(:white)
       end
 
       it 'has two moves' do
-        white_knight.current_moves(board)
-        moves = white_knight.moves
-        expect(moves).to contain_exactly([5, 5], [5, 7])
+        results = white_knight.find_valid_moves(board)
+        expect(results).to contain_exactly([5, 5], [5, 7])
       end
     end
 
@@ -119,14 +113,12 @@ RSpec.describe Knight do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
       end
 
       it 'has no moves' do
-        black_knight.current_moves(board)
-        moves = black_knight.moves
-        expect(moves).to be_empty
+        results = black_knight.find_valid_moves(board)
+        expect(results).to be_empty
       end
     end
   end

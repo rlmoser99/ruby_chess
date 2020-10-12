@@ -11,7 +11,7 @@ RSpec.describe Pawn do
     allow(board).to receive(:add_observer)
   end
 
-  describe '#current_moves' do
+  describe '#find_valid_moves' do
     let(:piece) { instance_double(Piece) }
 
     context 'when pawn is black' do
@@ -25,14 +25,11 @@ RSpec.describe Pawn do
 
           before do
             allow(board).to receive(:data).and_return(data)
-            allow(board).to receive(:black_king).and_return(black_king)
-            # allow(piece).to receive(:color).and_return(:black)
           end
 
           it 'has two moves' do
-            black_pawn.current_moves(board)
-            moves = black_pawn.moves
-            expect(moves).to contain_exactly([2, 0], [3, 0])
+            results = black_pawn.find_valid_moves(board)
+            expect(results).to contain_exactly([2, 0], [3, 0])
           end
         end
 
@@ -41,14 +38,12 @@ RSpec.describe Pawn do
 
           before do
             allow(board).to receive(:data).and_return(data)
-            allow(board).to receive(:black_king).and_return(black_king)
             allow(piece).to receive(:color).and_return(:black)
           end
 
           it 'has one move' do
-            black_pawn.current_moves(board)
-            moves = black_pawn.moves
-            expect(moves).to contain_exactly([2, 0])
+            results = black_pawn.find_valid_moves(board)
+            expect(results).to contain_exactly([2, 0])
           end
         end
       end
@@ -65,14 +60,13 @@ RSpec.describe Pawn do
 
           before do
             allow(board).to receive(:data).and_return(data)
-            allow(board).to receive(:black_king).and_return(black_king)
+            # allow(board).to receive(:black_king).and_return(black_king)
             allow(piece).to receive(:color).and_return(:black)
           end
 
           it 'has one move' do
-            black_pawn.current_moves(board)
-            moves = black_pawn.moves
-            expect(moves).to contain_exactly([3, 0])
+            results = black_pawn.find_valid_moves(board)
+            expect(results).to contain_exactly([3, 0])
           end
         end
 
@@ -81,14 +75,13 @@ RSpec.describe Pawn do
 
           before do
             allow(board).to receive(:data).and_return(data)
-            allow(board).to receive(:black_king).and_return(black_king)
+            # allow(board).to receive(:black_king).and_return(black_king)
             allow(piece).to receive(:color).and_return(:black)
           end
 
           it 'has no moves' do
-            black_pawn.current_moves(board)
-            moves = black_pawn.moves
-            expect(moves).to be_empty
+            results = black_pawn.find_valid_moves(board)
+            expect(results).to be_empty
           end
         end
       end
@@ -105,14 +98,13 @@ RSpec.describe Pawn do
 
           before do
             allow(board).to receive(:data).and_return(data)
-            allow(board).to receive(:white_king).and_return(white_king)
+            # allow(board).to receive(:white_king).and_return(white_king)
             # allow(piece).to receive(:color).and_return(:white)
           end
 
           it 'has two moves' do
-            white_pawn.current_moves(board)
-            moves = white_pawn.moves
-            expect(moves).to contain_exactly([0, 0], [1, 0])
+            results = white_pawn.find_valid_moves(board)
+            expect(results).to contain_exactly([0, 0], [1, 0])
           end
         end
 
@@ -121,14 +113,13 @@ RSpec.describe Pawn do
 
           before do
             allow(board).to receive(:data).and_return(data)
-            allow(board).to receive(:white_king).and_return(white_king)
+            # allow(board).to receive(:white_king).and_return(white_king)
             allow(piece).to receive(:color).and_return(:white)
           end
 
           it 'has one move' do
-            white_pawn.current_moves(board)
-            moves = white_pawn.moves
-            expect(moves).to contain_exactly([1, 0])
+            results = white_pawn.find_valid_moves(board)
+            expect(results).to contain_exactly([1, 0])
           end
         end
       end
@@ -145,14 +136,13 @@ RSpec.describe Pawn do
 
           before do
             allow(board).to receive(:data).and_return(data)
-            allow(board).to receive(:white_king).and_return(white_king)
+            # allow(board).to receive(:white_king).and_return(white_king)
             # allow(piece).to receive(:color).and_return(:white)
           end
 
           it 'has one move' do
-            white_pawn.current_moves(board)
-            moves = white_pawn.moves
-            expect(moves).to contain_exactly([0, 0])
+            results = white_pawn.find_valid_moves(board)
+            expect(results).to contain_exactly([0, 0])
           end
         end
 
@@ -161,14 +151,13 @@ RSpec.describe Pawn do
 
           before do
             allow(board).to receive(:data).and_return(data)
-            allow(board).to receive(:white_king).and_return(white_king)
+            # allow(board).to receive(:white_king).and_return(white_king)
             allow(piece).to receive(:color).and_return(:white)
           end
 
           it 'has no moves' do
-            white_pawn.current_moves(board)
-            moves = white_pawn.moves
-            expect(moves).to be_empty
+            results = white_pawn.find_valid_moves(board)
+            expect(results).to be_empty
           end
         end
       end
