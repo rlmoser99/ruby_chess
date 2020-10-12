@@ -47,7 +47,7 @@ module Displayable
   end
 
   def capture_background?(row, column)
-    @valid_captures&.any?([row, column]) && @data[row][column]
+    @active_piece&.captures&.any?([row, column]) && @data[row][column]
   end
 
   # Font Color ->
@@ -58,7 +58,7 @@ module Displayable
     if square
       text_color = square.color == :white ? 97 : 30
       color_square(text_color, background, square.symbol)
-    elsif @valid_moves&.any?([row_index, column_index])
+    elsif @active_piece&.moves&.any?([row_index, column_index])
       color_square(91, background, " \u25CF ")
     else
       color_square(30, background, '   ')

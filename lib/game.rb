@@ -26,7 +26,7 @@ class Game
   # Declares error message when user enters invalid move
   class PieceError < StandardError
     def message
-      'Invalid piece! This piece can not move. Please enter a different column & row.'
+      'Invalid piece! This piece does not have any valid moves. Please enter a different column & row.'
     end
   end
 
@@ -41,7 +41,7 @@ class Game
     @board.to_s
     # player_turn
     # Need to switch current player
-    12.times { player_turn }
+    16.times { player_turn }
   end
 
   # Script Method -> Test methods inside
@@ -72,6 +72,7 @@ class Game
   # Need to test any outgoing command messages ??
   def select_move_coordinates
     puts en_passant_warning if @board.possible_en_passant?
+    # puts king_check_warning if King is in check!
     input = user_input('Where would you like to move it?')
     validate_input(input)
     coords = translate_coordinates(input)

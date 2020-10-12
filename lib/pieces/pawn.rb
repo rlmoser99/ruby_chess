@@ -4,14 +4,17 @@ require_relative 'piece'
 
 # logic for each chess piece
 class Pawn < Piece
-  attr_reader :color, :symbol, :location, :en_passant
+  attr_reader :color, :symbol, :location, :en_passant, :moves, :captures
 
-  def initialize(args)
-    super(args)
-    @symbol = " \u265F "
+  def initialize(board, args)
+    board.add_observer(self)
+    @color = args[:color]
     @location = args[:location]
+    @symbol = " \u265F "
     @moved = false
     @en_passant = false
+    @moves = []
+    @captures = []
   end
 
   def update_location(row, column)
@@ -21,26 +24,43 @@ class Pawn < Piece
   end
 
   # Tested
+  # Can refactor!
   def current_moves(board)
-    moves = []
+    possibilities = find_valid_moves(board)
+    @moves = remove_king_check_moves(board, possibilities)
+  end
+
+  def find_valid_moves(board)
+    possibilities = []
     rank = @location[0] + rank_direction
     file = @location[1]
-    moves << [rank, file] unless board[rank][file]
+    possibilities << [rank, file] unless board.data[rank][file]
     bonus = first_move_bonus
-    moves << bonus unless @moved || board[bonus[0]][bonus[1]]
-    moves
+    possibilities << bonus unless @moved || board.data[bonus[0]][bonus[1]]
+    possibilities
   end
 
   # Tested
-  def current_captures(board, previous_piece)
+  # Can refactor!
+  def current_captures(board)
+    possibilities = format_valid_captures(board)
+    @captures = remove_king_check_moves(board, possibilities)
+  end
+
+  def format_valid_captures(board)
+    previous_location = board.previous_piece.location if board.previous_piece
     captures = []
     rank = @location[0] + rank_direction
     file = @location[1]
     lower_file = file - 1
     higher_file = file + 1
-    captures << [rank, lower_file] if opposing_piece?(rank, lower_file, board)
-    captures << [rank, higher_file] if opposing_piece?(rank, higher_file, board)
-    captures << previous_piece.location if valid_en_passant?(previous_piece)
+    if opposing_piece?(rank, lower_file, board.data)
+      captures << [rank, lower_file]
+    end
+    if opposing_piece?(rank, higher_file, board.data)
+      captures << [rank, higher_file]
+    end
+    captures << previous_location if valid_en_passant?(board.previous_piece)
     captures
   end
 

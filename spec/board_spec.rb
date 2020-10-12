@@ -147,8 +147,9 @@ RSpec.describe Board do
 
     context 'when there is one current_move' do
       before do
-        allow(piece).to receive(:current_moves).and_return([0, 1])
-        allow(piece).to receive(:current_captures)
+        allow(piece).to receive(:moves).and_return([0, 1])
+        allow(piece).to receive(:captures)
+        allow(piece).to receive(:update)
       end
 
       it 'returns true' do
@@ -159,8 +160,9 @@ RSpec.describe Board do
 
     context 'when there is one current_captures' do
       before do
-        allow(piece).to receive(:current_moves).and_return([])
-        allow(piece).to receive(:current_captures).and_return([1, 1])
+        allow(piece).to receive(:moves).and_return([])
+        allow(piece).to receive(:captures).and_return([1, 1])
+        allow(piece).to receive(:update)
       end
 
       it 'returns true' do
@@ -171,8 +173,9 @@ RSpec.describe Board do
 
     context 'when there is no current_move or current_capture' do
       before do
-        allow(piece).to receive(:current_moves).and_return([])
-        allow(piece).to receive(:current_captures).and_return([])
+        allow(piece).to receive(:moves).and_return([])
+        allow(piece).to receive(:captures).and_return([])
+        allow(piece).to receive(:update)
       end
 
       it 'returns false' do
@@ -184,11 +187,12 @@ RSpec.describe Board do
 
   describe '#valid_piece_movement?' do
     context 'when coordinates matches a valid move' do
-      subject(:board_valid) { described_class.new(data_valid, piece, [[1, 0]]) }
+      subject(:board_valid) { described_class.new(data_valid, piece) }
       let(:data_valid) { [[piece, nil], [nil, nil]] }
       let(:piece) { double(Piece, location: [0, 0]) }
 
       it 'returns true' do
+        allow(piece).to receive(:moves).and_return([[1, 0]])
         coordinates = { row: 1, column: 0 }
         result = board_valid.valid_piece_movement?(coordinates)
         expect(result).to be true
@@ -196,11 +200,13 @@ RSpec.describe Board do
     end
 
     context 'when coordinates matches a valid capture' do
-      subject(:board_valid) { described_class.new(data_valid, piece, [], [[1, 0]]) }
+      subject(:board_valid) { described_class.new(data_valid, piece) }
       let(:data_valid) { [[piece, nil], [nil, nil]] }
       let(:piece) { double(Piece, location: [0, 0]) }
 
       it 'returns true' do
+        allow(piece).to receive(:moves).and_return([])
+        allow(piece).to receive(:captures).and_return([[1, 0]])
         coordinates = { row: 1, column: 0 }
         result = board_valid.valid_piece_movement?(coordinates)
         expect(result).to be true
@@ -208,11 +214,13 @@ RSpec.describe Board do
     end
 
     context 'when coordinates does not matches valid move or capture' do
-      subject(:board_valid) { described_class.new(data_valid, piece, [], [[1, 0]]) }
+      subject(:board_valid) { described_class.new(data_valid, piece) }
       let(:data_valid) { [[piece, nil], [nil, nil]] }
       let(:piece) { double(Piece, location: [0, 0]) }
 
       it 'returns false' do
+        allow(piece).to receive(:moves).and_return([])
+        allow(piece).to receive(:captures).and_return([1, 0])
         coordinates = { row: 2, column: 0 }
         result = board_valid.valid_piece_movement?(coordinates)
         expect(result).to be false
@@ -225,15 +233,26 @@ RSpec.describe Board do
     let(:data_location) { [[piece, nil], [nil, nil]] }
     let(:piece) { double(Piece, location: [0, 0]) }
 
-    it 'sends coordinates to piece' do
+    before do
+      allow(piece).to receive(:update).with(board_location)
+      allow(piece).to receive(:update_location).with(1, 0)
+    end
+
+    it 'sends update_location with coordinates to piece' do
       coordinates = { row: 1, column: 0 }
       expect(piece).to receive(:update_location).with(1, 0)
       board_location.update_active_piece_location(coordinates)
     end
+
+    # it 'sends update with board.self to piece' do
+    #   coordinates = { row: 1, column: 0 }
+    #   expect(piece).to receive(:update).with(board_location)
+    #   board_location.update_active_piece_location(coordinates)
+    # end
   end
 
   describe '#reset_board_values' do
-    subject(:board_values) { described_class.new(data_values, piece, [[1, 1]], [[0, 1]]) }
+    subject(:board_values) { described_class.new(data_values, piece) }
     let(:data_values) { [[piece, nil], [nil, nil]] }
     let(:piece) { double(Piece, location: [0, 0]) }
 
@@ -246,24 +265,12 @@ RSpec.describe Board do
       board_values.reset_board_values
       expect(board_values.active_piece).to be_nil
     end
-
-    it 'sets valid_moves to be an empty array' do
-      board_values.reset_board_values
-      valid_moves = board_values.instance_variable_get(:@valid_moves)
-      expect(valid_moves).to be_empty
-    end
-
-    it 'sets valid_captures to be an empty array' do
-      board_values.reset_board_values
-      valid_captures = board_values.instance_variable_get(:@valid_captures)
-      expect(valid_captures).to be_empty
-    end
   end
 
   describe '#piece?' do
     subject(:board_piece) { described_class.new(data_piece, pawn) }
     let(:data_piece) { [[pawn, nil], [nil, nil]] }
-    let(:pawn) { Pawn.new({ color: :white, location: [0, 0] }) }
+    let(:pawn) { instance_double(Piece) }
 
     context 'when coordinates is a piece' do
       it 'returns true' do
@@ -332,6 +339,7 @@ RSpec.describe Board do
         before do
           board.instance_variable_set(:@previous_piece, white_pawn)
           allow(black_pawn).to receive(:update_location)
+          allow(black_pawn).to receive(:update)
         end
 
         it 'does not call update_en_passant' do
@@ -361,6 +369,7 @@ RSpec.describe Board do
         before do
           board.instance_variable_set(:@previous_piece, white_rook)
           allow(black_pawn).to receive(:update_location)
+          allow(black_pawn).to receive(:update)
         end
 
         it 'does not call update_en_passant' do
@@ -390,6 +399,7 @@ RSpec.describe Board do
         before do
           board.instance_variable_set(:@previous_piece, white_pawn)
           allow(black_rook).to receive(:update_location)
+          allow(black_rook).to receive(:update)
         end
 
         it 'does not call update_en_passant' do
@@ -419,6 +429,7 @@ RSpec.describe Board do
         before do
           board.instance_variable_set(:@previous_piece, white_pawn)
           allow(black_pawn).to receive(:update_location)
+          allow(black_pawn).to receive(:update)
         end
 
         it 'does not call update_en_passant' do
@@ -432,7 +443,7 @@ RSpec.describe Board do
 
   describe 'possible_en_passant?' do
     context 'when en_passant is possible' do
-      subject(:board) { described_class.new(data, black_pawn, [[5, 2]], [[4, 3]]) }
+      subject(:board) { described_class.new(data, black_pawn) }
       let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: true) }
       let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
       let(:data) do
@@ -450,6 +461,7 @@ RSpec.describe Board do
 
       before do
         board.instance_variable_set(:@previous_piece, white_pawn)
+        allow(black_pawn).to receive(:captures).and_return([[4, 3]])
       end
 
       it 'returns true' do
@@ -459,7 +471,7 @@ RSpec.describe Board do
     end
 
     context 'when en_passant is not possible' do
-      subject(:board) { described_class.new(data, black_pawn, [[5, 2]], [[4, 3]]) }
+      subject(:board) { described_class.new(data, black_pawn) }
       let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: false) }
       let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
       let(:data) do
@@ -477,6 +489,7 @@ RSpec.describe Board do
 
       before do
         board.instance_variable_set(:@previous_piece, white_pawn)
+        allow(black_pawn).to receive(:captures).and_return([[4, 3]])
       end
 
       it 'returns false' do
@@ -485,4 +498,52 @@ RSpec.describe Board do
       end
     end
   end
+
+  # describe 'check?' do
+  #   context 'when king is in check' do
+  #     subject(:board) { described_class.new(data) }
+  #     let(:black_queen) { instance_double(Queen, color: :black, location: [0, 4], captures: [[6, 4], [7, 4]]) }
+  #     let(:white_king) { instance_double(King, color: :white, location: [7, 4]) }
+  #     let(:data) do
+  #       [
+  #         [nil, nil, nil, nil, black_queen, nil, nil, nil],
+  #         [nil, nil, nil, nil, nil, nil, nil, nil],
+  #         [nil, nil, nil, nil, nil, nil, nil, nil],
+  #         [nil, nil, nil, nil, nil, nil, nil, nil],
+  #         [nil, nil, nil, nil, nil, nil, nil, nil],
+  #         [nil, nil, nil, nil, nil, nil, nil, nil],
+  #         [nil, nil, nil, nil, nil, nil, nil, nil],
+  #         [nil, nil, nil, nil, white_king, nil, nil, nil]
+  #       ]
+  #     end
+
+  #     it 'returns true' do
+  #       result = board.check?(white_king)
+  #       expect(result).to be true
+  #     end
+  #   end
+
+  #   context 'when king is not in check' do
+  #     subject(:board) { described_class.new(data) }
+  #     let(:black_bishop) { instance_double(Bishop, color: :black, location: [0, 4], captures: [[1, 3], [2, 2]]) }
+  #     let(:white_king) { instance_double(King, color: :white, location: [7, 4]) }
+  #     let(:data) do
+  #       [
+  #         [nil, nil, nil, nil, black_bishop, nil, nil, nil],
+  #         [nil, nil, nil, nil, nil, nil, nil, nil],
+  #         [nil, nil, nil, nil, nil, nil, nil, nil],
+  #         [nil, nil, nil, nil, nil, nil, nil, nil],
+  #         [nil, nil, nil, nil, nil, nil, nil, nil],
+  #         [nil, nil, nil, nil, nil, nil, nil, nil],
+  #         [nil, nil, nil, nil, nil, nil, nil, nil],
+  #         [nil, nil, nil, nil, white_king, nil, nil, nil]
+  #       ]
+  #     end
+
+  #     it 'returns false' do
+  #       result = board.check?(white_king)
+  #       expect(result).to be false
+  #     end
+  #   end
+  # end
 end
