@@ -72,6 +72,7 @@ class Game
   # Need to test any outgoing command messages ??
   def select_move_coordinates
     puts en_passant_warning if @board.possible_en_passant?
+    # puts king_check_warning if King is in check!
     input = user_input('Where would you like to move it?')
     validate_input(input)
     coords = translate_coordinates(input)

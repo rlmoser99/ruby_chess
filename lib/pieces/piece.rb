@@ -41,7 +41,7 @@ class Piece
     find_valid_captures(board.data).compact
   end
 
-  # Checks a move if it would put the king in check
+  # Checks each moves/captures if it would put the king in check
   def remove_king_check_moves(board, moves)
     return moves unless moves.size.positive?
 

@@ -21,17 +21,13 @@ game.play
 # KING-CHECK BRANCH
 # (done) Each piece removes any moves that could put their King in check.
 # (done) Each piece removes any captures that could put their King in check.
-# 3. Beginning turns, if King is in check, the move must un-check the King.
-# 4. Visually warn player when King is in check (start of turn)
-
-# Re-arrange MoveValidator.verify_possible_moves to not need all 3 at new
-# ? Does there need to be a "check"?
-# ? Is Board#check?(king) needed? Should it do both kings in one check?
-# ? If not, remove Board#check? tests
+# (did) Beginning turns, if King is in check, the move must un-check the King.
 
 # PLAYER TURNS
-# 1. Create 2 arrays of black & white pieces Game#select_piece_coordinates
-# 2. Need to add 'Game Over' checks
+# 1. Warn player when their King is in check (start of turn)
+# -> Does there need to be Board#check? If not, remove Board#check? tests
+# 2. Create 2 arrays of black & white pieces Game#select_piece_coordinates
+# 3. Need to add 'Game Over' checks
 
 # PIECE REFACTOR:
 # 1. Refactor Pawn #current_moves & #current_captures
@@ -45,6 +41,7 @@ game.play
 # 1. Review all methods to see if they should be Public or Private
 # 2. Make sure public ones are tested
 # 3. Review all tests & remove unneccessary/repetitive tests.
+# 4. Run reek for code feedback
 
 # CASTLING:
 
