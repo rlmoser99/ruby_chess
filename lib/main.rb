@@ -19,12 +19,12 @@ game = Game.new
 game.play
 
 # PIECE REFACTOR:
-# 1. Refactor Pawn #current_moves & #current_captures
-# 2. Refactor Knight #current_moves & #current_captures
+# 1. Refactor Knight #current_moves & #current_captures
+# 2. Refactor Pawn #current_moves & #current_captures
+# BUG: white pawn c4, black pawn in d5 -> triggered en passsant incorrectly!
 # 3. Does King need to be refactored?
 # 4. Re-name methods for how they currently function.
 # 5. Look closer at Piece Inheritance and instance variables?
-# BUG: white pawn c4, black pawn in d5 -> triggered en passsant incorrectly!
 
 # GENERAL REFACTOR:
 # 1. Review all methods to see if they should be Public or Private
