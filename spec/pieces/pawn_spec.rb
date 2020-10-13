@@ -615,4 +615,46 @@ RSpec.describe Pawn do
       end
     end
   end
+
+  describe '#en_passant_rank?' do
+    context 'when pawn is in correct rank for en passant' do
+      context 'when pawn is white' do
+        subject(:white_pawn) { described_class.new(board, { color: :white, location: [3, 4] }) }
+
+        it 'returns true' do
+          result = white_pawn.en_passant_rank?
+          expect(result).to be true
+        end
+      end
+
+      context 'when pawn is black' do
+        subject(:black_pawn) { described_class.new(board, { color: :black, location: [4, 4] }) }
+
+        it 'returns true' do
+          result = black_pawn.en_passant_rank?
+          expect(result).to be true
+        end
+      end
+    end
+
+    context 'when pawn is not in correct rank for en passant' do
+      context 'when pawn is white' do
+        subject(:white_pawn) { described_class.new(board, { color: :white, location: [6, 4] }) }
+
+        it 'returns false' do
+          result = white_pawn.en_passant_rank?
+          expect(result).to be false
+        end
+      end
+
+      context 'when pawn is black' do
+        subject(:black_pawn) { described_class.new(board, { color: :black, location: [2, 4] }) }
+
+        it 'returns false' do
+          result = black_pawn.en_passant_rank?
+          expect(result).to be false
+        end
+      end
+    end
+  end
 end

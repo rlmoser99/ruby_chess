@@ -155,7 +155,11 @@ class Board
 
   # Checks if previous and active pieces are pawns, and if previous is en passant.
   def en_passant_pawn?
-    @previous_piece.symbol == " \u265F " && @active_piece.symbol == " \u265F " && @previous_piece.en_passant
+    two_pawns? && @active_piece.en_passant_rank? && @previous_piece.en_passant
+  end
+
+  def two_pawns?
+    @previous_piece.symbol == " \u265F " && @active_piece.symbol == " \u265F "
   end
 
   def update_en_passant(coords)

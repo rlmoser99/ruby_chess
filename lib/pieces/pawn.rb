@@ -69,6 +69,13 @@ class Pawn < Piece
     color == :white ? -1 : 1
   end
 
+  # Tested in current_captures
+  # NOW PUBLIC, due to use in board -> MAKE TESTS!!!
+  # Checks if black pawn is in 4th row or white pawn is in 3rd row
+  def en_passant_rank?
+    (location[0] == 4 && color == :black) || (location[0] == 3 && color == :white)
+  end
+
   private
 
   # Tested in update_location
@@ -87,11 +94,5 @@ class Pawn < Piece
   # Checks that a piece is a pawn & that en_passant rank is valid
   def valid_en_passant?(piece)
     en_passant_rank? && symbol == piece.symbol && piece.en_passant
-  end
-
-  # Tested in current_captures
-  # Checks if black pawn is in 4th row or white pawn is in 3rd row
-  def en_passant_rank?
-    (location[0] == 4 && color == :black) || (location[0] == 3 && color == :white)
   end
 end
