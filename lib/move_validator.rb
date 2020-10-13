@@ -12,28 +12,36 @@ class MoveValidator
   def verify_possible_moves
     @possible_board.data[@current_location[0]][@current_location[1]] = nil
     @possible_moves.select do |move|
-      @possible_board.data[move[0]][move[1]] = @current_piece
-      result = opponent_capture_king?
-      @possible_board.data[move[0]][move[1]] = nil
-      result
+      move_safe_for_king?(move)
     end
   end
 
   private
 
-  def opponent_capture_king?
-    @possible_board.data.none? do |row|
+  def move_safe_for_king?(move)
+    temp_board = @possible_board
+    temp_board.data[move[0]][move[1]] = @current_piece
+    location = find_king_location(move)
+    result = safe_move?(location, temp_board)
+    temp_board.data[move[0]][move[1]] = nil
+    result
+  end
+
+  def safe_move?(kings_location, board)
+    board.data.none? do |row|
       row.any? do |square|
         next unless square && square.color != @current_piece.color
 
-        captures = square.format_valid_captures(@possible_board)
-        captures.include?(king_location)
+        captures = square.format_valid_captures(board)
+        captures.include?(kings_location)
       end
     end
   end
 
-  def king_location
-    if @current_piece.color == :black
+  def find_king_location(move)
+    if @current_piece.symbol == " \u265A "
+      move
+    elsif @current_piece.color == :black
       @possible_board.black_king.location
     else
       @possible_board.white_king.location

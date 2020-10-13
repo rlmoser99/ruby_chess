@@ -25,13 +25,13 @@ game.play
 # 4. Re-name methods for how they currently function.
 # 5. Look closer at Piece Inheritance and instance variables?
 # BUG: white pawn c4, black pawn in d5 -> triggered en passsant incorrectly!
-# BUG: white rook d8, black king e8 -> capture rook correct, but showed d7 as valid move
 
 # GENERAL REFACTOR:
 # 1. Review all methods to see if they should be Public or Private
 # 2. Make sure public ones are tested
 # 3. Review all tests & remove unneccessary/repetitive tests.
 # 4. Run reek for code feedback
+# 5. Tests for move_validator may not be testing well, due to stubbing?
 
 # PLAYER TURNS
 # 1. Warn player when their King is in check (start of turn)
