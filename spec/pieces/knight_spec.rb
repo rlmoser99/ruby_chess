@@ -11,7 +11,7 @@ RSpec.describe Knight do
     allow(board).to receive(:add_observer)
   end
 
-  describe '#find_valid_moves' do
+  describe '#find_possible_moves' do
     let(:piece) { instance_double(Piece) }
 
     context 'during initial data setup' do
@@ -36,7 +36,7 @@ RSpec.describe Knight do
       end
 
       it 'has two moves' do
-        results = black_knight.find_valid_moves(board)
+        results = black_knight.find_possible_moves(board)
         expect(results).to contain_exactly([2, 0], [2, 2])
       end
     end
@@ -63,7 +63,7 @@ RSpec.describe Knight do
       end
 
       it 'has eight moves' do
-        results = black_knight.find_valid_moves(board)
+        results = black_knight.find_possible_moves(board)
         expect(results).to contain_exactly([1, 2], [1, 4], [2, 1], [2, 5], [4, 1], [4, 5], [5, 2], [5, 4])
       end
     end
@@ -90,7 +90,7 @@ RSpec.describe Knight do
       end
 
       it 'has two moves' do
-        results = white_knight.find_valid_moves(board)
+        results = white_knight.find_possible_moves(board)
         expect(results).to contain_exactly([5, 5], [5, 7])
       end
     end
@@ -117,13 +117,13 @@ RSpec.describe Knight do
       end
 
       it 'has no moves' do
-        results = black_knight.find_valid_moves(board)
+        results = black_knight.find_possible_moves(board)
         expect(results).to be_empty
       end
     end
   end
 
-  describe '#format_valid_captures' do
+  describe '#find_possible_captures' do
     let(:white_piece) { instance_double(Piece, color: :white) }
     let(:black_piece) { instance_double(Piece, color: :black) }
 
@@ -147,7 +147,7 @@ RSpec.describe Knight do
       end
 
       it 'has one capture' do
-        result = black_knight.format_valid_captures(board)
+        result = black_knight.find_possible_captures(board)
         expect(result).to contain_exactly([3, 5])
       end
     end
@@ -172,7 +172,7 @@ RSpec.describe Knight do
       end
 
       it 'has four captures' do
-        result = black_knight.format_valid_captures(board)
+        result = black_knight.find_possible_captures(board)
         expect(result).to contain_exactly([1, 2], [1, 4], [5, 2], [5, 4])
       end
     end
@@ -197,7 +197,7 @@ RSpec.describe Knight do
       end
 
       it 'has four captures' do
-        result = black_knight.format_valid_captures(board)
+        result = black_knight.find_possible_captures(board)
         expect(result).to contain_exactly([2, 1], [2, 5], [4, 1], [4, 5])
       end
     end

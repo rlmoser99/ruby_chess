@@ -11,7 +11,7 @@ RSpec.describe Bishop do
     allow(board).to receive(:add_observer)
   end
 
-  describe '#format_valid_moves' do
+  describe '#find_possible_moves' do
     let(:piece) { instance_double(Piece) }
 
     context 'when there are 2 spaces up rank/down file' do
@@ -32,7 +32,7 @@ RSpec.describe Bishop do
       end
 
       it 'has two moves' do
-        result = black_bishop.format_valid_moves(board)
+        result = black_bishop.find_possible_moves(board)
         expect(result).to contain_exactly([1, 1], [2, 0])
       end
     end
@@ -59,7 +59,7 @@ RSpec.describe Bishop do
       end
 
       it 'has two moves' do
-        result = black_bishop.format_valid_moves(board)
+        result = black_bishop.find_possible_moves(board)
         expect(result).to contain_exactly([1, 6], [2, 7])
       end
     end
@@ -86,7 +86,7 @@ RSpec.describe Bishop do
       end
 
       it 'has four moves' do
-        result = black_bishop.format_valid_moves(board)
+        result = black_bishop.find_possible_moves(board)
         expect(result).to contain_exactly([4, 4], [3, 5], [2, 6], [1, 7])
       end
     end
@@ -113,7 +113,7 @@ RSpec.describe Bishop do
       end
 
       it 'has four moves' do
-        result = black_bishop.format_valid_moves(board)
+        result = black_bishop.find_possible_moves(board)
         expect(result).to contain_exactly([4, 2], [3, 1], [2, 0])
       end
     end
@@ -140,7 +140,7 @@ RSpec.describe Bishop do
       end
 
       it 'has two moves' do
-        result = white_bishop.format_valid_moves(board)
+        result = white_bishop.find_possible_moves(board)
         expect(result).to contain_exactly([3, 1], [5, 1])
       end
     end
@@ -165,7 +165,7 @@ RSpec.describe Bishop do
       end
 
       it 'has no moves' do
-        result = white_bishop.format_valid_moves(board)
+        result = white_bishop.find_possible_moves(board)
         expect(result).to be_empty
       end
     end
@@ -192,13 +192,13 @@ RSpec.describe Bishop do
       end
 
       it 'has thirteen moves' do
-        result = white_bishop.format_valid_moves(board)
+        result = white_bishop.find_possible_moves(board)
         expect(result).to contain_exactly([0, 0], [0, 6], [1, 1], [1, 5], [2, 2], [2, 4], [4, 2], [4, 4], [5, 1], [5, 5], [6, 0], [6, 6], [7, 7])
       end
     end
   end
 
-  describe '#format_valid_captures' do
+  describe '#find_possible_captures' do
     let(:white_piece) { instance_double(Piece, color: :white) }
     let(:black_piece) { instance_double(Piece, color: :black) }
 
@@ -222,7 +222,7 @@ RSpec.describe Bishop do
       end
 
       it 'has one captures' do
-        result = white_bishop.format_valid_captures(board)
+        result = white_bishop.find_possible_captures(board)
         expect(result).to contain_exactly([5, 0])
       end
     end
@@ -246,7 +246,7 @@ RSpec.describe Bishop do
       end
 
       it 'has two captures' do
-        result = white_bishop.format_valid_captures(board)
+        result = white_bishop.find_possible_captures(board)
         expect(result).to contain_exactly([0, 6], [6, 0])
       end
     end
@@ -271,7 +271,7 @@ RSpec.describe Bishop do
       end
 
       it 'has no moves' do
-        result = white_bishop.format_valid_captures(board)
+        result = white_bishop.find_possible_captures(board)
         expect(result).to be_empty
       end
     end

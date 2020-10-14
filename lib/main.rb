@@ -19,10 +19,10 @@ game = Game.new
 game.play
 
 # PIECE REFACTOR:
-# 1. Refactor Knight #current_moves & #current_captures
-# 2. Refactor Pawn #current_moves & #current_captures
-# 3. Does King need to be refactored?
-# 4. Re-name methods for how they currently function.
+# (done) Refactor Knight #current_moves & #current_captures
+# (done) Refactor Pawn #current_moves & #current_captures
+# (done) Does King need to be refactored?
+# (done) Re-name methods for how they currently function.
 # 5. Look closer at Piece Inheritance and instance variables?
 
 # GENERAL REFACTOR:
@@ -31,6 +31,7 @@ game.play
 # 3. Review all tests & remove unneccessary/repetitive tests.
 # 4. Run reek for code feedback
 # 5. Tests for move_validator may not be testing well, due to stubbing?
+# 6. Double-check rubocop warnings.
 
 # PLAYER TURNS
 # 1. Warn player when their King is in check (start of turn)

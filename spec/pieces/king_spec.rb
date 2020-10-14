@@ -11,7 +11,7 @@ RSpec.describe King do
     allow(board).to receive(:add_observer)
   end
 
-  describe '#format_valid_moves' do
+  describe '#find_possible_moves' do
     let(:piece) { instance_double(Piece) }
 
     context 'when the king is surrounded by pieces' do
@@ -35,7 +35,7 @@ RSpec.describe King do
       end
 
       it 'has no moves' do
-        result = black_king.format_valid_moves(board)
+        result = black_king.find_possible_moves(board)
         expect(result).to be_empty
       end
     end
@@ -61,7 +61,7 @@ RSpec.describe King do
       end
 
       it 'has two moves' do
-        result = black_king.format_valid_moves(board)
+        result = black_king.find_possible_moves(board)
         expect(result).to contain_exactly([0, 3], [1, 5])
       end
     end
@@ -87,13 +87,13 @@ RSpec.describe King do
       end
 
       it 'has five moves' do
-        result = black_king.format_valid_moves(board)
+        result = black_king.find_possible_moves(board)
         expect(result).to contain_exactly([2, 7], [2, 6], [3, 6], [4, 6], [4, 7])
       end
     end
   end
 
-  describe '#format_valid_captures' do
+  describe '#find_possible_captures' do
     let(:black_piece) { instance_double(Piece) }
     let(:white_piece) { instance_double(Piece) }
 
@@ -122,7 +122,7 @@ RSpec.describe King do
       end
 
       it 'has no captures' do
-        result = white_king.format_valid_captures(board)
+        result = white_king.find_possible_captures(board)
         expect(result).to be_empty
       end
     end
@@ -147,7 +147,7 @@ RSpec.describe King do
       end
 
       it 'has one capture' do
-        result = white_king.format_valid_captures(board)
+        result = white_king.find_possible_captures(board)
         expect(result).to contain_exactly([6, 3])
       end
     end
@@ -172,7 +172,7 @@ RSpec.describe King do
       end
 
       it 'has two captures' do
-        result = white_king.format_valid_captures(board)
+        result = white_king.find_possible_captures(board)
         expect(result).to contain_exactly([4, 3], [5, 1])
       end
     end

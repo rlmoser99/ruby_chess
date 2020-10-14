@@ -15,16 +15,9 @@ class Knight < Piece
     @captures = []
   end
 
-  # refactor!!!
-  def current_moves(board)
-    possibilities = find_valid_moves(board)
-    @moves = remove_king_check_moves(board, possibilities)
-  end
-
-  def find_valid_moves(board)
-    moves = move_possibilities
+  def find_possible_moves(board)
     possibilities = []
-    moves.each do |move|
+    move_set.each do |move|
       rank = @location[0] + move[0]
       file = @location[1] + move[1]
       next unless rank.between?(0, 7) && file.between?(0, 7)
@@ -34,16 +27,9 @@ class Knight < Piece
     possibilities
   end
 
-  # refactor!!!
-  def current_captures(board)
-    possibilities = format_valid_captures(board)
-    @captures = remove_king_check_moves(board, possibilities)
-  end
-
-  def format_valid_captures(board)
-    moves = move_possibilities
+  def find_possible_captures(board)
     result = []
-    moves.each do |move|
+    move_set.each do |move|
       rank = @location[0] + move[0]
       file = @location[1] + move[1]
       next unless rank.between?(0, 7) && file.between?(0, 7)
@@ -55,14 +41,9 @@ class Knight < Piece
 
   private
 
-  def move_possibilities
+  def move_set
     [
       [-1, -2], [1, 2], [-1, 2], [1, -2], [-2, -1], [2, 1], [-2, 1], [2, -1]
     ]
-  end
-
-  def opposing_piece?(rank, file, data)
-    piece = data[rank][file]
-    piece && piece.color != color
   end
 end

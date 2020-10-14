@@ -11,7 +11,7 @@ RSpec.describe Pawn do
     allow(board).to receive(:add_observer)
   end
 
-  describe '#find_valid_moves' do
+  describe '#find_possible_moves' do
     let(:piece) { instance_double(Piece) }
 
     context 'when pawn is black' do
@@ -28,7 +28,7 @@ RSpec.describe Pawn do
           end
 
           it 'has two moves' do
-            results = black_pawn.find_valid_moves(board)
+            results = black_pawn.find_possible_moves(board)
             expect(results).to contain_exactly([2, 0], [3, 0])
           end
         end
@@ -42,7 +42,7 @@ RSpec.describe Pawn do
           end
 
           it 'has one move' do
-            results = black_pawn.find_valid_moves(board)
+            results = black_pawn.find_possible_moves(board)
             expect(results).to contain_exactly([2, 0])
           end
         end
@@ -65,7 +65,7 @@ RSpec.describe Pawn do
           end
 
           it 'has one move' do
-            results = black_pawn.find_valid_moves(board)
+            results = black_pawn.find_possible_moves(board)
             expect(results).to contain_exactly([3, 0])
           end
         end
@@ -80,7 +80,7 @@ RSpec.describe Pawn do
           end
 
           it 'has no moves' do
-            results = black_pawn.find_valid_moves(board)
+            results = black_pawn.find_possible_moves(board)
             expect(results).to be_empty
           end
         end
@@ -103,7 +103,7 @@ RSpec.describe Pawn do
           end
 
           it 'has two moves' do
-            results = white_pawn.find_valid_moves(board)
+            results = white_pawn.find_possible_moves(board)
             expect(results).to contain_exactly([0, 0], [1, 0])
           end
         end
@@ -118,7 +118,7 @@ RSpec.describe Pawn do
           end
 
           it 'has one move' do
-            results = white_pawn.find_valid_moves(board)
+            results = white_pawn.find_possible_moves(board)
             expect(results).to contain_exactly([1, 0])
           end
         end
@@ -141,7 +141,7 @@ RSpec.describe Pawn do
           end
 
           it 'has one move' do
-            results = white_pawn.find_valid_moves(board)
+            results = white_pawn.find_possible_moves(board)
             expect(results).to contain_exactly([0, 0])
           end
         end
@@ -156,7 +156,7 @@ RSpec.describe Pawn do
           end
 
           it 'has no moves' do
-            results = white_pawn.find_valid_moves(board)
+            results = white_pawn.find_possible_moves(board)
             expect(results).to be_empty
           end
         end
@@ -164,7 +164,7 @@ RSpec.describe Pawn do
     end
   end
 
-  describe '#format_valid_captures' do
+  describe '#find_possible_captures' do
     let(:black_piece) { instance_double(Piece, color: :black, symbol: nil) }
     let(:white_piece) { instance_double(Piece, color: :white, symbol: nil) }
 
@@ -192,7 +192,7 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            result = black_pawn.format_valid_captures(board)
+            result = black_pawn.find_possible_captures(board)
             expect(result).to be_empty
           end
         end
@@ -217,7 +217,7 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            result = black_pawn.format_valid_captures(board)
+            result = black_pawn.find_possible_captures(board)
             expect(result).to be_empty
           end
         end
@@ -242,7 +242,7 @@ RSpec.describe Pawn do
           end
 
           it 'has one capture' do
-            result = black_pawn.format_valid_captures(board)
+            result = black_pawn.find_possible_captures(board)
             expect(result).to contain_exactly([2, 1])
           end
         end
@@ -270,7 +270,7 @@ RSpec.describe Pawn do
           end
 
           it 'has one capture' do
-            result = black_pawn.format_valid_captures(board)
+            result = black_pawn.find_possible_captures(board)
             expect(result).to contain_exactly([2, 0])
           end
         end
@@ -298,7 +298,7 @@ RSpec.describe Pawn do
         end
 
         it 'has one capture' do
-          result = black_pawn.format_valid_captures(board)
+          result = black_pawn.find_possible_captures(board)
           expect(result).to contain_exactly([4, 2])
         end
       end
@@ -325,7 +325,7 @@ RSpec.describe Pawn do
         end
 
         it 'has one capture' do
-          result = black_pawn.format_valid_captures(board)
+          result = black_pawn.find_possible_captures(board)
           expect(result).to contain_exactly([5, 0])
         end
       end
@@ -355,7 +355,7 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            result = white_pawn.format_valid_captures(board)
+            result = white_pawn.find_possible_captures(board)
             expect(result).to be_empty
           end
         end
@@ -380,7 +380,7 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            result = white_pawn.format_valid_captures(board)
+            result = white_pawn.find_possible_captures(board)
             expect(result).to be_empty
           end
         end
@@ -405,7 +405,7 @@ RSpec.describe Pawn do
           end
 
           it 'has one capture' do
-            result = white_pawn.format_valid_captures(board)
+            result = white_pawn.find_possible_captures(board)
             expect(result).to contain_exactly([5, 6])
           end
         end
@@ -434,7 +434,7 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            result = white_pawn.format_valid_captures(board)
+            result = white_pawn.find_possible_captures(board)
             expect(result).to be_empty
           end
         end
@@ -459,7 +459,7 @@ RSpec.describe Pawn do
           end
 
           it 'has no captures' do
-            result = white_pawn.format_valid_captures(board)
+            result = white_pawn.find_possible_captures(board)
             expect(result).to be_empty
           end
         end
@@ -484,7 +484,7 @@ RSpec.describe Pawn do
           end
 
           it 'has one capture' do
-            result = white_pawn.format_valid_captures(board)
+            result = white_pawn.find_possible_captures(board)
             expect(result).to contain_exactly([5, 5])
           end
         end
@@ -509,7 +509,7 @@ RSpec.describe Pawn do
           end
 
           it 'has two captures' do
-            result = white_pawn.format_valid_captures(board)
+            result = white_pawn.find_possible_captures(board)
             expect(result).to contain_exactly([5, 5], [5, 3])
           end
         end
@@ -536,7 +536,7 @@ RSpec.describe Pawn do
           end
 
           it 'has two captures' do
-            result = white_pawn.format_valid_captures(board)
+            result = white_pawn.find_possible_captures(board)
             expect(result).to contain_exactly([3, 4], [2, 2])
           end
         end
@@ -564,7 +564,7 @@ RSpec.describe Pawn do
           end
 
           it 'has one capture' do
-            result = white_pawn.format_valid_captures(board)
+            result = white_pawn.find_possible_captures(board)
             expect(result).to contain_exactly([2, 2])
           end
         end
