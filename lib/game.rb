@@ -26,7 +26,7 @@ class Game
   # Declares error message when user enters invalid move
   class PieceError < StandardError
     def message
-      'Invalid piece! This piece does not have any valid moves. Please enter a different column & row.'
+      'Invalid piece! This piece does not have any legal moves.'
     end
   end
 
@@ -83,33 +83,33 @@ class Game
     retry
   end
 
-  # Tested
+  private
+
+  # Tested (private, but used in a public script method)
   def validate_input(input)
     raise InputError unless input.match?(/^[a-h][1-8]$/)
   end
 
-  # Tested
+  # Tested (private, but used in a public script method)
   def validate_piece_coordinates(coords)
     raise CoordinatesError unless @board.piece?(coords)
   end
 
-  # Tested
+  # Tested (private, but used in a public script method)
   def validate_move(coords)
     raise MoveError unless @board.valid_piece_movement?(coords)
   end
 
-  # Tested
-  def translate_coordinates(input)
-    translator ||= NotationTranslator.new
-    translator.translate_notation(input)
-  end
-
-  # Tested
+  # Tested (private, but used in a public script method)
   def validate_active_piece
     raise PieceError unless @board.active_piece_moveable?
   end
 
-  private
+  # Tested (private, but used in a public script method)
+  def translate_coordinates(input)
+    translator ||= NotationTranslator.new
+    translator.translate_notation(input)
+  end
 
   def user_input(phrase)
     puts phrase
@@ -117,6 +117,9 @@ class Game
   end
 
   def en_passant_warning
-    "To capture this pawn en passant, enter the \e[91mcapture coordinates\e[0m. Your pawn will be moved to the square in front of it."
+    <<~HEREDOC
+      To capture this pawn en passant, enter the \e[41mcapture coordinates\e[0m.
+      \e[36mYour pawn will be moved to the square in front of it!\e[0m
+    HEREDOC
   end
 end

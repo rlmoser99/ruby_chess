@@ -12,22 +12,22 @@ class MoveValidator
   def verify_possible_moves
     @possible_board.data[@current_location[0]][@current_location[1]] = nil
     @possible_moves.select do |move|
-      move_safe_for_king?(move)
+      legal_move?(move)
     end
   end
 
   private
 
-  def move_safe_for_king?(move)
+  def legal_move?(move)
     temp_board = @possible_board
     temp_board.data[move[0]][move[1]] = @current_piece
-    location = find_king_location(move)
-    result = safe_move?(location, temp_board)
+    king = find_king_location(move)
+    result = safe_king?(king, temp_board)
     temp_board.data[move[0]][move[1]] = nil
     result
   end
 
-  def safe_move?(kings_location, board)
+  def safe_king?(kings_location, board)
     board.data.none? do |row|
       row.any? do |square|
         next unless square && square.color != @current_piece.color

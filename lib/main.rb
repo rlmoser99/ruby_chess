@@ -18,14 +18,6 @@ require_relative 'pieces/pawn.rb'
 game = Game.new
 game.play
 
-# GENERAL REFACTOR:
-# 1. Review all methods to see if they should be Public or Private
-# 2. Make sure public ones are tested
-# 3. Review all tests & remove unneccessary/repetitive tests.
-# 4. Run reek for code feedback
-# 5. Tests for move_validator may not be testing well, due to stubbing?
-# 6. Double-check rubocop warnings.
-
 # PLAYER TURNS
 # 1. Warn player when their King is in check (start of turn)
 # -> Does there need to be Board#check? If not, remove Board#check? tests
@@ -38,3 +30,7 @@ game.play
 
 # SAVE & LOAD GAME:
 # 1. Make a saved game for "new" with pieces in original spots. ??
+
+# FUTURE NOTES:
+# Board class is too big. Is there an abstraction or way that can reduce it?
+# Tests for move_validator may not be testing accurately, due to stubbing?

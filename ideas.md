@@ -1,5 +1,13 @@
-# lib/board.rb -- 1 warnings:
-[58, 58]:FeatureEnvy: Board#update_active_piece_location refers to 'coords' more than self -> IGNORE
+# lib/board.rb -- 9 warnings:
+[181, 182]:DuplicateMethodCall: Board#remove_en_passant_capture calls '@data[row]' 2 times -> IGNORE
+[59, 59, 60]:DuplicateMethodCall: Board#update_new_coordinates calls '@data[row]' 3 times -> IGNORE
+[59, 59]:DuplicateMethodCall: Board#update_new_coordinates calls '@data[row][column]' 2 times -> IGNORE
+[40, 40]:FeatureEnvy: Board#piece? refers to 'coords' more than self -> IGNORE
+[71, 71]:FeatureEnvy: Board#update_active_piece_location refers to 'coords' more than self -> IGNORE
+[146]:NestedIterators: Board#update_all_moves_captures contains iterators nested 2 deep -> IGNORE
+[7]:TooManyInstanceVariables: Board has at least 5 instance variables -> IGNORE
+[7]:TooManyMethods: Board has at least 21 methods -> IGNORE
+[107]:TooManyStatements: Board#initial_placement has approx 7 statements -> IGNORE
 
 # lib/displayable.rb -- 7 warnings:
 [61]:ControlParameter: Displayable#print_square is controlled by argument 'column_index' -> IGNORE
@@ -17,6 +25,16 @@
 [80]:UncommunicativeVariableName: Game#select_move_coordinates has the variable name 'e' -> IGNORE
 [64]:UncommunicativeVariableName: Game#select_piece_coordinates has the variable name 'e' -> IGNORE
 [109]:UtilityFunction: Game#translate_coordinates doesn't depend on instance state -> IGNORE
+
+
+# lib/move_validator.rb -- 7 warnings:
+[23, 26]:DuplicateMethodCall: MoveValidator#legal_move? calls 'move[0]' 2 times -> IGNORE
+[23, 26]:DuplicateMethodCall: MoveValidator#legal_move? calls 'move[1]' 2 times -> IGNORE
+[23, 26]:DuplicateMethodCall: MoveValidator#legal_move? calls 'temp_board.data' 2 times -> IGNORE
+[23, 26]:DuplicateMethodCall: MoveValidator#legal_move? calls 'temp_board.data[move[0]]' 2 times -> IGNORE
+[33, 35]:FeatureEnvy: MoveValidator#safe_king? refers to 'square' more than self -> IGNORE
+[32]:NestedIterators: MoveValidator#safe_king? contains iterators nested 2 deep -> IGNORE
+[21]:TooManyStatements: MoveValidator#legal_move? has approx 6 statements -> IGNORE
 
 # lib/pieces/bishop.rb -- 1 warnings:
 [6]:TooManyInstanceVariables: Bishop has at least 5 instance variables -> IGNORE
@@ -43,3 +61,5 @@
 
 # lib/pieces/rook.rb -- 1 warning:
 [6]:TooManyInstanceVariables: Rook has at least 5 instance variables 
+
+# TOTAL: 41 total warnings

@@ -36,115 +36,97 @@ RSpec.describe Game do
   end
 
   describe '#validate_input' do
-    subject(:game_input) { described_class.new }
+    subject(:game) { described_class.new }
 
     context 'when input is valid' do
       it 'does not raise an error' do
-        expect { game_input.validate_input('c7') }.not_to raise_error
+        expect { game.send(:validate_input, 'c7') }.not_to raise_error
       end
     end
 
     context 'when input is not valid' do
       it 'raises an error' do
-        expect { game_input.validate_input('7c') }.to raise_error(Game::InputError)
+        expect { game.send(:validate_input, '7c') }.to raise_error(Game::InputError)
       end
 
       it 'raises an error' do
-        expect { game_input.validate_input('77') }.to raise_error(Game::InputError)
+        expect { game.send(:validate_input, '77') }.to raise_error(Game::InputError)
       end
 
       it 'raises an error' do
-        expect { game_input.validate_input('cc') }.to raise_error(Game::InputError)
+        expect { game.send(:validate_input, 'cc') }.to raise_error(Game::InputError)
       end
     end
   end
 
   describe '#validate_piece_coordinates' do
-    subject(:game_coords) { described_class.new(board_coords) }
-    let(:board_coords) { instance_double(Board) }
+    subject(:game) { described_class.new(board) }
+    let(:board) { instance_double(Board) }
 
-    context 'when board.piece? returns true' do
-      before do
-        allow(board_coords).to receive(:piece?).and_return(true)
-      end
-
+    context 'when board coordinates contains a piece' do
       it 'does not raise an error' do
+        allow(board).to receive(:piece?).and_return(true)
         coords = { row: 1, column: 0 }
-        expect { game_coords.validate_piece_coordinates(coords) }.not_to raise_error
+        expect { game.send(:validate_piece_coordinates, coords) }.not_to raise_error
       end
     end
 
-    context 'when board.piece? returns false' do
-      before do
-        allow(board_coords).to receive(:piece?).and_return(false)
-      end
-
+    context 'when board coordinates do not contain a piece' do
       it 'raises an error' do
+        allow(board).to receive(:piece?).and_return(false)
         coords = { row: 1, column: 0 }
-        expect { game_coords.validate_piece_coordinates(coords) }.to raise_error(Game::CoordinatesError)
+        expect { game.send(:validate_piece_coordinates, coords) }.to raise_error(Game::CoordinatesError)
       end
     end
   end
 
   describe '#validate_move' do
-    subject(:game_move) { described_class.new(board_move) }
-    let(:board_move) { instance_double(Board) }
+    subject(:game) { described_class.new(board) }
+    let(:board) { instance_double(Board) }
 
-    context 'when board.valid_piece_movement? returns true' do
-      before do
-        allow(board_move).to receive(:valid_piece_movement?).and_return(true)
-      end
-
+    context 'when coordinates is a valid piece movement' do
       it 'does not raise an error' do
+        allow(board).to receive(:valid_piece_movement?).and_return(true)
         coords = { row: 1, column: 0 }
-        expect { game_move.validate_move(coords) }.not_to raise_error
+        expect { game.send(:validate_move, coords) }.not_to raise_error
       end
     end
 
-    context 'when board.valid_piece_movement? returns false' do
-      before do
-        allow(board_move).to receive(:valid_piece_movement?).and_return(false)
-      end
-
+    context 'when coordinates is not a valid piece movement' do
       it 'raises an error' do
+        allow(board).to receive(:valid_piece_movement?).and_return(false)
         coords = { row: 1, column: 0 }
-        expect { game_move.validate_move(coords) }.to raise_error(Game::MoveError)
+        expect { game.send(:validate_move, coords) }.to raise_error(Game::MoveError)
       end
     end
   end
 
   describe '#validate_active_piece' do
-    subject(:game_piece) { described_class.new(board_piece) }
-    let(:board_piece) { instance_double(Board) }
+    subject(:game) { described_class.new(board) }
+    let(:board) { instance_double(Board) }
 
-    context 'when board.valid_piece_movement? returns true' do
-      before do
-        allow(board_piece).to receive(:active_piece_moveable?).and_return(true)
-      end
-
+    context 'when active piece is moveable' do
       it 'does not raise an error' do
-        expect { game_piece.validate_active_piece }.not_to raise_error
+        allow(board).to receive(:active_piece_moveable?).and_return(true)
+        expect { game.send(:validate_active_piece) }.not_to raise_error
       end
     end
 
-    context 'when board.valid_piece_movement? returns false' do
-      before do
-        allow(board_piece).to receive(:active_piece_moveable?).and_return(false)
-      end
-
+    context 'when active piece is not moveable' do
       it 'raises an error' do
-        expect { game_piece.validate_active_piece }.to raise_error(Game::PieceError)
+        allow(board).to receive(:active_piece_moveable?).and_return(false)
+        expect { game.send(:validate_active_piece) }.to raise_error(Game::PieceError)
       end
     end
   end
 
   describe '#translate_coordinates' do
-    subject(:game_translate) { described_class.new }
+    subject(:game) { described_class.new }
 
     it 'sends command message to NotationTranslator' do
       user_input = 'd2'
       expect_any_instance_of(NotationTranslator).to receive(:translate_notation).with(user_input)
-      game_translate.translate_coordinates(user_input)
+      game.send(:translate_coordinates, user_input)
     end
   end
 end
