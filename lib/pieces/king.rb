@@ -4,8 +4,6 @@ require_relative 'piece'
 
 # logic for each chess piece
 class King < Piece
-  attr_reader :color, :symbol, :moves, :captures
-
   def initialize(board, args)
     board.add_observer(self)
     @color = args[:color]
@@ -15,6 +13,7 @@ class King < Piece
     @captures = []
   end
 
+  # Tested
   def find_possible_moves(board)
     moves = move_set.inject([]) do |memo, move|
       memo << create_moves(board.data, move[0], move[1])

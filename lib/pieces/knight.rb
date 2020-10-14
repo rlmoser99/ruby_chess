@@ -4,8 +4,6 @@ require_relative 'piece'
 
 # logic for each chess piece
 class Knight < Piece
-  attr_reader :color, :symbol, :moves, :captures
-
   def initialize(board, args)
     board.add_observer(self)
     @color = args[:color]
@@ -15,6 +13,7 @@ class Knight < Piece
     @captures = []
   end
 
+  # Tested
   def find_possible_moves(board)
     possibilities = []
     move_set.each do |move|
@@ -27,6 +26,7 @@ class Knight < Piece
     possibilities
   end
 
+  # Tested
   def find_possible_captures(board)
     result = []
     move_set.each do |move|

@@ -5,7 +5,7 @@ require_relative '../move_validator'
 
 # logic for each chess piece
 class Piece
-  attr_reader :location, :color, :symbol, :moves, :captures
+  attr_reader :color, :location, :symbol, :moves, :captures, :moved
 
   def initialize(board, args)
     board.add_observer(self)
@@ -23,16 +23,19 @@ class Piece
     @moved = true
   end
 
+  # No need to test (script method)
   def current_moves(board)
     possible_moves = find_possible_moves(board)
     @moves = remove_illegal_moves(board, possible_moves)
   end
 
+  # No need to test (script method)
   def current_captures(board)
     possible_captures = find_possible_captures(board)
     @captures = remove_illegal_moves(board, possible_captures)
   end
 
+  # Tested in individual pieces
   def find_possible_moves(board)
     moves = move_set.inject([]) do |memo, move|
       memo << create_moves(board.data, move[0], move[1])
@@ -40,6 +43,7 @@ class Piece
     moves.compact.flatten(1)
   end
 
+  # Tested in individual pieces
   def find_possible_captures(board)
     captures = move_set.inject([]) do |memo, move|
       memo << create_captures(board.data, move[0], move[1])
@@ -47,6 +51,7 @@ class Piece
     captures.compact
   end
 
+  # Tested in MoveValidator
   # Removes any move/capture that puts the king in check
   def remove_illegal_moves(board, moves)
     return moves unless moves.size.positive?
@@ -56,6 +61,7 @@ class Piece
     check.verify_possible_moves
   end
 
+  # No need to test (script method)
   def update(board)
     current_captures(board)
     current_moves(board)

@@ -657,4 +657,24 @@ RSpec.describe Pawn do
       end
     end
   end
+
+  describe '#rank_direction' do
+    context 'when pawn is white' do
+      subject(:white_pawn) { described_class.new(board, { color: :white, location: [3, 4] }) }
+
+      it 'returns -1' do
+        result = white_pawn.rank_direction
+        expect(result).to eq(-1)
+      end
+    end
+
+    context 'when pawn is black' do
+      subject(:black_pawn) { described_class.new(board, { color: :black, location: [4, 4] }) }
+
+      it 'returns 1' do
+        result = black_pawn.rank_direction
+        expect(result).to eq(1)
+      end
+    end
+  end
 end

@@ -18,13 +18,6 @@ require_relative 'pieces/pawn.rb'
 game = Game.new
 game.play
 
-# PIECE REFACTOR:
-# (done) Refactor Knight #current_moves & #current_captures
-# (done) Refactor Pawn #current_moves & #current_captures
-# (done) Does King need to be refactored?
-# (done) Re-name methods for how they currently function.
-# 5. Look closer at Piece Inheritance and instance variables?
-
 # GENERAL REFACTOR:
 # 1. Review all methods to see if they should be Public or Private
 # 2. Make sure public ones are tested

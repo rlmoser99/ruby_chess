@@ -4,7 +4,7 @@ require_relative 'piece'
 
 # logic for each chess piece
 class Pawn < Piece
-  attr_reader :color, :symbol, :location, :en_passant, :moves, :captures
+  attr_reader :en_passant
 
   def initialize(board, args)
     board.add_observer(self)
@@ -17,6 +17,7 @@ class Pawn < Piece
     @captures = []
   end
 
+  # Tested
   def update_location(row, column)
     update_en_passant(row)
     @location = [row, column]
@@ -38,6 +39,7 @@ class Pawn < Piece
     ].compact
   end
 
+  # Tested
   # White can only move up and Black can only move down
   def rank_direction
     color == :white ? -1 : 1
@@ -46,7 +48,8 @@ class Pawn < Piece
   # Tested
   # Checks if black pawn is in 4th row or white pawn is in 3rd row
   def en_passant_rank?
-    (location[0] == 4 && color == :black) || (location[0] == 3 && color == :white)
+    rank = location[0]
+    (rank == 4 && color == :black) || (rank == 3 && color == :white)
   end
 
   private
