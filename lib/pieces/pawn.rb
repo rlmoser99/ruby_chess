@@ -4,7 +4,7 @@ require_relative 'piece'
 
 # logic for each chess piece
 class Pawn < Piece
-  attr_reader :color, :symbol, :location, :en_passant, :moves, :captures
+  attr_reader :en_passant
 
   def initialize(board, args)
     board.add_observer(self)
@@ -17,6 +17,7 @@ class Pawn < Piece
     @captures = []
   end
 
+  # Tested
   def update_location(row, column)
     update_en_passant(row)
     @location = [row, column]
@@ -24,74 +25,65 @@ class Pawn < Piece
   end
 
   # Tested
-  # Can refactor!
-  def current_moves(board)
-    possibilities = find_valid_moves(board)
-    @moves = remove_king_check_moves(board, possibilities)
-  end
-
-  def find_valid_moves(board)
-    possibilities = []
-    rank = @location[0] + rank_direction
-    file = @location[1]
-    possibilities << [rank, file] unless board.data[rank][file]
-    bonus = first_move_bonus
-    possibilities << bonus unless @moved || board.data[bonus[0]][bonus[1]]
-    possibilities
+  def find_possible_moves(board)
+    [single_move(board), double_bonus_move(board)].compact
   end
 
   # Tested
-  # Can refactor!
-  def current_captures(board)
-    possibilities = format_valid_captures(board)
-    @captures = remove_king_check_moves(board, possibilities)
-  end
-
-  def format_valid_captures(board)
-    previous_location = board.previous_piece.location if board.previous_piece
-    captures = []
-    rank = @location[0] + rank_direction
+  def find_possible_captures(board)
     file = @location[1]
-    lower_file = file - 1
-    higher_file = file + 1
-    if opposing_piece?(rank, lower_file, board.data)
-      captures << [rank, lower_file]
-    end
-    if opposing_piece?(rank, higher_file, board.data)
-      captures << [rank, higher_file]
-    end
-    captures << previous_location if valid_en_passant?(board.previous_piece)
-    captures
+    [
+      basic_capture(board, file - 1),
+      basic_capture(board, file + 1),
+      en_passant_capture(board.previous_piece)
+    ].compact
   end
 
+  # Tested
   # White can only move up and Black can only move down
   def rank_direction
     color == :white ? -1 : 1
   end
 
+  # Tested
+  # Checks if black pawn is in 4th row or white pawn is in 3rd row
+  def en_passant_rank?
+    rank = location[0]
+    (rank == 4 && color == :black) || (rank == 3 && color == :white)
+  end
+
   private
 
-  # Tested in update_location
-  # Changes en_passant value depending on if last move was two spaces (true) or not.
+  def single_move(board)
+    move = [@location[0] + rank_direction, @location[1]]
+    return move unless board.data[move[0]][move[1]]
+  end
+
+  def double_bonus_move(board)
+    double_rank = @location[0] + (rank_direction * 2)
+    bonus = [double_rank, @location[1]]
+    return bonus unless @moved || board.data[bonus[0]][bonus[1]]
+  end
+
+  def basic_capture(board, file)
+    rank = @location[0] + rank_direction
+    return [rank, file] if opposing_piece?(rank, file, board.data)
+  end
+
+  def en_passant_capture(previous_piece)
+    capture = previous_piece&.location
+    return capture if valid_en_passant?(previous_piece)
+  end
+
+  # Will only be true if the last move was the double_bonus_move
   def update_en_passant(row)
     @en_passant = (row - location[0]).abs == 2
   end
 
-  def first_move_bonus
-    double_rank = @location[0] + (rank_direction * 2)
-    file = @location[1]
-    [double_rank, file]
-  end
-
-  # Tested in current_captures
-  # Checks that a piece is a pawn & that en_passant rank is valid
+  # Checks for valid rank and if piece is a pawn & valid en_passant
   def valid_en_passant?(piece)
     en_passant_rank? && symbol == piece.symbol && piece.en_passant
   end
 
-  # Tested in current_captures
-  # Checks if black pawn is in 4th row or white pawn is in 3rd row
-  def en_passant_rank?
-    (location[0] == 4 && color == :black) || (location[0] == 3 && color == :white)
-  end
+  def move_set; end
 end

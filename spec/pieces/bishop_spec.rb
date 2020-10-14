@@ -11,139 +11,8 @@ RSpec.describe Bishop do
     allow(board).to receive(:add_observer)
   end
 
-  describe '#format_valid_moves' do
+  describe '#find_possible_moves' do
     let(:piece) { instance_double(Piece) }
-
-    context 'when there are 2 spaces up rank/down file' do
-      subject(:black_bishop) { described_class.new(board, { color: :black, location: [0, 2] }) }
-      let(:black_king) { instance_double(Piece, color: :black, location: [0, 3]) }
-      let(:data) do
-        [
-          [nil, nil, black_bishop, black_king, nil, nil, nil, nil],
-          [nil, nil, nil, piece, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil]
-        ]
-      end
-
-      before do
-        allow(board).to receive(:data).and_return(data)
-        allow(piece).to receive(:color).and_return(:black)
-      end
-
-      it 'has two moves' do
-        result = black_bishop.format_valid_moves(board)
-        expect(result).to contain_exactly([1, 1], [2, 0])
-      end
-    end
-
-    context 'when there are 2 spaces up rank/up file' do
-      subject(:black_bishop) { described_class.new(board, { color: :black, location: [0, 5] }) }
-      let(:black_king) { instance_double(Piece, color: :black, location: [0, 0]) }
-      let(:data) do
-        [
-          [black_king, nil, nil, nil, nil, black_bishop, nil, nil],
-          [nil, nil, nil, nil, piece, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil]
-        ]
-      end
-
-      before do
-        allow(board).to receive(:data).and_return(data)
-        allow(piece).to receive(:color).and_return(:black)
-      end
-
-      it 'has two moves' do
-        result = black_bishop.format_valid_moves(board)
-        expect(result).to contain_exactly([1, 6], [2, 7])
-      end
-    end
-
-    context 'when there are 4 spaces down rank/up file' do
-      subject(:black_bishop) { described_class.new(board, { color: :black, location: [5, 3] }) }
-      let(:black_king) { instance_double(Piece, color: :black, location: [0, 0]) }
-      let(:data) do
-        [
-          [black_king, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, piece, nil, nil, nil, nil, nil],
-          [nil, nil, nil, black_bishop, nil, nil, nil, nil],
-          [nil, nil, piece, nil, piece, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil]
-        ]
-      end
-
-      before do
-        allow(board).to receive(:data).and_return(data)
-        allow(piece).to receive(:color).and_return(:black)
-      end
-
-      it 'has four moves' do
-        result = black_bishop.format_valid_moves(board)
-        expect(result).to contain_exactly([4, 4], [3, 5], [2, 6], [1, 7])
-      end
-    end
-
-    context 'when there are 3 spaces down rank/down file' do
-      subject(:black_bishop) { described_class.new(board, { color: :black, location: [5, 3] }) }
-      let(:black_king) { instance_double(Piece, color: :black, location: [0, 0]) }
-      let(:data) do
-        [
-          [black_king, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, piece, nil, nil, nil],
-          [nil, nil, nil, black_bishop, nil, nil, nil, nil],
-          [nil, nil, piece, nil, piece, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil]
-        ]
-      end
-
-      before do
-        allow(board).to receive(:data).and_return(data)
-        allow(piece).to receive(:color).and_return(:black)
-      end
-
-      it 'has four moves' do
-        result = black_bishop.format_valid_moves(board)
-        expect(result).to contain_exactly([4, 2], [3, 1], [2, 0])
-      end
-    end
-
-    context 'when there are 2 spaces in up file' do
-      subject(:white_bishop) { described_class.new(board, { color: :white, location: [4, 0] }) }
-      let(:white_king) { instance_double(Piece, color: :white, location: [7, 4]) }
-      let(:data) do
-        [
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, piece, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [white_bishop, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, piece, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, white_king, nil, nil, nil]
-        ]
-      end
-
-      before do
-        allow(board).to receive(:data).and_return(data)
-        allow(piece).to receive(:color).and_return(:white)
-      end
-
-      it 'has two moves' do
-        result = white_bishop.format_valid_moves(board)
-        expect(result).to contain_exactly([3, 1], [5, 1])
-      end
-    end
 
     context 'when there are no spaces to move' do
       subject(:white_bishop) { described_class.new(board, { color: :white, location: [4, 0] }) }
@@ -160,98 +29,58 @@ RSpec.describe Bishop do
         ]
       end
 
-      before do
-        allow(board).to receive(:data).and_return(data)
-      end
-
       it 'has no moves' do
-        result = white_bishop.format_valid_moves(board)
+        allow(board).to receive(:data).and_return(data)
+        result = white_bishop.find_possible_moves(board)
         expect(result).to be_empty
       end
     end
 
-    context 'when there are board is completely empty' do
-      subject(:white_bishop) { described_class.new(board, { color: :white, location: [3, 3] }) }
-      let(:white_king) { instance_double(Piece, color: :white, location: [7, 4]) }
+    context 'when there are 3 empty diagonal spaces increasing rank' do
+      subject(:black_bishop) { described_class.new(board, { color: :black, location: [0, 2] }) }
       let(:data) do
         [
+          [nil, nil, black_bishop, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, piece, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, white_bishop, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, white_king, nil, nil, nil]
+          [nil, nil, nil, nil, nil, nil, nil, nil]
         ]
       end
 
-      before do
+      it 'has three moves' do
         allow(board).to receive(:data).and_return(data)
-        allow(piece).to receive(:color).and_return(:white)
-      end
-
-      it 'has thirteen moves' do
-        result = white_bishop.format_valid_moves(board)
-        expect(result).to contain_exactly([0, 0], [0, 6], [1, 1], [1, 5], [2, 2], [2, 4], [4, 2], [4, 4], [5, 1], [5, 5], [6, 0], [6, 6], [7, 7])
+        result = black_bishop.find_possible_moves(board)
+        expect(result).to contain_exactly([1, 1], [2, 0], [1, 3])
       end
     end
-  end
 
-  describe '#format_valid_captures' do
-    let(:white_piece) { instance_double(Piece, color: :white) }
-    let(:black_piece) { instance_double(Piece, color: :black) }
-
-    context 'when there are 1 opposing piece to capture' do
-      subject(:white_bishop) { described_class.new(board, { color: :white, location: [7, 2] }) }
+    context 'when there are 4 empty diagonal spaces decreasing rank' do
+      subject(:white_bishop) { described_class.new(board, { color: :white, location: [7, 5] }) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, piece, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
-          [black_piece, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, white_piece, nil, nil, nil, nil],
-          [nil, nil, white_bishop, nil, nil, nil, nil, nil]
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, white_bishop, nil, nil]
         ]
       end
 
-      before do
+      it 'has four moves' do
         allow(board).to receive(:data).and_return(data)
-      end
-
-      it 'has one captures' do
-        result = white_bishop.format_valid_captures(board)
-        expect(result).to contain_exactly([5, 0])
+        result = white_bishop.find_possible_moves(board)
+        expect(result).to contain_exactly([6, 4], [6, 6], [5, 3], [5, 7])
       end
     end
 
-    context 'when there are 2 opposing piece to capture' do
-      subject(:white_bishop) { described_class.new(board, { color: :white, location: [3, 3] }) }
-      let(:data) do
-        [
-          [white_piece, nil, nil, nil, nil, nil, black_piece, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, white_bishop, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [black_piece, nil, nil, nil, nil, nil, white_piece, nil]
-        ]
-      end
-
-      before do
-        allow(board).to receive(:data).and_return(data)
-      end
-
-      it 'has two captures' do
-        result = white_bishop.format_valid_captures(board)
-        expect(result).to contain_exactly([0, 6], [6, 0])
-      end
-    end
-
-    context 'when there are no opposing piece to capture' do
+    context 'when the board is completely empty' do
       subject(:white_bishop) { described_class.new(board, { color: :white, location: [3, 3] }) }
       let(:data) do
         [
@@ -266,13 +95,80 @@ RSpec.describe Bishop do
         ]
       end
 
-      before do
+      it 'has thirteen moves' do
         allow(board).to receive(:data).and_return(data)
+        result = white_bishop.find_possible_moves(board)
+        expect(result).to contain_exactly([0, 0], [0, 6], [1, 1], [1, 5], [2, 2], [2, 4], [4, 2], [4, 4], [5, 1], [5, 5], [6, 0], [6, 6], [7, 7])
+      end
+    end
+  end
+
+  describe '#find_possible_captures' do
+    let(:white_piece) { instance_double(Piece, color: :white) }
+    let(:black_piece) { instance_double(Piece, color: :black) }
+
+    context 'when there are no opposing piece to capture' do
+      subject(:white_bishop) { described_class.new(board, { color: :white, location: [3, 3] }) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, white_piece, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, white_bishop, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, white_piece, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
       end
 
       it 'has no moves' do
-        result = white_bishop.format_valid_captures(board)
+        allow(board).to receive(:data).and_return(data)
+        result = white_bishop.find_possible_captures(board)
         expect(result).to be_empty
+      end
+    end
+
+    context 'when there are 1 opposing piece to capture decreasing rank' do
+      subject(:white_bishop) { described_class.new(board, { color: :white, location: [7, 2] }) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [black_piece, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, white_piece, nil, nil, nil, nil],
+          [nil, nil, white_bishop, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      it 'has one captures' do
+        allow(board).to receive(:data).and_return(data)
+        result = white_bishop.find_possible_captures(board)
+        expect(result).to contain_exactly([5, 0])
+      end
+    end
+
+    context 'when there are 2 opposing pieces to capture increasing rank' do
+      subject(:black_bishop) { described_class.new(board, { color: :black, location: [1, 3] }) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, black_bishop, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, white_piece, nil, nil],
+          [white_piece, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      it 'has two captures' do
+        allow(board).to receive(:data).and_return(data)
+        result = black_bishop.find_possible_captures(board)
+        expect(result).to contain_exactly([4, 0], [3, 5])
       end
     end
   end

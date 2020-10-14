@@ -53,7 +53,10 @@ class Board
 
   # Tested
   def update_new_coordinates(coords)
-    @data[coords[:row]][coords[:column]] = @active_piece
+    row = coords[:row]
+    column = coords[:column]
+    delete_observer(@data[row][column]) if @data[row][column]
+    @data[row][column] = @active_piece
   end
 
   # Tested
@@ -152,13 +155,18 @@ class Board
 
   # Checks if previous and active pieces are pawns, and if previous is en passant.
   def en_passant_pawn?
-    @previous_piece.symbol == " \u265F " && @active_piece.symbol == " \u265F " && @previous_piece.en_passant
+    two_pawns? && @active_piece.en_passant_rank? && @previous_piece.en_passant
+  end
+
+  def two_pawns?
+    @previous_piece.symbol == " \u265F " && @active_piece.symbol == " \u265F "
   end
 
   def update_en_passant(coords)
     new_rank = coords[:row] + @active_piece.rank_direction
     new_coords = { row: new_rank, column: coords[:column] }
     update_new_coordinates(new_coords) # -> update board coords of before/after = piece
+    delete_observer(@data[coords[:row]][coords[:column]])
     @data[coords[:row]][coords[:column]] = nil # capture coords = nil
     remove_old_piece # -> stays the same
     update_active_piece_location(new_coords) # -> active_piece.location = coords of before/after

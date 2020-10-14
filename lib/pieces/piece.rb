@@ -5,7 +5,7 @@ require_relative '../move_validator'
 
 # logic for each chess piece
 class Piece
-  attr_reader :location, :color, :symbol, :moves, :captures
+  attr_reader :color, :location, :symbol, :moves, :captures, :moved
 
   def initialize(board, args)
     board.add_observer(self)
@@ -23,33 +23,45 @@ class Piece
     @moved = true
   end
 
+  # No need to test (script method)
   def current_moves(board)
-    possibilities = format_valid_moves(board)
-    @moves = remove_king_check_moves(board, possibilities)
+    possible_moves = find_possible_moves(board)
+    @moves = remove_illegal_moves(board, possible_moves)
   end
 
+  # No need to test (script method)
   def current_captures(board)
-    possibilities = format_valid_captures(board)
-    @captures = remove_king_check_moves(board, possibilities)
+    possible_captures = find_possible_captures(board)
+    @captures = remove_illegal_moves(board, possible_captures)
   end
 
-  def format_valid_moves(board)
-    find_valid_moves(board.data).compact.flatten(1)
+  # Tested in individual pieces
+  def find_possible_moves(board)
+    moves = move_set.inject([]) do |memo, move|
+      memo << create_moves(board.data, move[0], move[1])
+    end
+    moves.compact.flatten(1)
   end
 
-  def format_valid_captures(board)
-    find_valid_captures(board.data).compact
+  # Tested in individual pieces
+  def find_possible_captures(board)
+    captures = move_set.inject([]) do |memo, move|
+      memo << create_captures(board.data, move[0], move[1])
+    end
+    captures.compact
   end
 
-  # Checks each moves/captures if it would put the king in check
-  def remove_king_check_moves(board, moves)
+  # Tested in MoveValidator
+  # Removes any move/capture that puts the king in check
+  def remove_illegal_moves(board, moves)
     return moves unless moves.size.positive?
 
     temp_board = Marshal.load(Marshal.dump(board))
-    check = MoveValidator.new(@location, temp_board, moves)
+    check = MoveValidator.new(location, temp_board, moves)
     check.verify_possible_moves
   end
 
+  # No need to test (script method)
   def update(board)
     current_captures(board)
     current_moves(board)
@@ -59,12 +71,6 @@ class Piece
 
   def move_set
     raise 'Called abstract method: move_set'
-  end
-
-  def find_valid_moves(board)
-    move_set.inject([]) do |memo, move|
-      memo << create_moves(board, move[0], move[1])
-    end
   end
 
   def create_moves(data, rank_change, file_change)
@@ -79,12 +85,6 @@ class Piece
       file += file_change
     end
     result
-  end
-
-  def find_valid_captures(data)
-    move_set.inject([]) do |memo, move|
-      memo << create_captures(data, move[0], move[1])
-    end
   end
 
   def create_captures(data, rank_change, file_change)

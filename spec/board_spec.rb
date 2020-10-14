@@ -309,6 +309,7 @@ RSpec.describe Board do
 
       before do
         board.instance_variable_set(:@previous_piece, white_pawn)
+        allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
       end
 
       it 'calls update_en_passant' do
@@ -370,6 +371,7 @@ RSpec.describe Board do
           board.instance_variable_set(:@previous_piece, white_rook)
           allow(black_pawn).to receive(:update_location)
           allow(black_pawn).to receive(:update)
+          allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
         end
 
         it 'does not call update_en_passant' do
@@ -428,6 +430,7 @@ RSpec.describe Board do
 
         before do
           board.instance_variable_set(:@previous_piece, white_pawn)
+          allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
           allow(black_pawn).to receive(:update_location)
           allow(black_pawn).to receive(:update)
         end
@@ -462,6 +465,7 @@ RSpec.describe Board do
       before do
         board.instance_variable_set(:@previous_piece, white_pawn)
         allow(black_pawn).to receive(:captures).and_return([[4, 3]])
+        allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
       end
 
       it 'returns true' do
@@ -490,6 +494,36 @@ RSpec.describe Board do
       before do
         board.instance_variable_set(:@previous_piece, white_pawn)
         allow(black_pawn).to receive(:captures).and_return([[4, 3]])
+        allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
+      end
+
+      it 'returns false' do
+        result = board.possible_en_passant?
+        expect(result).to be false
+      end
+    end
+
+    context 'when en_passant is not possible' do
+      subject(:board) { described_class.new(data, white_pawn) }
+      let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 2], symbol: " \u265F ", en_passant: true) }
+      let(:black_pawn) { instance_double(Pawn, color: :black, location: [3, 3], symbol: " \u265F ", en_passant: true) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, black_pawn, nil, nil, nil, nil],
+          [nil, nil, white_pawn, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      before do
+        board.instance_variable_set(:@previous_piece, black_pawn)
+        allow(white_pawn).to receive(:captures).and_return([[3, 3]])
+        allow(white_pawn).to receive(:en_passant_rank?).and_return(false)
       end
 
       it 'returns false' do
