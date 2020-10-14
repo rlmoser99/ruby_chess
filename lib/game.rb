@@ -26,7 +26,7 @@ class Game
   # Declares error message when user enters invalid move
   class PieceError < StandardError
     def message
-      'Invalid piece! This piece does not have any valid moves. Please enter a different column & row.'
+      'Invalid piece! This piece does not have any legal moves.'
     end
   end
 
@@ -117,6 +117,9 @@ class Game
   end
 
   def en_passant_warning
-    "To capture this pawn en passant, enter the \e[91mcapture coordinates\e[0m. Your pawn will be moved to the square in front of it."
+    <<~HEREDOC
+      To capture this pawn en passant, enter the \e[41mcapture coordinates\e[0m.
+      \e[36mYour pawn will be moved to the square in front of it!\e[0m
+    HEREDOC
   end
 end

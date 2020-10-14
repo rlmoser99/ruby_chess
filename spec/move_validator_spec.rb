@@ -34,7 +34,7 @@ RSpec.describe MoveValidator do
         allow(board).to receive(:data).and_return(data)
         allow(board).to receive(:black_king).and_return(black_king)
         allow(black_queen).to receive(:symbol).and_return(" \u265B ")
-        allow(validator).to receive(:safe_move?).and_return(true, true, true, true, false, false)
+        allow(validator).to receive(:safe_king?).and_return(true, true, true, true, false, false)
       end
 
       it 'does not return moves that put King in check' do
@@ -64,7 +64,7 @@ RSpec.describe MoveValidator do
 
       before do
         allow(board).to receive(:data).and_return(data)
-        allow(validator).to receive(:safe_move?).and_return(true, false)
+        allow(validator).to receive(:safe_king?).and_return(true, false)
         allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
         allow(black_king).to receive(:symbol).and_return(" \u265A ")

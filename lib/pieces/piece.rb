@@ -57,8 +57,8 @@ class Piece
     return moves unless moves.size.positive?
 
     temp_board = Marshal.load(Marshal.dump(board))
-    check = MoveValidator.new(location, temp_board, moves)
-    check.verify_possible_moves
+    validator = MoveValidator.new(location, temp_board, moves)
+    validator.verify_possible_moves
   end
 
   # No need to test (script method)

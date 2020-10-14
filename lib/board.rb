@@ -31,7 +31,8 @@ class Board
   def valid_piece_movement?(coords)
     row = coords[:row]
     column = coords[:column]
-    @active_piece.moves.any?([row, column]) || @active_piece.captures.any?([row, column])
+    @active_piece.moves.any?([row, column]) ||
+      @active_piece.captures.any?([row, column])
   end
 
   # Tested
@@ -77,7 +78,8 @@ class Board
 
   # Tested
   def possible_en_passant?
-    @active_piece&.captures&.include?(@previous_piece&.location) && en_passant_pawn?
+    @active_piece&.captures&.include?(@previous_piece&.location) &&
+      en_passant_pawn?
   end
 
   # Should this check if either king is in check?
@@ -121,7 +123,8 @@ class Board
 
   def initial_pawn_row(color, number)
     8.times do |index|
-      @data[number][index] = Pawn.new(self, { color: color, location: [number, index] })
+      @data[number][index] =
+        Pawn.new(self, { color: color, location: [number, index] })
     end
   end
 
@@ -150,10 +153,11 @@ class Board
 
   # Checks if there is a possible en_passant capture for game warning.
   def en_passant_capture?(coords)
-    @previous_piece&.location == [coords[:row], coords[:column]] && en_passant_pawn?
+    @previous_piece&.location == [coords[:row], coords[:column]] &&
+      en_passant_pawn?
   end
 
-  # Checks if previous and active pieces are pawns, and if previous is en passant.
+  # Checks if previous & active pieces are pawns, and if previous is en passant.
   def en_passant_pawn?
     two_pawns? && @active_piece.en_passant_rank? && @previous_piece.en_passant
   end
@@ -162,13 +166,20 @@ class Board
     @previous_piece.symbol == " \u265F " && @active_piece.symbol == " \u265F "
   end
 
+  # Handles extra piece placement during an en_passant capture
   def update_en_passant(coords)
     new_rank = coords[:row] + @active_piece.rank_direction
     new_coords = { row: new_rank, column: coords[:column] }
-    update_new_coordinates(new_coords) # -> update board coords of before/after = piece
-    delete_observer(@data[coords[:row]][coords[:column]])
-    @data[coords[:row]][coords[:column]] = nil # capture coords = nil
-    remove_old_piece # -> stays the same
-    update_active_piece_location(new_coords) # -> active_piece.location = coords of before/after
+    update_new_coordinates(new_coords)
+    remove_en_passant_capture(coords)
+    update_active_piece_location(new_coords)
+  end
+
+  def remove_en_passant_capture(coords)
+    row = coords[:row]
+    column = coords[:column]
+    delete_observer(@data[row][column])
+    @data[row][column] = nil
+    remove_old_piece
   end
 end

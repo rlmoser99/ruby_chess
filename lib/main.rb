@@ -38,3 +38,6 @@ game.play
 
 # SAVE & LOAD GAME:
 # 1. Make a saved game for "new" with pieces in original spots. ??
+
+# FUTURE:
+# Board class is too big. Is there an abstraction or way that can reduce it?
