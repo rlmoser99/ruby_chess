@@ -146,39 +146,30 @@ RSpec.describe Board do
     let(:piece) { double(Piece, location: [0, 0]) }
 
     context 'when there is one current_move' do
-      before do
+      it 'returns true' do
         allow(piece).to receive(:moves).and_return([0, 1])
         allow(piece).to receive(:captures)
         allow(piece).to receive(:update)
-      end
-
-      it 'returns true' do
         result = board_moveable.active_piece_moveable?
         expect(result).to be true
       end
     end
 
     context 'when there is one current_captures' do
-      before do
+      it 'returns true' do
         allow(piece).to receive(:moves).and_return([])
         allow(piece).to receive(:captures).and_return([1, 1])
         allow(piece).to receive(:update)
-      end
-
-      it 'returns true' do
         result = board_moveable.active_piece_moveable?
         expect(result).to be true
       end
     end
 
     context 'when there is no current_move or current_capture' do
-      before do
+      it 'returns false' do
         allow(piece).to receive(:moves).and_return([])
         allow(piece).to receive(:captures).and_return([])
         allow(piece).to receive(:update)
-      end
-
-      it 'returns false' do
         result = board_moveable.active_piece_moveable?
         expect(result).to be false
       end
@@ -298,12 +289,9 @@ RSpec.describe Board do
         ]
       end
 
-      before do
+      it 'calls update_en_passant' do
         board.instance_variable_set(:@previous_piece, white_pawn)
         allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
-      end
-
-      it 'calls update_en_passant' do
         coords = { row: 4, column: 3 }
         expect(board).to receive(:update_en_passant).with(coords)
         board.update(coords)
@@ -328,13 +316,10 @@ RSpec.describe Board do
           ]
         end
 
-        before do
+        it 'does not call update_en_passant' do
           board.instance_variable_set(:@previous_piece, white_pawn)
           allow(black_pawn).to receive(:update_location)
           allow(black_pawn).to receive(:update)
-        end
-
-        it 'does not call update_en_passant' do
           coords = { row: 5, column: 2 }
           expect(board).not_to receive(:update_en_passant).with(coords)
           board.update(coords)
@@ -358,14 +343,11 @@ RSpec.describe Board do
           ]
         end
 
-        before do
+        it 'does not call update_en_passant' do
           board.instance_variable_set(:@previous_piece, white_rook)
           allow(black_pawn).to receive(:update_location)
           allow(black_pawn).to receive(:update)
           allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
-        end
-
-        it 'does not call update_en_passant' do
           coords = { row: 4, column: 3 }
           expect(board).not_to receive(:update_en_passant).with(coords)
           board.update(coords)
@@ -389,13 +371,10 @@ RSpec.describe Board do
           ]
         end
 
-        before do
+        it 'does not call update_en_passant' do
           board.instance_variable_set(:@previous_piece, white_pawn)
           allow(black_rook).to receive(:update_location)
           allow(black_rook).to receive(:update)
-        end
-
-        it 'does not call update_en_passant' do
           coords = { row: 4, column: 3 }
           expect(board).not_to receive(:update_en_passant).with(coords)
           board.update(coords)
@@ -419,14 +398,11 @@ RSpec.describe Board do
           ]
         end
 
-        before do
+        it 'does not call update_en_passant' do
           board.instance_variable_set(:@previous_piece, white_pawn)
           allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
           allow(black_pawn).to receive(:update_location)
           allow(black_pawn).to receive(:update)
-        end
-
-        it 'does not call update_en_passant' do
           coords = { row: 4, column: 3 }
           expect(board).not_to receive(:update_en_passant).with(coords)
           board.update(coords)
@@ -453,13 +429,10 @@ RSpec.describe Board do
         ]
       end
 
-      before do
+      it 'returns true' do
         board.instance_variable_set(:@previous_piece, white_pawn)
         allow(black_pawn).to receive(:captures).and_return([[4, 3]])
         allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
-      end
-
-      it 'returns true' do
         result = board.possible_en_passant?
         expect(result).to be true
       end
@@ -482,13 +455,10 @@ RSpec.describe Board do
         ]
       end
 
-      before do
+      it 'returns false' do
         board.instance_variable_set(:@previous_piece, white_pawn)
         allow(black_pawn).to receive(:captures).and_return([[4, 3]])
         allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
-      end
-
-      it 'returns false' do
         result = board.possible_en_passant?
         expect(result).to be false
       end
@@ -511,13 +481,10 @@ RSpec.describe Board do
         ]
       end
 
-      before do
+      it 'returns false' do
         board.instance_variable_set(:@previous_piece, black_pawn)
         allow(white_pawn).to receive(:captures).and_return([[3, 3]])
         allow(white_pawn).to receive(:en_passant_rank?).and_return(false)
-      end
-
-      it 'returns false' do
         result = board.possible_en_passant?
         expect(result).to be false
       end

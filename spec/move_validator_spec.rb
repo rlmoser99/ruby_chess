@@ -7,8 +7,6 @@ require_relative '../lib/pieces/king'
 require_relative '../lib/pieces/rook'
 
 RSpec.describe MoveValidator do
-  require 'pry'
-
   describe '#verify_possible_moves' do
     context 'queen can put king in check' do
       subject(:validator) { described_class.new([2, 4], board, [[1, 4], [3, 4], [4, 4], [5, 4], [2, 3], [2, 5]]) }
@@ -30,14 +28,11 @@ RSpec.describe MoveValidator do
         ]
       end
 
-      before do
+      it 'does not return moves that put King in check' do
         allow(board).to receive(:data).and_return(data)
         allow(board).to receive(:black_king).and_return(black_king)
         allow(black_queen).to receive(:symbol).and_return(" \u265B ")
         allow(validator).to receive(:safe_king?).and_return(true, true, true, true, false, false)
-      end
-
-      it 'does not return moves that put King in check' do
         results = validator.verify_possible_moves
         expect(results).to contain_exactly([1, 4], [3, 4], [4, 4], [5, 4])
       end
@@ -62,15 +57,12 @@ RSpec.describe MoveValidator do
         ]
       end
 
-      before do
+      it 'does only returns move to capture rook' do
         allow(board).to receive(:data).and_return(data)
         allow(validator).to receive(:safe_king?).and_return(true, false)
         allow(board).to receive(:black_king).and_return(black_king)
         allow(piece).to receive(:color).and_return(:black)
         allow(black_king).to receive(:symbol).and_return(" \u265A ")
-      end
-
-      it 'does only returns move to capture rook' do
         results = validator.verify_possible_moves
         expect(results).to contain_exactly([0, 3])
       end
