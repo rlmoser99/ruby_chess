@@ -25,6 +25,7 @@ game.play
 # 4. Run reek for code feedback
 # 5. Tests for move_validator may not be testing well, due to stubbing?
 # 6. Double-check rubocop warnings.
+# 7. Check that all 'before do' blocks are used for multiple tests.
 
 # PLAYER TURNS
 # 1. Warn player when their King is in check (start of turn)

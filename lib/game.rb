@@ -83,33 +83,33 @@ class Game
     retry
   end
 
-  # Tested
+  private
+
+  # Tested (private, but used in a public script method)
   def validate_input(input)
     raise InputError unless input.match?(/^[a-h][1-8]$/)
   end
 
-  # Tested
+  # Tested (private, but used in a public script method)
   def validate_piece_coordinates(coords)
     raise CoordinatesError unless @board.piece?(coords)
   end
 
-  # Tested
+  # Tested (private, but used in a public script method)
   def validate_move(coords)
     raise MoveError unless @board.valid_piece_movement?(coords)
   end
 
-  # Tested
-  def translate_coordinates(input)
-    translator ||= NotationTranslator.new
-    translator.translate_notation(input)
-  end
-
-  # Tested
+  # Tested (private, but used in a public script method)
   def validate_active_piece
     raise PieceError unless @board.active_piece_moveable?
   end
 
-  private
+  # Tested (private, but used in a public script method)
+  def translate_coordinates(input)
+    translator ||= NotationTranslator.new
+    translator.translate_notation(input)
+  end
 
   def user_input(phrase)
     puts phrase
