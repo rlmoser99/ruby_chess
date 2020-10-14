@@ -113,7 +113,7 @@ RSpec.describe Board do
 
     it 'updates coordinate with the chess piece' do
       coordinates = { row: 3, column: 0 }
-      board.update_new_coordinates(coordinates)
+      board.send(:update_new_coordinates, coordinates)
       expect(board.data[3][0]).to eq(rook)
     end
   end
@@ -124,7 +124,7 @@ RSpec.describe Board do
     let(:piece) { double('piece', location: [0, 0]) }
 
     it 'removes active_piece from original coordinates' do
-      expect { board.remove_old_piece }.to change { board.data[0][0] }.to(nil)
+      expect { board.send(:remove_old_piece) }.to change { board.data[0][0] }.to(nil)
     end
   end
 
@@ -229,41 +229,32 @@ RSpec.describe Board do
   end
 
   describe '#update_active_piece_location' do
-    subject(:board_location) { described_class.new(data_location, piece) }
-    let(:data_location) { [[piece, nil], [nil, nil]] }
+    subject(:board) { described_class.new(data, piece) }
+    let(:data) { [[piece, nil], [nil, nil]] }
     let(:piece) { double(Piece, location: [0, 0]) }
-
-    before do
-      allow(piece).to receive(:update).with(board_location)
-      allow(piece).to receive(:update_location).with(1, 0)
-    end
 
     it 'sends update_location with coordinates to piece' do
       coordinates = { row: 1, column: 0 }
       expect(piece).to receive(:update_location).with(1, 0)
-      board_location.update_active_piece_location(coordinates)
+      board.send(:update_active_piece_location, coordinates)
     end
-
-    # it 'sends update with board.self to piece' do
-    #   coordinates = { row: 1, column: 0 }
-    #   expect(piece).to receive(:update).with(board_location)
-    #   board_location.update_active_piece_location(coordinates)
-    # end
   end
 
   describe '#reset_board_values' do
-    subject(:board_values) { described_class.new(data_values, piece) }
-    let(:data_values) { [[piece, nil], [nil, nil]] }
+    subject(:board) { described_class.new(data, piece) }
+    let(:data) { [[piece, nil], [nil, nil]] }
     let(:piece) { double(Piece, location: [0, 0]) }
 
+    before do
+      board.send(:reset_board_values)
+    end
+
     it 'sets previous_piece to active_piece' do
-      board_values.reset_board_values
-      expect(board_values.previous_piece).to eq(piece)
+      expect(board.previous_piece).to eq(piece)
     end
 
     it 'sets active_piece to nil' do
-      board_values.reset_board_values
-      expect(board_values.active_piece).to be_nil
+      expect(board.active_piece).to be_nil
     end
   end
 

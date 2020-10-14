@@ -53,37 +53,12 @@ class Board
   end
 
   # Tested
-  def update_new_coordinates(coords)
-    row = coords[:row]
-    column = coords[:column]
-    delete_observer(@data[row][column]) if @data[row][column]
-    @data[row][column] = @active_piece
-  end
-
-  # Tested
-  def remove_old_piece
-    location = @active_piece.location
-    @data[location[0]][location[1]] = nil
-  end
-
-  # Tested
-  def update_active_piece_location(coords)
-    @active_piece.update_location(coords[:row], coords[:column])
-    # Is having these pieces updated, or captures updated causing the problem?
-    # Thought these were needed - incomplete data for future turns.
-    # Remove test if not needed?
-    # @active_piece.update(self)
-    # @active_piece.current_captures(self)
-  end
-
-  # Tested
   def possible_en_passant?
     @active_piece&.captures&.include?(@previous_piece&.location) &&
       en_passant_pawn?
   end
 
-  # Should this check if either king is in check?
-  # IS THIS USED???
+  # Might need when checking if king is in check at start of each turn
   # Tested
   # def check?(king)
   #   @data.any? do |row|
@@ -94,14 +69,6 @@ class Board
   #     end
   #   end
   # end
-
-  # Tested
-  def reset_board_values
-    @previous_piece = @active_piece
-    @active_piece = nil
-    changed
-    notify_observers(self)
-  end
 
   # Tested
   def initial_placement
@@ -141,6 +108,34 @@ class Board
     ]
   end
 
+  # Tested (private, but used in a public script method)
+  def update_new_coordinates(coords)
+    row = coords[:row]
+    column = coords[:column]
+    delete_observer(@data[row][column]) if @data[row][column]
+    @data[row][column] = @active_piece
+  end
+
+  # Tested (private, but used in a public script method)
+  def remove_old_piece
+    location = @active_piece.location
+    @data[location[0]][location[1]] = nil
+  end
+
+  # Tested (private, but used in a public script method)
+  def update_active_piece_location(coords)
+    @active_piece.update_location(coords[:row], coords[:column])
+  end
+
+  # Tested (private, but used in a public script method)
+  def reset_board_values
+    @previous_piece = @active_piece
+    @active_piece = nil
+    changed
+    notify_observers(self)
+  end
+
+  # Used at beginning of game to update all pieces moves/captures
   def update_all_moves_captures
     @data.each do |row|
       row.each do |square|
@@ -162,6 +157,7 @@ class Board
     two_pawns? && @active_piece.en_passant_rank? && @previous_piece.en_passant
   end
 
+  # Checks is both pieces are pawns
   def two_pawns?
     @previous_piece.symbol == " \u265F " && @active_piece.symbol == " \u265F "
   end
@@ -175,6 +171,7 @@ class Board
     update_active_piece_location(new_coords)
   end
 
+  # Removes old piece and observer during en_passant capture
   def remove_en_passant_capture(coords)
     row = coords[:row]
     column = coords[:column]
