@@ -36,8 +36,9 @@ class Board
   end
 
   # Tested
-  def piece?(coords)
-    @data[coords[:row]][coords[:column]] != nil
+  def valid_piece?(coords, color)
+    piece = @data[coords[:row]][coords[:column]]
+    piece&.color == color
   end
 
   # Script Method -> No tests needed (test inside methods)

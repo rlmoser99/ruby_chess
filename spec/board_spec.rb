@@ -249,15 +249,15 @@ RSpec.describe Board do
     end
   end
 
-  describe '#piece?' do
+  describe '#valid_piece?' do
     subject(:board_piece) { described_class.new(data_piece, pawn) }
     let(:data_piece) { [[pawn, nil], [nil, nil]] }
-    let(:pawn) { instance_double(Piece) }
+    let(:pawn) { instance_double(Piece, color: :white) }
 
-    context 'when coordinates is a piece' do
+    context 'when coordinates is a piece of the right color' do
       it 'returns true' do
         coordinates = { row: 0, column: 0 }
-        results = board_piece.piece?(coordinates)
+        results = board_piece.valid_piece?(coordinates, :white)
         expect(results).to be true
       end
     end
@@ -265,7 +265,15 @@ RSpec.describe Board do
     context 'when coordinates is not a piece' do
       it 'returns false' do
         coordinates = { row: 1, column: 0 }
-        results = board_piece.piece?(coordinates)
+        results = board_piece.valid_piece?(coordinates, :white)
+        expect(results).to be false
+      end
+    end
+
+    context 'when coordinates is a piece of the wrong color' do
+      it 'returns false' do
+        coordinates = { row: 0, column: 0 }
+        results = board_piece.valid_piece?(coordinates, :black)
         expect(results).to be false
       end
     end

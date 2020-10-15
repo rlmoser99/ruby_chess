@@ -65,7 +65,7 @@ RSpec.describe Game do
 
     context 'when board coordinates contains a piece' do
       it 'does not raise an error' do
-        allow(board).to receive(:piece?).and_return(true)
+        allow(board).to receive(:valid_piece?).and_return(true)
         coords = { row: 1, column: 0 }
         expect { game.send(:validate_piece_coordinates, coords) }.not_to raise_error
       end
@@ -73,7 +73,7 @@ RSpec.describe Game do
 
     context 'when board coordinates do not contain a piece' do
       it 'raises an error' do
-        allow(board).to receive(:piece?).and_return(false)
+        allow(board).to receive(:valid_piece?).and_return(false)
         coords = { row: 1, column: 0 }
         expect { game.send(:validate_piece_coordinates, coords) }.to raise_error(Game::CoordinatesError)
       end

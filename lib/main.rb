@@ -21,7 +21,7 @@ game.play
 # PLAYER TURNS
 # 1. Warn player when their King is in check (start of turn)
 # -> Does there need to be Board#check? If not, remove Board#check? tests
-# 2. Create 2 arrays of black & white pieces Game#select_piece_coordinates
+# 2. Create 2 arrays of black & white pieces?
 # 3. Need to add 'Game Over' checks
 
 # CASTLING:
@@ -34,3 +34,4 @@ game.play
 # FUTURE NOTES:
 # Board class is too big. Is there an abstraction or way that can reduce it?
 # Tests for move_validator may not be testing accurately, due to stubbing?
+# -> Test method that is stubbed, because it's easier to test that one.

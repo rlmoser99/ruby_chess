@@ -12,7 +12,7 @@ class Game
   # Declares error message when user enters invalid move
   class CoordinatesError < StandardError
     def message
-      'Invalid coordinates! Enter column & row that has a chess piece.'
+      'Invalid coordinates! Enter column & row of the correct color.'
     end
   end
 
@@ -32,26 +32,28 @@ class Game
 
   def initialize(board = Board.new)
     @board = board
+    @current_turn = :white
   end
 
   # Public Script Method -> No tests needed (test inside methods)
   # Need to test any outgoing command messages ??
   def play
+    game_mode
     @board.initial_placement
     @board.to_s
-    # player_turn
-    # Need to switch current player
     16.times { player_turn }
   end
 
   # Script Method -> Test methods inside
   # Need to test any outgoing command messages ??
   def player_turn
+    puts "#{@current_turn.capitalize}'s turn!"
     select_piece_coordinates
     @board.to_s
     move = select_move_coordinates
     @board.update(move)
     @board.to_s
+    switch_color
   end
 
   # Script Method -> No tests needed (test inside methods)
@@ -85,6 +87,18 @@ class Game
 
   private
 
+  def game_mode
+    mode = user_input('Press [1] to play computer or [2] for 2-player')
+    return mode if mode.match?(/^[12]$/)
+
+    puts 'Input error! Enter 1 or 2'
+    game mode
+  end
+
+  def switch_color
+    @current_turn = @current_turn == :white ? :black : :white
+  end
+
   # Tested (private, but used in a public script method)
   def validate_input(input)
     raise InputError unless input.match?(/^[a-h][1-8]$/)
@@ -92,7 +106,7 @@ class Game
 
   # Tested (private, but used in a public script method)
   def validate_piece_coordinates(coords)
-    raise CoordinatesError unless @board.piece?(coords)
+    raise CoordinatesError unless @board.valid_piece?(coords, @current_turn)
   end
 
   # Tested (private, but used in a public script method)
