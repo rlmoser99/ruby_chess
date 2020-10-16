@@ -59,17 +59,17 @@ class Board
       en_passant_pawn?
   end
 
-  # Might need when checking if king is in check at start of each turn
   # Tested
-  # def check?(king)
-  #   @data.any? do |row|
-  #     row.any? do |square|
-  #       next unless square && square.color != king.color
+  def check?(color)
+    king = color == :white ? @white_king : @black_king
+    @data.any? do |row|
+      row.any? do |square|
+        next unless square && square.color != king.color
 
-  #       square.captures.include?(king.location)
-  #     end
-  #   end
-  # end
+        square.captures.include?(king.location)
+      end
+    end
+  end
 
   # Tested
   def initial_placement

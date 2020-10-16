@@ -499,51 +499,54 @@ RSpec.describe Board do
     end
   end
 
-  # describe 'check?' do
-  #   context 'when king is in check' do
-  #     subject(:board) { described_class.new(data) }
-  #     let(:black_queen) { instance_double(Queen, color: :black, location: [0, 4], captures: [[6, 4], [7, 4]]) }
-  #     let(:white_king) { instance_double(King, color: :white, location: [7, 4]) }
-  #     let(:data) do
-  #       [
-  #         [nil, nil, nil, nil, black_queen, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, white_king, nil, nil, nil]
-  #       ]
-  #     end
+  describe 'check?' do
+    context 'when king is in check' do
+      require 'pry'
+      subject(:board) { described_class.new(data) }
+      let(:black_queen) { instance_double(Queen, color: :black, location: [0, 4], captures: [[7, 4]]) }
+      let(:white_king) { instance_double(King, color: :white, location: [7, 4]) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, black_queen, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, white_king, nil, nil, nil]
+        ]
+      end
 
-  #     it 'returns true' do
-  #       result = board.check?(white_king)
-  #       expect(result).to be true
-  #     end
-  #   end
+      it 'returns true' do
+        board.instance_variable_set(:@white_king, white_king)
+        result = board.check?(:white)
+        expect(result).to be true
+      end
+    end
 
-  #   context 'when king is not in check' do
-  #     subject(:board) { described_class.new(data) }
-  #     let(:black_bishop) { instance_double(Bishop, color: :black, location: [0, 4], captures: [[1, 3], [2, 2]]) }
-  #     let(:white_king) { instance_double(King, color: :white, location: [7, 4]) }
-  #     let(:data) do
-  #       [
-  #         [nil, nil, nil, nil, black_bishop, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, white_king, nil, nil, nil]
-  #       ]
-  #     end
+    context 'when king is not in check' do
+      subject(:board) { described_class.new(data) }
+      let(:black_bishop) { instance_double(Bishop, color: :black, location: [0, 4], captures: [[1, 3], [2, 2]]) }
+      let(:white_king) { instance_double(King, color: :white, location: [7, 4]) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, black_bishop, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, white_king, nil, nil, nil]
+        ]
+      end
 
-  #     it 'returns false' do
-  #       result = board.check?(white_king)
-  #       expect(result).to be false
-  #     end
-  #   end
-  # end
+      it 'returns false' do
+        board.instance_variable_set(:@white_king, white_king)
+        result = board.check?(:white)
+        expect(result).to be false
+      end
+    end
+  end
 end

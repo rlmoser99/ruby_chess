@@ -59,6 +59,7 @@ class Game
   # Script Method -> No tests needed (test inside methods)
   # Need to test any outgoing command messages ??
   def select_piece_coordinates
+    puts king_check_warning if @board.check?(@current_turn)
     input = user_input('What piece would you like to move?')
     validate_input(input)
     coords = translate_coordinates(input)
@@ -74,7 +75,6 @@ class Game
   # Need to test any outgoing command messages ??
   def select_move_coordinates
     puts en_passant_warning if @board.possible_en_passant?
-    # puts king_check_warning if King is in check!
     input = user_input('Where would you like to move it?')
     validate_input(input)
     coords = translate_coordinates(input)
@@ -135,5 +135,9 @@ class Game
       To capture this pawn en passant, enter the \e[41mcapture coordinates\e[0m.
       \e[36mYour pawn will be moved to the square in front of it!\e[0m
     HEREDOC
+  end
+
+  def king_check_warning
+    puts "\e[91mWARNING!\e[0m Your king is currently in check!"
   end
 end
