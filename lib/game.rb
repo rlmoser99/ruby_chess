@@ -41,7 +41,7 @@ class Game
     game_mode
     @board.initial_placement
     @board.to_s
-    16.times { player_turn }
+    player_turn until @board.game_over?
   end
 
   # Script Method -> Test methods inside

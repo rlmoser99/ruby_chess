@@ -20,7 +20,10 @@ game.play
 
 # PLAYER TURNS
 # (done) Warn player when their King is in check (start of turn)
-# 3. Need to add 'Game Over' checks
+# (done) Need to add 'Game Over' checks
+# If the current player has no legal move
+# -> checkmate, if king is in check
+# -> stalemate, if king is not in check
 
 # CASTLING:
 

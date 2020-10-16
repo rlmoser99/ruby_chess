@@ -501,7 +501,6 @@ RSpec.describe Board do
 
   describe 'check?' do
     context 'when king is in check' do
-      require 'pry'
       subject(:board) { described_class.new(data) }
       let(:black_queen) { instance_double(Queen, color: :black, location: [0, 4], captures: [[7, 4]]) }
       let(:white_king) { instance_double(King, color: :white, location: [7, 4]) }
@@ -546,6 +545,101 @@ RSpec.describe Board do
         board.instance_variable_set(:@white_king, white_king)
         result = board.check?(:white)
         expect(result).to be false
+      end
+    end
+  end
+
+  describe 'game_over?' do
+    context 'when the game starts and there is no previous piece' do
+      subject(:board) { described_class.new(data) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      it 'is not game over' do
+        expect(board.game_over?).to be false
+      end
+    end
+
+    context 'when king is not in check' do
+      subject(:board) { described_class.new(data) }
+      let(:black_queen) { instance_double(Queen, color: :black, location: [0, 7], captures: []) }
+      let(:white_king) { instance_double(King, color: :white, location: [7, 4], moves: [[7, 3], [7, 5]], captures: []) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, black_queen],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, white_king, nil, nil, nil]
+        ]
+      end
+
+      it 'is not game over' do
+        board.instance_variable_set(:@previous_piece, black_queen)
+        board.instance_variable_set(:@white_king, white_king)
+        expect(board.game_over?).to be false
+      end
+    end
+
+    context 'when king is in check & has legal moves' do
+      subject(:board) { described_class.new(data) }
+      let(:black_queen) { instance_double(Queen, color: :black, location: [0, 4], captures: [[7, 4]]) }
+      let(:white_king) { instance_double(King, color: :white, location: [7, 4], moves: [[7, 3], [7, 5]], captures: []) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, black_queen, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, white_king, nil, nil, nil]
+        ]
+      end
+
+      it 'is not game over' do
+        board.instance_variable_set(:@previous_piece, black_queen)
+        board.instance_variable_set(:@white_king, white_king)
+        expect(board.game_over?).to be false
+      end
+    end
+
+    context 'when king is in check & does not have any legal moves' do
+      subject(:board) { described_class.new(data) }
+      let(:black_queen) { instance_double(Queen, color: :black, location: [7, 0], captures: [[7, 4]]) }
+      let(:black_rook) { instance_double(Rook, color: :black, location: [6, 7], captures: []) }
+      let(:white_king) { instance_double(King, color: :white, location: [7, 4], moves: [], captures: []) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, black_rook],
+          [black_queen, nil, nil, nil, white_king, nil, nil, nil]
+        ]
+      end
+
+      it 'is game over' do
+        board.instance_variable_set(:@previous_piece, black_queen)
+        board.instance_variable_set(:@white_king, white_king)
+        expect(board.game_over?).to be true
       end
     end
   end

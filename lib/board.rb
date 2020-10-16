@@ -72,6 +72,17 @@ class Board
   end
 
   # Tested
+  def game_over?
+    return false if @previous_piece.nil?
+
+    color = @previous_piece.color == :white ? :black : :white
+    in_check = check?(color)
+    return false unless in_check
+
+    no_legal_moves_captures?(color)
+  end
+
+  # Tested
   def initial_placement
     initial_row(:black, 0)
     initial_pawn_row(:black, 1)
@@ -179,5 +190,16 @@ class Board
     delete_observer(@data[row][column])
     @data[row][column] = nil
     remove_old_piece
+  end
+
+  # Determines if there is no more legal moves or captures
+  def no_legal_moves_captures?(color)
+    @data.none? do |row|
+      row.any? do |square|
+        next unless square && square.color == color
+
+        square.moves.size.positive? || square.captures.size.positive?
+      end
+    end
   end
 end
