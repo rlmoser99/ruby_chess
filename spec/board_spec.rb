@@ -249,15 +249,15 @@ RSpec.describe Board do
     end
   end
 
-  describe '#piece?' do
+  describe '#valid_piece?' do
     subject(:board_piece) { described_class.new(data_piece, pawn) }
     let(:data_piece) { [[pawn, nil], [nil, nil]] }
-    let(:pawn) { instance_double(Piece) }
+    let(:pawn) { instance_double(Piece, color: :white) }
 
-    context 'when coordinates is a piece' do
+    context 'when coordinates is a piece of the right color' do
       it 'returns true' do
         coordinates = { row: 0, column: 0 }
-        results = board_piece.piece?(coordinates)
+        results = board_piece.valid_piece?(coordinates, :white)
         expect(results).to be true
       end
     end
@@ -265,7 +265,15 @@ RSpec.describe Board do
     context 'when coordinates is not a piece' do
       it 'returns false' do
         coordinates = { row: 1, column: 0 }
-        results = board_piece.piece?(coordinates)
+        results = board_piece.valid_piece?(coordinates, :white)
+        expect(results).to be false
+      end
+    end
+
+    context 'when coordinates is a piece of the wrong color' do
+      it 'returns false' do
+        coordinates = { row: 0, column: 0 }
+        results = board_piece.valid_piece?(coordinates, :black)
         expect(results).to be false
       end
     end
@@ -491,51 +499,148 @@ RSpec.describe Board do
     end
   end
 
-  # describe 'check?' do
-  #   context 'when king is in check' do
-  #     subject(:board) { described_class.new(data) }
-  #     let(:black_queen) { instance_double(Queen, color: :black, location: [0, 4], captures: [[6, 4], [7, 4]]) }
-  #     let(:white_king) { instance_double(King, color: :white, location: [7, 4]) }
-  #     let(:data) do
-  #       [
-  #         [nil, nil, nil, nil, black_queen, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, white_king, nil, nil, nil]
-  #       ]
-  #     end
+  describe 'check?' do
+    context 'when king is in check' do
+      subject(:board) { described_class.new(data) }
+      let(:black_queen) { instance_double(Queen, color: :black, location: [0, 4], captures: [[7, 4]]) }
+      let(:white_king) { instance_double(King, color: :white, location: [7, 4]) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, black_queen, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, white_king, nil, nil, nil]
+        ]
+      end
 
-  #     it 'returns true' do
-  #       result = board.check?(white_king)
-  #       expect(result).to be true
-  #     end
-  #   end
+      it 'returns true' do
+        board.instance_variable_set(:@white_king, white_king)
+        result = board.check?(:white)
+        expect(result).to be true
+      end
+    end
 
-  #   context 'when king is not in check' do
-  #     subject(:board) { described_class.new(data) }
-  #     let(:black_bishop) { instance_double(Bishop, color: :black, location: [0, 4], captures: [[1, 3], [2, 2]]) }
-  #     let(:white_king) { instance_double(King, color: :white, location: [7, 4]) }
-  #     let(:data) do
-  #       [
-  #         [nil, nil, nil, nil, black_bishop, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, nil, nil, nil, nil],
-  #         [nil, nil, nil, nil, white_king, nil, nil, nil]
-  #       ]
-  #     end
+    context 'when king is not in check' do
+      subject(:board) { described_class.new(data) }
+      let(:black_bishop) { instance_double(Bishop, color: :black, location: [0, 4], captures: [[1, 3], [2, 2]]) }
+      let(:white_king) { instance_double(King, color: :white, location: [7, 4]) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, black_bishop, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, white_king, nil, nil, nil]
+        ]
+      end
 
-  #     it 'returns false' do
-  #       result = board.check?(white_king)
-  #       expect(result).to be false
-  #     end
-  #   end
-  # end
+      it 'returns false' do
+        board.instance_variable_set(:@white_king, white_king)
+        result = board.check?(:white)
+        expect(result).to be false
+      end
+    end
+  end
+
+  describe 'game_over?' do
+    context 'when the game starts and there is no previous piece' do
+      subject(:board) { described_class.new(data) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      it 'is not game over' do
+        expect(board.game_over?).to be false
+      end
+    end
+
+    context 'when king is not in check' do
+      subject(:board) { described_class.new(data) }
+      let(:black_queen) { instance_double(Queen, color: :black, location: [0, 7], captures: []) }
+      let(:white_king) { instance_double(King, color: :white, location: [7, 4], moves: [[7, 3], [7, 5]], captures: []) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, black_queen],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, white_king, nil, nil, nil]
+        ]
+      end
+
+      it 'is not game over' do
+        board.instance_variable_set(:@previous_piece, black_queen)
+        board.instance_variable_set(:@white_king, white_king)
+        expect(board.game_over?).to be false
+      end
+    end
+
+    context 'when king is in check & has legal moves' do
+      subject(:board) { described_class.new(data) }
+      let(:black_queen) { instance_double(Queen, color: :black, location: [0, 4], captures: [[7, 4]]) }
+      let(:white_king) { instance_double(King, color: :white, location: [7, 4], moves: [[7, 3], [7, 5]], captures: []) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, black_queen, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, white_king, nil, nil, nil]
+        ]
+      end
+
+      it 'is not game over' do
+        board.instance_variable_set(:@previous_piece, black_queen)
+        board.instance_variable_set(:@white_king, white_king)
+        expect(board.game_over?).to be false
+      end
+    end
+
+    context 'when king is in check & does not have any legal moves' do
+      subject(:board) { described_class.new(data) }
+      let(:black_queen) { instance_double(Queen, color: :black, location: [7, 0], captures: [[7, 4]]) }
+      let(:black_rook) { instance_double(Rook, color: :black, location: [6, 7], captures: []) }
+      let(:white_king) { instance_double(King, color: :white, location: [7, 4], moves: [], captures: []) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, black_rook],
+          [black_queen, nil, nil, nil, white_king, nil, nil, nil]
+        ]
+      end
+
+      it 'is game over' do
+        board.instance_variable_set(:@previous_piece, black_queen)
+        board.instance_variable_set(:@white_king, white_king)
+        expect(board.game_over?).to be true
+      end
+    end
+  end
 end

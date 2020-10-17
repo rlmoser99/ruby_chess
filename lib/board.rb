@@ -36,8 +36,9 @@ class Board
   end
 
   # Tested
-  def piece?(coords)
-    @data[coords[:row]][coords[:column]] != nil
+  def valid_piece?(coords, color)
+    piece = @data[coords[:row]][coords[:column]]
+    piece&.color == color
   end
 
   # Script Method -> No tests needed (test inside methods)
@@ -58,17 +59,28 @@ class Board
       en_passant_pawn?
   end
 
-  # Might need when checking if king is in check at start of each turn
   # Tested
-  # def check?(king)
-  #   @data.any? do |row|
-  #     row.any? do |square|
-  #       next unless square && square.color != king.color
+  def check?(color)
+    king = color == :white ? @white_king : @black_king
+    @data.any? do |row|
+      row.any? do |square|
+        next unless square && square.color != king.color
 
-  #       square.captures.include?(king.location)
-  #     end
-  #   end
-  # end
+        square.captures.include?(king.location)
+      end
+    end
+  end
+
+  # Tested
+  def game_over?
+    return false if @previous_piece.nil?
+
+    color = @previous_piece.color == :white ? :black : :white
+    in_check = check?(color)
+    return false unless in_check
+
+    no_legal_moves_captures?(color)
+  end
 
   # Tested
   def initial_placement
@@ -178,5 +190,16 @@ class Board
     delete_observer(@data[row][column])
     @data[row][column] = nil
     remove_old_piece
+  end
+
+  # Determines if there is no more legal moves or captures
+  def no_legal_moves_captures?(color)
+    @data.none? do |row|
+      row.any? do |square|
+        next unless square && square.color == color
+
+        square.moves.size.positive? || square.captures.size.positive?
+      end
+    end
   end
 end

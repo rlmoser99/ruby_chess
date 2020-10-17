@@ -65,7 +65,7 @@ RSpec.describe Game do
 
     context 'when board coordinates contains a piece' do
       it 'does not raise an error' do
-        allow(board).to receive(:piece?).and_return(true)
+        allow(board).to receive(:valid_piece?).and_return(true)
         coords = { row: 1, column: 0 }
         expect { game.send(:validate_piece_coordinates, coords) }.not_to raise_error
       end
@@ -73,7 +73,7 @@ RSpec.describe Game do
 
     context 'when board coordinates do not contain a piece' do
       it 'raises an error' do
-        allow(board).to receive(:piece?).and_return(false)
+        allow(board).to receive(:valid_piece?).and_return(false)
         coords = { row: 1, column: 0 }
         expect { game.send(:validate_piece_coordinates, coords) }.to raise_error(Game::CoordinatesError)
       end
@@ -127,6 +127,30 @@ RSpec.describe Game do
       user_input = 'd2'
       expect_any_instance_of(NotationTranslator).to receive(:translate_notation).with(user_input)
       game.send(:translate_coordinates, user_input)
+    end
+  end
+
+  describe '#final_message' do
+    context 'when game has a king in check' do
+      subject(:game) { described_class.new(board) }
+      let(:board) { instance_double(Board) }
+
+      it 'outputs checkmate message' do
+        allow(board).to receive(:check?).and_return(true)
+        checkmate = "white wins! black's king is in checkmate.\n"
+        expect { game.send(:final_message) }.to output(checkmate).to_stdout
+      end
+    end
+
+    context 'when game does not have a king in check' do
+      subject(:game) { described_class.new(board) }
+      let(:board) { instance_double(Board) }
+
+      it 'outputs stalemate message' do
+        allow(board).to receive(:check?).and_return(false)
+        checkmate = "white wins in a stalemate!\n"
+        expect { game.send(:final_message) }.to output(checkmate).to_stdout
+      end
     end
   end
 end
