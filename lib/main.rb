@@ -21,6 +21,8 @@ game.play
 # CASTLING:
 
 # PROMOTION:
+# Only when white pawn gets to [0] row or black pawn gets to [7] row
+# Choice of queen, rook, bishop, or knight of the same color.
 
 # SAVE & LOAD GAME:
 # 1. Make a saved game for "new" with pieces in original spots. ??
