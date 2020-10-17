@@ -36,12 +36,13 @@ class Game
   end
 
   # Public Script Method -> No tests needed (test inside methods)
-  # Need to test any outgoing command messages ??
+  # Need to test any outgoing command messages & behavior of calling player_turn
   def play
     game_mode
     @board.initial_placement
     @board.to_s
     player_turn until @board.game_over?
+    final_message
   end
 
   # Script Method -> Test methods inside
@@ -139,5 +140,15 @@ class Game
 
   def king_check_warning
     puts "\e[91mWARNING!\e[0m Your king is currently in check!"
+  end
+
+  # Tested
+  def final_message
+    previous_color = @current_turn == :white ? :black : :white
+    if @board.check?(previous_color)
+      puts "#{@current_turn} wins! #{previous_color}'s king is in checkmate."
+    else
+      puts "#{@current_turn} wins in a stalemate!"
+    end
   end
 end
