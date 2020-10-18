@@ -93,7 +93,7 @@ class Game
     return mode if mode.match?(/^[12]$/)
 
     puts 'Input error! Enter 1 or 2'
-    game mode
+    game_mode
   end
 
   def switch_color
@@ -144,11 +144,11 @@ class Game
 
   # Tested
   def final_message
-    previous_color = @current_turn == :white ? :black : :white
-    if @board.check?(previous_color)
-      puts "#{@current_turn} wins! #{previous_color}'s king is in checkmate."
+    previous_color = @current_turn == :white ? 'Black' : 'White'
+    if @board.check?(@current_turn)
+      puts "#{previous_color} wins! The #{@current_turn} king is in checkmate."
     else
-      puts "#{@current_turn} wins in a stalemate!"
+      puts "#{previous_color} wins in a stalemate!"
     end
   end
 end
