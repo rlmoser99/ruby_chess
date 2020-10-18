@@ -59,6 +59,11 @@ class Board
       en_passant_pawn?
   end
 
+  # NEED TO TEST!
+  def possible_castling?
+    @active_piece.symbol == " \u265A " && castling_moves?
+  end
+
   # Tested
   def check?(color)
     king = color == :white ? @white_king : @black_king
@@ -214,6 +219,16 @@ class Board
     remove_piece_observer(coords)
     @data[coords[:row]][coords[:column]] = nil
     remove_old_piece
+  end
+
+  # Determines if active piece's moves include castling locations.
+  def castling_moves?
+    rank = @active_piece.location[0]
+    file = @active_piece.location[1]
+    king_side = [rank, file + 2]
+    queen_side = [rank, file - 2]
+    @active_piece&.moves&.include?(king_side) ||
+      @active_piece&.moves&.include?(queen_side)
   end
 
   # Determines if there is no more legal moves or captures

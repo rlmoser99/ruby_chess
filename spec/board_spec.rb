@@ -824,4 +824,54 @@ RSpec.describe Board do
       expect(board.active_piece).to eq(white_queen)
     end
   end
+
+  describe '#possible_castling?' do
+    context 'when castling is possible' do
+      subject(:board) { described_class.new(data, white_king) }
+      subject(:white_king) { instance_double(King, color: :white, symbol: " \u265A ", location: [7, 4], moves: [[7, 5], [7, 6]]) }
+      let(:white_rook) { instance_double(Rook, color: :white, symbol: " \u265C ", moved: false, location: [7, 7]) }
+      let(:piece) { instance_double(Piece, color: :white) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, piece, piece, piece, nil, nil],
+          [nil, nil, nil, piece, white_king, nil, nil, white_rook]
+        ]
+      end
+
+      it 'returns true' do
+        result = board.possible_castling?
+        expect(result).to be true
+      end
+    end
+
+    context 'when castling is not possible' do
+      subject(:board) { described_class.new(data, white_rook) }
+      subject(:white_rook) { instance_double(King, color: :white, symbol: " \u265C ", location: [7, 4], moves: [[7, 5], [7, 6]]) }
+      let(:white_rook) { instance_double(Rook, color: :white, symbol: " \u265C ", moved: false, location: [7, 7]) }
+      let(:piece) { instance_double(Piece, color: :white) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, piece, piece, piece, nil, nil],
+          [nil, nil, nil, piece, white_rook, nil, nil, white_rook]
+        ]
+      end
+
+      it 'returns false' do
+        result = board.possible_castling?
+        expect(result).to be false
+      end
+    end
+  end
 end

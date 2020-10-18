@@ -76,6 +76,7 @@ class Game
   # Need to test any outgoing command messages ??
   def select_move_coordinates
     puts en_passant_warning if @board.possible_en_passant?
+    puts castling_warning if @board.possible_castling?
     input = user_input('Where would you like to move it?')
     validate_input(input)
     coords = translate_coordinates(input)
@@ -140,6 +141,10 @@ class Game
 
   def king_check_warning
     puts "\e[91mWARNING!\e[0m Your king is currently in check!"
+  end
+
+  def castling_warning
+    puts "\e[91mWARNING!\e[0m If you choose to castle, the rook will move too!"
   end
 
   # Tested
