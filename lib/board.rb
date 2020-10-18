@@ -167,18 +167,10 @@ class Board
   def update_pawn_promotion(coords)
     puts pawn_promotion_choices
     choice = select_promotion_piece
-    remove_piece_observer(coords)
-    old = @active_piece.location
-    delete_observer(@data[coords[:row]][coords[:column]])
-    delete_observer(@data[old[0]][old[1]])
-    remove_old_piece
     remove_old_observer
+    remove_old_piece
     new_piece = create_promotion_piece(choice, coords)
-    # - location = new piece & updates @current_piece
-    # Rename the following method that does the same thing???
     update_promotion_coordinates(coords, new_piece)
-    new_piece.update(self)
-    # old piece is not removed.
   end
 
   def remove_piece_observer(coords)
@@ -278,7 +270,6 @@ class Board
     column = coords[:column]
     @data[row][column] = piece
     @active_piece = piece
-    piece.update(self)
   end
 
   def pawn_promotion_choices
