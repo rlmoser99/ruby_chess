@@ -20,8 +20,6 @@ game.play
 
 # CASTLING:
 
-# PROMOTION:
-
 # SAVE & LOAD GAME:
 # 1. Make a saved game for "new" with pieces in original spots. ??
 

@@ -419,7 +419,7 @@ RSpec.describe Board do
     end
   end
 
-  describe 'possible_en_passant?' do
+  describe '#possible_en_passant?' do
     context 'when en_passant is possible' do
       subject(:board) { described_class.new(data, black_pawn) }
       let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: true) }
@@ -499,7 +499,7 @@ RSpec.describe Board do
     end
   end
 
-  describe 'check?' do
+  describe '#check?' do
     context 'when king is in check' do
       subject(:board) { described_class.new(data) }
       let(:black_queen) { instance_double(Queen, color: :black, location: [0, 4], captures: [[7, 4]]) }
@@ -549,7 +549,7 @@ RSpec.describe Board do
     end
   end
 
-  describe 'game_over?' do
+  describe '#game_over?' do
     context 'when the game starts and there is no previous piece' do
       subject(:board) { described_class.new(data) }
       let(:data) do
@@ -641,6 +641,187 @@ RSpec.describe Board do
         board.instance_variable_set(:@white_king, white_king)
         expect(board.game_over?).to be true
       end
+    end
+  end
+
+  describe '#pawn_promotion?' do
+    context 'when a white pawn reaches 8th rank' do
+      subject(:board) { described_class.new(data) }
+      let(:white_pawn) { instance_double(Pawn, symbol: " \u265F ", color: :white, location: [0, 1]) }
+      let(:data) do
+        [
+          [nil, white_pawn, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      it 'returns true' do
+        board.instance_variable_set(:@active_piece, white_pawn)
+        coords = { row: 0, column: 1 }
+        result = board.send(:pawn_promotion?, coords)
+        expect(result).to be true
+      end
+    end
+
+    context 'when a white rook reaches 8th rank' do
+      subject(:board) { described_class.new(data) }
+      let(:white_rook) { instance_double(Rook, symbol: " \u265C ", color: :white, location: [0, 1]) }
+      let(:data) do
+        [
+          [nil, white_rook, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+
+      it 'returns false' do
+        board.instance_variable_set(:@active_piece, white_rook)
+        coords = { row: 0, column: 1 }
+        result = board.send(:pawn_promotion?, coords)
+        expect(result).to be false
+      end
+    end
+
+    context 'when a black pawn reaches 1st rank' do
+      subject(:board) { described_class.new(data) }
+      let(:black_pawn) { instance_double(Pawn, symbol: " \u265F ", color: :black, location: [0, 3]) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, black_pawn, nil, nil, nil, nil]
+        ]
+      end
+
+      it 'returns true' do
+        board.instance_variable_set(:@active_piece, black_pawn)
+        coords = { row: 7, column: 3 }
+        result = board.send(:pawn_promotion?, coords)
+        expect(result).to be true
+      end
+    end
+
+    context 'when a black rook reaches 1st rank' do
+      subject(:board) { described_class.new(data) }
+      let(:black_rook) { instance_double(Rook, symbol: " \u265C ", color: :black, location: [0, 3]) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, black_rook, nil, nil, nil, nil]
+        ]
+      end
+
+      it 'returns false' do
+        board.instance_variable_set(:@active_piece, black_rook)
+        coords = { row: 7, column: 3 }
+        result = board.send(:pawn_promotion?, coords)
+        expect(result).to be false
+      end
+    end
+  end
+
+  describe '#select_promotion_piece' do
+    context 'when user input is valid' do
+      subject(:board) { described_class.new }
+
+      it 'returns user input' do
+        user_input = '1'
+        allow(board).to receive(:gets).and_return(user_input)
+        expect(board.send(:select_promotion_piece)).to eq(user_input)
+      end
+    end
+
+    context 'when first user input is not valid' do
+      subject(:board) { described_class.new }
+
+      before do
+        user_input = '1'
+        user_letter = 's'
+        allow(board).to receive(:gets).and_return(user_letter, user_input)
+        allow(board).to receive(:puts)
+      end
+
+      it 'outputs an error message once' do
+        expect(board).to receive(:puts).once
+        board.send(:select_promotion_piece)
+      end
+
+      it 'runs this method again' do
+        expect(board).to receive(:select_promotion_piece).once
+        board.send(:select_promotion_piece)
+      end
+
+      it 'returns second user input' do
+        expect(board.send(:select_promotion_piece)).to eq('1')
+      end
+    end
+  end
+
+  describe '#create_promotion_piece' do
+    context 'when user selects a Queen' do
+      subject(:board) { described_class.new }
+      let(:white_pawn) { instance_double(Pawn, color: :white, location: [0, 1]) }
+
+      it 'returns a Queen' do
+        board.instance_variable_set(:@active_piece, white_pawn)
+        coords = { row: 0, column: 1 }
+        user_input = '1'
+        result = board.send(:create_promotion_piece, user_input, coords)
+        expect(result).to be_an_instance_of(Queen)
+      end
+    end
+
+    context 'when user selects a Knight' do
+      subject(:board) { described_class.new }
+      let(:white_pawn) { instance_double(Pawn, color: :white, location: [0, 1]) }
+
+      it 'returns a Knight' do
+        board.instance_variable_set(:@active_piece, white_pawn)
+        coords = { row: 0, column: 1 }
+        user_input = '3'
+        result = board.send(:create_promotion_piece, user_input, coords)
+        expect(result).to be_an_instance_of(Knight)
+      end
+    end
+  end
+
+  describe '#update_promotion_coordinates' do
+    subject(:board) { described_class.new }
+    let(:white_queen) { instance_double(Queen, color: :white, location: [0, 1]) }
+
+    before do
+      coords = { row: 0, column: 1 }
+      board.send(:update_promotion_coordinates, coords, white_queen)
+    end
+
+    it 'sets the board data coordinates to the new piece' do
+      expect(board.data[0][1]).to eq(white_queen)
+    end
+
+    it 'sets the board active_piece to the new piece' do
+      expect(board.active_piece).to eq(white_queen)
     end
   end
 end

@@ -45,10 +45,10 @@ class Board
   def update(coords)
     if en_passant_capture?(coords)
       update_en_passant(coords)
+    elsif pawn_promotion?(coords)
+      update_pawn_promotion(coords)
     else
-      update_new_coordinates(coords)
-      remove_old_piece
-      update_active_piece_location(coords)
+      update_board(coords)
     end
     reset_board_values
   end
@@ -122,10 +122,8 @@ class Board
 
   # Tested (private, but used in a public script method)
   def update_new_coordinates(coords)
-    row = coords[:row]
-    column = coords[:column]
-    delete_observer(@data[row][column]) if @data[row][column]
-    @data[row][column] = @active_piece
+    remove_piece_observer(coords)
+    @data[coords[:row]][coords[:column]] = @active_piece
   end
 
   # Tested (private, but used in a public script method)
@@ -158,6 +156,34 @@ class Board
     end
   end
 
+  # Handles updating board for basic turns (all methods inside tested).
+  def update_board(coords)
+    update_new_coordinates(coords)
+    remove_old_piece
+    update_active_piece_location(coords)
+  end
+
+  # Handles updating board when pawn is promoted (all methods inside tested).
+  def update_pawn_promotion(coords)
+    puts pawn_promotion_choices
+    choice = select_promotion_piece
+    remove_old_observer
+    remove_old_piece
+    new_piece = create_promotion_piece(choice, coords)
+    update_promotion_coordinates(coords, new_piece)
+  end
+
+  def remove_piece_observer(coords)
+    row = coords[:row]
+    column = coords[:column]
+    delete_observer(@data[row][column]) if @data[row][column]
+  end
+
+  def remove_old_observer
+    location = @active_piece.location
+    delete_observer(@data[location[0]][location[1]])
+  end
+
   # Checks if there is a possible en_passant capture for game warning.
   def en_passant_capture?(coords)
     @previous_piece&.location == [coords[:row], coords[:column]] &&
@@ -185,10 +211,8 @@ class Board
 
   # Removes old piece and observer during en_passant capture
   def remove_en_passant_capture(coords)
-    row = coords[:row]
-    column = coords[:column]
-    delete_observer(@data[row][column])
-    @data[row][column] = nil
+    remove_piece_observer(coords)
+    @data[coords[:row]][coords[:column]] = nil
     remove_old_piece
   end
 
@@ -201,5 +225,60 @@ class Board
         square.moves.size.positive? || square.captures.size.positive?
       end
     end
+  end
+
+  # Tested
+  def pawn_promotion?(coords)
+    @active_piece.symbol == " \u265F " && promotion_rank?(coords[:row])
+  end
+
+  # Tested inside pawn_promotion?
+  def promotion_rank?(rank)
+    (@active_piece.color == :white && rank.zero?) ||
+      (@active_piece.color == :black && rank == 7)
+  end
+
+  # Tested
+  def select_promotion_piece
+    choice = gets.chomp
+    return choice if choice.match?(/^[1-4]$/)
+
+    puts 'Input error! Only enter 1-digit (1-4).'
+    select_promotion_piece
+  end
+
+  # Tested
+  def create_promotion_piece(choice, coords)
+    row = coords[:row]
+    column = coords[:column]
+    color = @active_piece.color
+    case choice.to_i
+    when 1
+      Queen.new(self, { color: color, location: [row, column] })
+    when 2
+      Bishop.new(self, { color: color, location: [row, column] })
+    when 3
+      Knight.new(self, { color: color, location: [row, column] })
+    else
+      Rook.new(self, { color: color, location: [row, column] })
+    end
+  end
+
+  # Tested
+  def update_promotion_coordinates(coords, piece)
+    row = coords[:row]
+    column = coords[:column]
+    @data[row][column] = piece
+    @active_piece = piece
+  end
+
+  def pawn_promotion_choices
+    <<~HEREDOC
+      To promote your pawn, enter one of the following numbers:
+        \e[36m[1]\e[0m for a Queen
+        \e[36m[2]\e[0m for a Bishop
+        \e[36m[3]\e[0m for a Knight
+        \e[36m[4]\e[0m for a Rook
+    HEREDOC
   end
 end
