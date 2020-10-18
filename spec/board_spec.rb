@@ -778,4 +778,50 @@ RSpec.describe Board do
       end
     end
   end
+
+  describe '#create_promotion_piece' do
+    context 'when user selects a Queen' do
+      subject(:board) { described_class.new }
+      let(:white_pawn) { instance_double(Pawn, color: :white, location: [0, 1]) }
+
+      it 'returns a Queen' do
+        board.instance_variable_set(:@active_piece, white_pawn)
+        coords = { row: 0, column: 1 }
+        user_input = '1'
+        result = board.send(:create_promotion_piece, user_input, coords)
+        expect(result).to be_an_instance_of(Queen)
+      end
+    end
+
+    context 'when user selects a Knight' do
+      subject(:board) { described_class.new }
+      let(:white_pawn) { instance_double(Pawn, color: :white, location: [0, 1]) }
+
+      it 'returns a Knight' do
+        board.instance_variable_set(:@active_piece, white_pawn)
+        coords = { row: 0, column: 1 }
+        user_input = '3'
+        result = board.send(:create_promotion_piece, user_input, coords)
+        expect(result).to be_an_instance_of(Knight)
+      end
+    end
+  end
+
+  describe '#update_promotion_coordinates' do
+    subject(:board) { described_class.new }
+    let(:white_queen) { instance_double(Queen, color: :white, location: [0, 1]) }
+
+    before do
+      coords = { row: 0, column: 1 }
+      board.send(:update_promotion_coordinates, coords, white_queen)
+    end
+
+    it 'sets the board data coordinates to the new piece' do
+      expect(board.data[0][1]).to eq(white_queen)
+    end
+
+    it 'sets the board active_piece to the new piece' do
+      expect(board.active_piece).to eq(white_queen)
+    end
+  end
 end
