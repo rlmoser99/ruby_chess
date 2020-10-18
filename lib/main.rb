@@ -19,14 +19,32 @@ game = Game.new
 game.play
 
 # CASTLING:
-# The king & rook can not have moved yet
-# The king can not be in check.
-# All squares between king & rook must be empty.
+# 1. #valid_castling?
+# (done) The king can not be in check.
+# (done) All squares between king & rook must be empty.
+# (done) The king & rook can not have moved yet
+# (done) The king can not move through a square currently under attack.
+# After moving the king can not be in check -> handled in Move_Validator
+
 # The king can move 2 squares towards rook (either way)
-# The king can not move through a square currently under attack.
+
+# Black king-side
+# King [0, 4] -> [0, 6] & Rook [0, 7] -> [0, 5]
+# Black queen-side
+# King [0, 4] -> [0, 2] & Rook [0, 0] -> [0, 3]
+
+# White king-side
+# King [7, 4] -> [7, 6] & Rook [7, 7] -> [7, 5]
+# White queen-side
+# King [7, 4] -> [7, 2] & Rook [7, 0] -> [7, 3]
+
+# Add Game#castling_warning -> inside #select_move_coordinates
+# Add Board#possible_castling? -> triggers Game#castling_warning
 
 # SAVE & LOAD GAME:
 # 1. Make a saved game for "new" with pieces in original spots. ??
+
+# RANDOM COMPUTER PLAYER:
 
 # FUTURE NOTES:
 # Board class is too big. Is there an abstraction or way that can reduce it?
@@ -35,3 +53,4 @@ game.play
 # Create 2 arrays of black & white pieces?
 # En_Passant deletes observer in two locations. Verify if both are needed.
 # Add a way to end the game early (resign)
+# King#find_possible_moves(board) rubocop warning

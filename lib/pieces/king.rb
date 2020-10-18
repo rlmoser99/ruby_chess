@@ -9,6 +9,7 @@ class King < Piece
     @color = args[:color]
     @location = args[:location]
     @symbol = " \u265A "
+    @moved = false
     @moves = []
     @captures = []
   end
@@ -18,6 +19,9 @@ class King < Piece
     moves = move_set.inject([]) do |memo, move|
       memo << create_moves(board.data, move[0], move[1])
     end
+    # puts "moves are #{moves}"
+    moves << [location[0], 6] if king_side_castling?(board)
+    moves << [location[0], 2] if queen_side_castling?(board)
     moves.compact
   end
 
@@ -37,6 +41,58 @@ class King < Piece
     return unless valid_location?(rank, file)
 
     [rank, file] if opposing_piece?(rank, file, data)
+  end
+
+  # def valid_castling?(board)
+  #   king_side_castling?(board) || queen_side_castling?(board)
+  # end
+
+  # Tested
+  def king_side_castling?(board)
+    king_side_pass = 5
+    empty_files = [6]
+    king_side_rook = 7
+    king_rook_unmoved?(board, king_side_rook) &&
+      king_pass_through_safe?(board, king_side_pass) &&
+      empty_board_files(board, empty_files)
+  end
+
+  # Tested
+  def queen_side_castling?(board)
+    queen_side_rook = 0
+    empty_files = [1, 2]
+    queen_side_pass = 3
+    king_rook_unmoved?(board, queen_side_rook) &&
+      king_pass_through_safe?(board, queen_side_pass) &&
+      empty_board_files(board, empty_files)
+  end
+
+  # TEST IS TRIGGERING CASTLING!!!
+  def king_rook_unmoved?(board, file)
+    piece = board.data[location[0]][file]
+    return false unless piece
+
+    moved == false && piece.symbol == " \u265C " && piece.moved == false
+  end
+
+  def king_pass_through_safe?(board, column)
+    rank = location[0]
+    file = column
+    board.data[rank][file].nil? && safe_passage?(board, [rank, file])
+  end
+
+  def safe_passage?(board, location)
+    board.data.none? do |row|
+      row.any? do |square|
+        next unless square && square.color != color
+
+        square.captures.include?(location)
+      end
+    end
+  end
+
+  def empty_board_files(board, files)
+    files.all? { |file| board.data[location[0]][file].nil? }
   end
 
   def move_set
