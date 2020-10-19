@@ -824,4 +824,96 @@ RSpec.describe Board do
       expect(board.active_piece).to eq(white_queen)
     end
   end
+
+  describe '#possible_castling?' do
+    context 'when castling is possible' do
+      subject(:board) { described_class.new(data, white_king) }
+      subject(:white_king) { instance_double(King, color: :white, symbol: " \u265A ", location: [7, 4], moves: [[7, 5], [7, 6]]) }
+      let(:white_rook) { instance_double(Rook, color: :white, symbol: " \u265C ", moved: false, location: [7, 7]) }
+      let(:piece) { instance_double(Piece, color: :white) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, piece, piece, piece, nil, nil],
+          [nil, nil, nil, piece, white_king, nil, nil, white_rook]
+        ]
+      end
+
+      it 'returns true' do
+        result = board.possible_castling?
+        expect(result).to be true
+      end
+    end
+
+    context 'when castling is not possible' do
+      subject(:board) { described_class.new(data, white_rook) }
+      subject(:white_rook) { instance_double(King, color: :white, symbol: " \u265C ", location: [7, 4], moves: [[7, 5], [7, 6]]) }
+      let(:white_rook) { instance_double(Rook, color: :white, symbol: " \u265C ", moved: false, location: [7, 7]) }
+      let(:piece) { instance_double(Piece, color: :white) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, piece, piece, piece, nil, nil],
+          [nil, nil, nil, piece, white_rook, nil, nil, white_rook]
+        ]
+      end
+
+      it 'returns false' do
+        result = board.possible_castling?
+        expect(result).to be false
+      end
+    end
+  end
+
+  describe '#update_castling_rook' do
+    context 'when castling is king side' do
+      subject(:board) { described_class.new(data, white_king) }
+      subject(:white_king) { instance_double(King, color: :white, symbol: " \u265A ", location: [7, 4], moves: [[7, 5], [7, 6]]) }
+      let(:white_rook) { instance_double(Rook, color: :white, symbol: " \u265C ", moved: false, location: [7, 7]) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, white_king, nil, nil, white_rook]
+        ]
+      end
+
+      it 'removes rook from original location' do
+        allow(white_rook).to receive(:update_location)
+        coords = { row: 7, column: 6 }
+        board.send(:update_castling_rook, coords)
+        original = board.data[7][7]
+        expect(original).to eq(nil)
+      end
+
+      it 'adds rook to new location' do
+        allow(white_rook).to receive(:update_location)
+        coords = { row: 7, column: 6 }
+        board.send(:update_castling_rook, coords)
+        new_location = board.data[7][5]
+        expect(new_location).to eq(white_rook)
+      end
+
+      it 'sends #update_location to rook' do
+        expect(white_rook).to receive(:update_location).with(7, 5)
+        coords = { row: 7, column: 6 }
+        board.send(:update_castling_rook, coords)
+      end
+    end
+  end
 end

@@ -9,6 +9,7 @@ class Rook < Piece
     @color = args[:color]
     @location = args[:location]
     @symbol = " \u265C "
+    @moved = false
     @moves = []
     @captures = []
   end
