@@ -69,12 +69,11 @@ class Board
   # Tested
   def check?(color)
     king = color == :white ? @white_king : @black_king
-    @data.any? do |row|
-      row.any? do |square|
-        next unless square && square.color != king.color
+    pieces = @data.flatten(1).compact
+    pieces.any? do |piece|
+      next unless piece.color != king.color
 
-        square.captures.include?(king.location)
-      end
+      piece.captures.include?(king.location)
     end
   end
 
@@ -154,13 +153,8 @@ class Board
 
   # Used at beginning of game to update all pieces moves/captures
   def update_all_moves_captures
-    @data.each do |row|
-      row.each do |square|
-        next unless square
-
-        square.update(self)
-      end
-    end
+    pieces = @data.flatten(1).compact
+    pieces.each { |piece| piece.update(self) }
   end
 
   # Handles updating board for basic turns (all methods inside tested).
@@ -258,12 +252,11 @@ class Board
 
   # Determines if there is no more legal moves or captures
   def no_legal_moves_captures?(color)
-    @data.none? do |row|
-      row.any? do |square|
-        next unless square && square.color == color
+    pieces = @data.flatten(1).compact
+    pieces.none? do |piece|
+      next unless piece.color == color
 
-        square.moves.size.positive? || square.captures.size.positive?
-      end
+      piece.moves.size.positive? || piece.captures.size.positive?
     end
   end
 

@@ -28,13 +28,12 @@ class MoveValidator
   end
 
   def safe_king?(kings_location, board)
-    board.data.none? do |row|
-      row.any? do |square|
-        next unless square && square.color != @current_piece.color
+    pieces = board.data.flatten(1).compact
+    pieces.none? do |piece|
+      next unless piece.color != @current_piece.color
 
-        captures = square.find_possible_captures(board)
-        captures.include?(kings_location)
-      end
+      captures = piece.find_possible_captures(board)
+      captures.include?(kings_location)
     end
   end
 
