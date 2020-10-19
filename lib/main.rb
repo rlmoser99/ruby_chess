@@ -26,6 +26,9 @@ game.play
 # (done) The king can not move through a square currently under attack.
 # After moving the king can not be in check -> handled in Move_Validator
 
+# BUG -> When space next to king is in check, the next move still works!
+# Happened & made it through move validator!!!
+
 # The king can move 2 squares towards rook (either way)
 
 # Black king-side
@@ -54,3 +57,4 @@ game.play
 # En_Passant deletes observer in two locations. Verify if both are needed.
 # Add a way to end the game early (resign)
 # King#find_possible_moves(board) rubocop warning
+# Refactor double iterator methods like: pieces = board.data.flatten(1).compact

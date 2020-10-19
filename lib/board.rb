@@ -47,6 +47,8 @@ class Board
       update_en_passant(coords)
     elsif pawn_promotion?(coords)
       update_pawn_promotion(coords)
+    # elsif castling?(coords)
+    #   update_castling(coords)
     else
       update_board(coords)
     end

@@ -19,7 +19,6 @@ class King < Piece
     moves = move_set.inject([]) do |memo, move|
       memo << create_moves(board.data, move[0], move[1])
     end
-    # puts "moves are #{moves}"
     moves << [location[0], 6] if king_side_castling?(board)
     moves << [location[0], 2] if queen_side_castling?(board)
     moves.compact
@@ -53,8 +52,8 @@ class King < Piece
     empty_files = [6]
     king_side_rook = 7
     king_rook_unmoved?(board, king_side_rook) &&
-      king_pass_through_safe?(board, king_side_pass) &&
-      empty_board_files(board, empty_files)
+      empty_board_files(board, empty_files) &&
+      king_pass_through_safe?(board, king_side_pass)
   end
 
   # Tested
@@ -63,11 +62,10 @@ class King < Piece
     empty_files = [1, 2]
     queen_side_pass = 3
     king_rook_unmoved?(board, queen_side_rook) &&
-      king_pass_through_safe?(board, queen_side_pass) &&
-      empty_board_files(board, empty_files)
+      empty_board_files(board, empty_files) &&
+      king_pass_through_safe?(board, queen_side_pass)
   end
 
-  # TEST IS TRIGGERING CASTLING!!!
   def king_rook_unmoved?(board, file)
     piece = board.data[location[0]][file]
     return false unless piece
@@ -75,19 +73,18 @@ class King < Piece
     moved == false && piece.symbol == " \u265C " && piece.moved == false
   end
 
-  def king_pass_through_safe?(board, column)
+  def king_pass_through_safe?(board, file)
     rank = location[0]
-    file = column
     board.data[rank][file].nil? && safe_passage?(board, [rank, file])
   end
 
   def safe_passage?(board, location)
-    board.data.none? do |row|
-      row.any? do |square|
-        next unless square && square.color != color
+    pieces = board.data.flatten(1).compact
+    pieces.none? do |piece|
+      next unless piece.color != color && piece.symbol != symbol
 
-        square.captures.include?(location)
-      end
+      moves = piece.find_possible_moves(board)
+      moves.include?(location)
     end
   end
 
