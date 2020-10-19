@@ -874,4 +874,46 @@ RSpec.describe Board do
       end
     end
   end
+
+  describe '#update_castling_rook' do
+    context 'when castling is king side' do
+      subject(:board) { described_class.new(data, white_king) }
+      subject(:white_king) { instance_double(King, color: :white, symbol: " \u265A ", location: [7, 4], moves: [[7, 5], [7, 6]]) }
+      let(:white_rook) { instance_double(Rook, color: :white, symbol: " \u265C ", moved: false, location: [7, 7]) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, white_king, nil, nil, white_rook]
+        ]
+      end
+
+      it 'removes rook from original location' do
+        allow(white_rook).to receive(:update_location)
+        coords = { row: 7, column: 6 }
+        board.send(:update_castling_rook, coords)
+        original = board.data[7][7]
+        expect(original).to eq(nil)
+      end
+
+      it 'adds rook to new location' do
+        allow(white_rook).to receive(:update_location)
+        coords = { row: 7, column: 6 }
+        board.send(:update_castling_rook, coords)
+        new_location = board.data[7][5]
+        expect(new_location).to eq(white_rook)
+      end
+
+      it 'sends #update_location to rook' do
+        expect(white_rook).to receive(:update_location).with(7, 5)
+        coords = { row: 7, column: 6 }
+        board.send(:update_castling_rook, coords)
+      end
+    end
+  end
 end

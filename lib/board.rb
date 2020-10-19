@@ -47,8 +47,8 @@ class Board
       update_en_passant(coords)
     elsif pawn_promotion?(coords)
       update_pawn_promotion(coords)
-    # elsif castling?(coords)
-    #   update_castling(coords)
+    elsif castling?(coords)
+      update_castling(coords)
     else
       update_board(coords)
     end
@@ -170,6 +170,23 @@ class Board
     update_active_piece_location(coords)
   end
 
+  # Handles updating board for castling.
+  def update_castling(coords)
+    update_board(coords)
+    update_castling_rook(coords)
+  end
+
+  def update_castling_rook(coords)
+    king_rank = coords[:row]
+    king_file = coords[:column]
+    old_file = king_file == 6 ? 7 : 0
+    new_file = king_file == 6 ? 5 : 3
+    castling_rook = @data[king_rank][old_file]
+    @data[king_rank][old_file] = nil
+    @data[king_rank][new_file] = castling_rook
+    castling_rook.update_location(king_rank, new_file)
+  end
+
   # Handles updating board when pawn is promoted (all methods inside tested).
   def update_pawn_promotion(coords)
     puts pawn_promotion_choices
@@ -191,10 +208,16 @@ class Board
     delete_observer(@data[location[0]][location[1]])
   end
 
-  # Checks if there is a possible en_passant capture for game warning.
+  # Checks if there is a en_passant capture during board update.
   def en_passant_capture?(coords)
     @previous_piece&.location == [coords[:row], coords[:column]] &&
       en_passant_pawn?
+  end
+
+  # Checks if there is a castling moves during board update.
+  def castling?(coords)
+    file_difference = (coords[:column] - @active_piece.location[1]).abs
+    @active_piece&.symbol == " \u265A " && file_difference == 2
   end
 
   # Checks if previous & active pieces are pawns, and if previous is en passant.
