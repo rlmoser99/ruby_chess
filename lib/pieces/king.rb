@@ -19,8 +19,7 @@ class King < Piece
     moves = move_set.inject([]) do |memo, move|
       memo << create_moves(board.data, move[0], move[1])
     end
-    moves << [location[0], 6] if king_side_castling?(board)
-    moves << [location[0], 2] if queen_side_castling?(board)
+    moves += add_castling_moves(board)
     moves.compact
   end
 
@@ -42,9 +41,12 @@ class King < Piece
     [rank, file] if opposing_piece?(rank, file, data)
   end
 
-  # def valid_castling?(board)
-  #   king_side_castling?(board) || queen_side_castling?(board)
-  # end
+  def add_castling_moves(board)
+    castling_moves = []
+    castling_moves << [location[0], 6] if king_side_castling?(board)
+    castling_moves << [location[0], 2] if queen_side_castling?(board)
+    castling_moves
+  end
 
   # Tested
   def king_side_castling?(board)

@@ -61,7 +61,7 @@ class Board
       en_passant_pawn?
   end
 
-  # NEED TO TEST!
+  # Tested
   def possible_castling?
     @active_piece.symbol == " \u265A " && castling_moves?
   end
@@ -79,11 +79,10 @@ class Board
 
   # Tested
   def game_over?
-    return false if @previous_piece.nil?
+    return false unless @previous_piece
 
     color = @previous_piece.color == :white ? :black : :white
-    in_check = check?(color)
-    return false unless in_check
+    return false unless check?(color)
 
     no_legal_moves_captures?(color)
   end
@@ -173,12 +172,25 @@ class Board
   def update_castling_rook(coords)
     king_rank = coords[:row]
     king_file = coords[:column]
-    old_file = king_file == 6 ? 7 : 0
-    new_file = king_file == 6 ? 5 : 3
-    castling_rook = @data[king_rank][old_file]
-    @data[king_rank][old_file] = nil
-    @data[king_rank][new_file] = castling_rook
-    castling_rook.update_location(king_rank, new_file)
+    if king_file == 6
+      update_king_side_rook(king_rank)
+    else
+      update_queen_side_rook(king_rank)
+    end
+  end
+
+  def update_king_side_rook(rank)
+    castling_rook = @data[rank][7]
+    @data[rank][7] = nil
+    @data[rank][5] = castling_rook
+    castling_rook.update_location(rank, 5)
+  end
+
+  def update_queen_side_rook(rank)
+    castling_rook = @data[rank][0]
+    @data[rank][0] = nil
+    @data[rank][3] = castling_rook
+    castling_rook.update_location(rank, 3)
   end
 
   # Handles updating board when pawn is promoted (all methods inside tested).
@@ -242,8 +254,9 @@ class Board
 
   # Determines if active piece's moves include castling locations.
   def castling_moves?
-    rank = @active_piece.location[0]
-    file = @active_piece.location[1]
+    location = @active_piece.location
+    rank = location[0]
+    file = location[1]
     king_side = [rank, file + 2]
     queen_side = [rank, file - 2]
     @active_piece&.moves&.include?(king_side) ||
@@ -267,8 +280,8 @@ class Board
 
   # Tested inside pawn_promotion?
   def promotion_rank?(rank)
-    (@active_piece.color == :white && rank.zero?) ||
-      (@active_piece.color == :black && rank == 7)
+    color = @active_piece.color
+    (color == :white && rank.zero?) || (color == :black && rank == 7)
   end
 
   # Tested
@@ -281,6 +294,7 @@ class Board
   end
 
   # Tested
+  # rubocop:disable Metrics/MethodLength
   def create_promotion_piece(choice, coords)
     row = coords[:row]
     column = coords[:column]
@@ -296,12 +310,11 @@ class Board
       Rook.new(self, { color: color, location: [row, column] })
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   # Tested
   def update_promotion_coordinates(coords, piece)
-    row = coords[:row]
-    column = coords[:column]
-    @data[row][column] = piece
+    @data[coords[:row]][coords[:column]] = piece
     @active_piece = piece
   end
 
