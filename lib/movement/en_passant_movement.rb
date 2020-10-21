@@ -4,7 +4,6 @@ require_relative 'basic_movement'
 
 # contains logic for en passant moves
 class EnPassantMovement < BasicMovement
-  # INTERFACE METHOD
   def update_pieces(board, coords)
     @board = board
     @row = coords[:row]
@@ -20,7 +19,6 @@ class EnPassantMovement < BasicMovement
     remove_original_piece
     remove_en_passant_capture
     update_active_piece_location
-    # reset_board_values
   end
 
   def update_new_coordinates

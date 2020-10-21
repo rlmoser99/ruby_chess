@@ -2,9 +2,8 @@
 
 require_relative 'basic_movement'
 
-# contains logic for en passant moves
+# contains logic for castling moves
 class CastlingMovement < BasicMovement
-  # INTERFACE METHOD
   def update_pieces(board, coords)
     @board = board
     @row = coords[:row]
@@ -22,7 +21,6 @@ class CastlingMovement < BasicMovement
     remove_original_rook_piece
     update_castling_coordinates(castling_rook)
     update_castling_piece_location(castling_rook)
-    # reset_board_values
   end
 
   def find_castling_rook

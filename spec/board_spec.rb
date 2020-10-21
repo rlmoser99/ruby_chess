@@ -107,28 +107,6 @@ RSpec.describe Board do
     end
   end
 
-  describe '#update_new_coordinates' do
-    subject(:board) { described_class.new(empty_data, rook) }
-    let(:empty_data) { Array.new(8) { Array.new(8) } }
-    let(:rook) { instance_double(Rook) }
-
-    it 'updates coordinate with the chess piece' do
-      coordinates = { row: 3, column: 0 }
-      board.send(:update_new_coordinates, coordinates)
-      expect(board.data[3][0]).to eq(rook)
-    end
-  end
-
-  describe '#remove_old_piece' do
-    subject(:board) { described_class.new(data_update, piece) }
-    let(:data_update) { [[piece, nil], [nil, nil]] }
-    let(:piece) { double('piece', location: [0, 0]) }
-
-    it 'removes active_piece from original coordinates' do
-      expect { board.send(:remove_old_piece) }.to change { board.data[0][0] }.to(nil)
-    end
-  end
-
   describe '#update_active_piece' do
     subject(:board) { described_class.new(data_update) }
     let(:data_update) { [[piece, nil], [nil, nil]] }
@@ -217,18 +195,6 @@ RSpec.describe Board do
         result = board_valid.valid_piece_movement?(coordinates)
         expect(result).to be false
       end
-    end
-  end
-
-  describe '#update_active_piece_location' do
-    subject(:board) { described_class.new(data, piece) }
-    let(:data) { [[piece, nil], [nil, nil]] }
-    let(:piece) { double(Piece, location: [0, 0]) }
-
-    it 'sends update_location with coordinates to piece' do
-      coordinates = { row: 1, column: 0 }
-      expect(piece).to receive(:update_location).with(1, 0)
-      board.send(:update_active_piece_location, coordinates)
     end
   end
 
@@ -743,89 +709,6 @@ RSpec.describe Board do
     end
   end
 
-  describe '#select_promotion_piece' do
-    context 'when user input is valid' do
-      subject(:board) { described_class.new }
-
-      it 'returns user input' do
-        user_input = '1'
-        allow(board).to receive(:gets).and_return(user_input)
-        expect(board.send(:select_promotion_piece)).to eq(user_input)
-      end
-    end
-
-    context 'when first user input is not valid' do
-      subject(:board) { described_class.new }
-
-      before do
-        user_input = '1'
-        user_letter = 's'
-        allow(board).to receive(:gets).and_return(user_letter, user_input)
-        allow(board).to receive(:puts)
-      end
-
-      it 'outputs an error message once' do
-        expect(board).to receive(:puts).once
-        board.send(:select_promotion_piece)
-      end
-
-      it 'runs this method again' do
-        expect(board).to receive(:select_promotion_piece).once
-        board.send(:select_promotion_piece)
-      end
-
-      it 'returns second user input' do
-        expect(board.send(:select_promotion_piece)).to eq('1')
-      end
-    end
-  end
-
-  describe '#create_promotion_piece' do
-    context 'when user selects a Queen' do
-      subject(:board) { described_class.new }
-      let(:white_pawn) { instance_double(Pawn, color: :white, location: [0, 1]) }
-
-      it 'returns a Queen' do
-        board.instance_variable_set(:@active_piece, white_pawn)
-        coords = { row: 0, column: 1 }
-        user_input = '1'
-        result = board.send(:create_promotion_piece, user_input, coords)
-        expect(result).to be_an_instance_of(Queen)
-      end
-    end
-
-    context 'when user selects a Knight' do
-      subject(:board) { described_class.new }
-      let(:white_pawn) { instance_double(Pawn, color: :white, location: [0, 1]) }
-
-      it 'returns a Knight' do
-        board.instance_variable_set(:@active_piece, white_pawn)
-        coords = { row: 0, column: 1 }
-        user_input = '3'
-        result = board.send(:create_promotion_piece, user_input, coords)
-        expect(result).to be_an_instance_of(Knight)
-      end
-    end
-  end
-
-  describe '#update_promotion_coordinates' do
-    subject(:board) { described_class.new }
-    let(:white_queen) { instance_double(Queen, color: :white, location: [0, 1]) }
-
-    before do
-      coords = { row: 0, column: 1 }
-      board.send(:update_promotion_coordinates, coords, white_queen)
-    end
-
-    it 'sets the board data coordinates to the new piece' do
-      expect(board.data[0][1]).to eq(white_queen)
-    end
-
-    it 'sets the board active_piece to the new piece' do
-      expect(board.active_piece).to eq(white_queen)
-    end
-  end
-
   describe '#possible_castling?' do
     context 'when castling is possible' do
       subject(:board) { described_class.new(data, white_king) }
@@ -872,48 +755,6 @@ RSpec.describe Board do
       it 'returns false' do
         result = board.possible_castling?
         expect(result).to be false
-      end
-    end
-  end
-
-  describe '#update_castling_rook' do
-    context 'when castling is king side' do
-      subject(:board) { described_class.new(data, white_king) }
-      subject(:white_king) { instance_double(King, color: :white, symbol: " \u265A ", location: [7, 4], moves: [[7, 5], [7, 6]]) }
-      let(:white_rook) { instance_double(Rook, color: :white, symbol: " \u265C ", moved: false, location: [7, 7]) }
-      let(:data) do
-        [
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, white_king, nil, nil, white_rook]
-        ]
-      end
-
-      it 'removes rook from original location' do
-        allow(white_rook).to receive(:update_location)
-        coords = { row: 7, column: 6 }
-        board.send(:update_castling_rook, coords)
-        original = board.data[7][7]
-        expect(original).to eq(nil)
-      end
-
-      it 'adds rook to new location' do
-        allow(white_rook).to receive(:update_location)
-        coords = { row: 7, column: 6 }
-        board.send(:update_castling_rook, coords)
-        new_location = board.data[7][5]
-        expect(new_location).to eq(white_rook)
-      end
-
-      it 'sends #update_location to rook' do
-        expect(white_rook).to receive(:update_location).with(7, 5)
-        coords = { row: 7, column: 6 }
-        board.send(:update_castling_rook, coords)
       end
     end
   end

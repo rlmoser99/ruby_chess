@@ -2,9 +2,8 @@
 
 require_relative 'basic_movement'
 
-# contains logic for en passant moves
+# contains logic for pawn promotion moves
 class PawnPromotionMovement < BasicMovement
-  # INTERFACE METHOD
   def update_pieces(board, coords)
     @board = board
     @row = coords[:row]
@@ -22,7 +21,6 @@ class PawnPromotionMovement < BasicMovement
     new_piece = create_promotion_piece(choice)
     update_promotion_coordinates(new_piece)
     update_board_active_piece(new_piece)
-    # reset_board_values
   end
 
   def remove_pawn_observer
@@ -34,7 +32,6 @@ class PawnPromotionMovement < BasicMovement
     @board.data[row][column] = piece
   end
 
-  # Error with testing! Maybe make method to send to Board the info instead?
   def update_board_active_piece(piece)
     @board.active_piece = piece
   end

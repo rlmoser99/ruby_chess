@@ -10,7 +10,6 @@ class BasicMovement
     @column = nil
   end
 
-  # INTERFACE METHOD
   def update_pieces(board, coords)
     @board = board
     @row = coords[:row]
@@ -25,7 +24,6 @@ class BasicMovement
     update_new_coordinates
     remove_original_piece
     update_active_piece_location
-    # reset_board_values
   end
 
   def remove_capture_piece_observer
@@ -44,11 +42,4 @@ class BasicMovement
   def update_active_piece_location
     @board.active_piece.update_location(row, column)
   end
-
-  # def reset_board_values
-  #   @board.previous_piece = @board.active_piece
-  #   @board.active_piece = nil
-  #   changed
-  #   notify_observers(self)
-  # end
 end

@@ -24,7 +24,7 @@ game.play
 
 # REFACTORING NOTES:
 # Board class is too big. Is there an abstraction or way that can reduce it?
-# Use strategy pattern for board#update
+# (done) Use strategy pattern for board#update
 
 # RANDOM COMPUTER PLAYER:
 # Add a way to end the game early (resign)
