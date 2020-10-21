@@ -16,7 +16,7 @@ class Board
     @previous_piece = nil
     @black_king = nil
     @white_king = nil
-    @movement = BasicMovement.new
+    @movement = nil
   end
 
   # Tested (used in Game)
@@ -44,13 +44,14 @@ class Board
   end
 
   # Script Method -> No tests needed (test inside methods)
+  # Tested (movement received update_pieces)
   def update(coords)
-    # Make BasicMovement default, unless en_passant/promotion/castling
     @movement = update_movement(coords)
     @movement.update_pieces(self, coords)
     reset_board_values
   end
 
+  # Tested
   def update_movement(coords)
     if en_passant_capture?(coords)
       EnPassantMovement.new

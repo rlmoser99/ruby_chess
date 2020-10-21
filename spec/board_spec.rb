@@ -9,6 +9,9 @@ require_relative '../lib/pieces/knight'
 require_relative '../lib/pieces/pawn'
 require_relative '../lib/pieces/piece'
 require_relative '../lib/movement/basic_movement'
+require_relative '../lib/movement/en_passant_movement'
+require_relative '../lib/movement/pawn_promotion_movement'
+require_relative '../lib/movement/castling_movement'
 
 RSpec.describe Board do
   subject(:board) { described_class.new }
@@ -247,142 +250,58 @@ RSpec.describe Board do
   end
 
   describe '#update' do
-    # context 'when capture is pawn en passant' do
-    #   subject(:board) { described_class.new(data, black_pawn) }
-    #   let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: true) }
-    #   let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
-    #   let(:data) do
-    #     [
-    #       [nil, nil, nil, nil, nil, nil, nil, nil],
-    #       [nil, nil, nil, nil, nil, nil, nil, nil],
-    #       [nil, nil, nil, nil, nil, nil, nil, nil],
-    #       [nil, nil, nil, nil, nil, nil, nil, nil],
-    #       [nil, nil, black_pawn, white_pawn, nil, nil, nil, nil],
-    #       [nil, nil, nil, nil, nil, nil, nil, nil],
-    #       [nil, nil, nil, nil, nil, nil, nil, nil],
-    #       [nil, nil, nil, nil, nil, nil, nil, nil]
-    #     ]
-    #   end
+    subject(:board) { described_class.new }
+    let(:basic_movement) { instance_double(BasicMovement) }
 
-    #   it 'calls update_en_passant' do
-    #     board.instance_variable_set(:@previous_piece, white_pawn)
-    #     allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
-    #     coords = { row: 4, column: 3 }
-    #     expect(board).to receive(:update_en_passant).with(coords)
-    #     board.update(coords)
-    #   end
-    # end
+    it 'send update_pieces to movement' do
+      allow(board).to receive(:update_movement).and_return(basic_movement)
+      coordinates = { row: 0, column: 0 }
+      expect(basic_movement).to receive(:update_pieces).with(board, coordinates)
+      board.update(coordinates)
+    end
+  end
 
-    context 'when capture is not pawn en passant' do
-      # context 'when previous piece location does not match move coords' do
-      #   subject(:board) { described_class.new(data, black_pawn) }
-      #   let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: true) }
-      #   let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
-      #   let(:data) do
-      #     [
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, black_pawn, white_pawn, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil]
-      #     ]
-      #   end
+  describe '#update_movement' do
+    subject(:board) { described_class.new }
+    context 'when there is an en passant capture' do
+      it 'creates EnPassantMovement' do
+        allow(board).to receive(:en_passant_capture?).and_return(true)
+        expect(EnPassantMovement).to receive(:new)
+        coordinates = { row: 0, column: 0 }
+        board.update_movement(coordinates)
+      end
+    end
 
-      #   it 'does not call update_en_passant' do
-      #     board.instance_variable_set(:@previous_piece, white_pawn)
-      #     allow(black_pawn).to receive(:update_location)
-      #     allow(black_pawn).to receive(:update)
-      #     coords = { row: 5, column: 2 }
-      #     expect(board).not_to receive(:update_en_passant).with(coords)
-      #     board.update(coords)
-      #   end
-      # end
+    context 'when there is a pawn promotion' do
+      it 'creates PawnPromotionMovement' do
+        allow(board).to receive(:en_passant_capture?).and_return(false)
+        allow(board).to receive(:pawn_promotion?).and_return(true)
+        expect(PawnPromotionMovement).to receive(:new)
+        coordinates = { row: 0, column: 0 }
+        board.update_movement(coordinates)
+      end
+    end
 
-      # context 'when previous piece is not a pawn' do
-      #   subject(:board) { described_class.new(data, black_pawn) }
-      #   let(:white_rook) { instance_double(Rook, color: :white, location: [4, 3], symbol: " \u265C ") }
-      #   let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
-      #   let(:data) do
-      #     [
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, black_pawn, white_rook, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil]
-      #     ]
-      #   end
+    context 'when there is an castling move' do
+      it 'creates CastlingMovement' do
+        allow(board).to receive(:en_passant_capture?).and_return(false)
+        allow(board).to receive(:pawn_promotion?).and_return(false)
+        allow(board).to receive(:castling?).and_return(true)
+        expect(CastlingMovement).to receive(:new)
+        coordinates = { row: 0, column: 0 }
+        board.update_movement(coordinates)
+      end
+    end
 
-      #   it 'does not call update_en_passant' do
-      #     board.instance_variable_set(:@previous_piece, white_rook)
-      #     allow(black_pawn).to receive(:update_location)
-      #     allow(black_pawn).to receive(:update)
-      #     allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
-      #     coords = { row: 4, column: 3 }
-      #     expect(board).not_to receive(:update_en_passant).with(coords)
-      #     board.update(coords)
-      #   end
-      # end
-
-      # context 'when active piece is not a pawn' do
-      #   subject(:board) { described_class.new(data, black_rook) }
-      #   let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: true) }
-      #   let(:black_rook) { instance_double(Rook, color: :black, location: [4, 2], symbol: " \u265C ") }
-      #   let(:data) do
-      #     [
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, black_rook, white_pawn, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil]
-      #     ]
-      #   end
-
-      #   it 'does not call update_en_passant' do
-      #     board.instance_variable_set(:@previous_piece, white_pawn)
-      #     allow(black_rook).to receive(:update_location)
-      #     allow(black_rook).to receive(:update)
-      #     coords = { row: 4, column: 3 }
-      #     expect(board).not_to receive(:update_en_passant).with(coords)
-      #     board.update(coords)
-      #   end
-      # end
-
-      # context 'when previous piece is not en passant' do
-      #   subject(:board) { described_class.new(data, black_pawn) }
-      #   let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: false) }
-      #   let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
-      #   let(:data) do
-      #     [
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, black_pawn, white_pawn, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil],
-      #       [nil, nil, nil, nil, nil, nil, nil, nil]
-      #     ]
-      #   end
-
-      #   it 'does not call update_en_passant' do
-      #     board.instance_variable_set(:@previous_piece, white_pawn)
-      #     allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
-      #     allow(black_pawn).to receive(:update_location)
-      #     allow(black_pawn).to receive(:update)
-      #     coords = { row: 4, column: 3 }
-      #     expect(board).not_to receive(:update_en_passant).with(coords)
-      #     board.update(coords)
-      #   end
-      # end
+    context 'when there are no special moves' do
+      it 'creates BasicMovement' do
+        allow(board).to receive(:en_passant_capture?).and_return(false)
+        allow(board).to receive(:pawn_promotion?).and_return(false)
+        allow(board).to receive(:castling?).and_return(false)
+        expect(BasicMovement).to receive(:new)
+        coordinates = { row: 0, column: 0 }
+        board.update_movement(coordinates)
+      end
     end
   end
 

@@ -4,6 +4,12 @@ require_relative 'basic_movement'
 
 # contains logic for castling moves
 class CastlingMovement < BasicMovement
+  def initialize
+    @board = nil
+    @row = nil
+    @column = nil
+  end
+  
   def update_pieces(board, coords)
     @board = board
     @row = coords[:row]

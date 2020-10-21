@@ -4,6 +4,12 @@ require_relative 'basic_movement'
 
 # contains logic for pawn promotion moves
 class PawnPromotionMovement < BasicMovement
+  def initialize
+    @board = nil
+    @row = nil
+    @column = nil
+  end
+
   def update_pieces(board, coords)
     @board = board
     @row = coords[:row]
