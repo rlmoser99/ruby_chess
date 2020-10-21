@@ -45,22 +45,22 @@ class Board
 
   # Script Method -> No tests needed (test inside methods)
   def update(coords)
-    if en_passant_capture?(coords)
-      @movement = EnPassantMovement.new
-      @movement.update_pieces(self, coords)
-    elsif pawn_promotion?(coords)
-      @movement = PawnPromotionMovement.new
-      @movement.update_pieces(self, coords)
-    elsif castling?(coords)
-      update_castling(coords)
-      # @movement ||= CastlingMovement.new
-      # @movement.update_pieces(self, coords)
-    else
-      @movement = BasicMovement.new
-      @movement.update_pieces(self, coords)
-    end
-    # @movement.update_pieces(self, coords)
+    # Work on this to be default, unless en_passant/promotion/castling
+    @movement = update_movement(coords)
+    @movement.update_pieces(self, coords)
     reset_board_values
+  end
+
+  def update_movement(coords)
+    if en_passant_capture?(coords)
+      EnPassantMovement.new
+    elsif pawn_promotion?(coords)
+      PawnPromotionMovement.new
+    elsif castling?(coords)
+      CastlingMovement.new
+    else
+      BasicMovement.new
+    end
   end
 
   # Tested (used in Game)
@@ -170,7 +170,7 @@ class Board
     pieces.each { |piece| piece.update(self) }
   end
 
-  # CASTLING STRATEGY
+  # CASTLING STRATEGY -
   # BASE STRATEGY -
   # Handles updating board for basic turns (all methods inside tested).
   def update_board(coords)
@@ -179,14 +179,14 @@ class Board
     update_active_piece_location(coords)
   end
 
-  # CASTLING STRATEGY
+  # CASTLING STRATEGY -
   # Handles updating board for castling.
   def update_castling(coords)
     update_board(coords)
     update_castling_rook(coords)
   end
 
-  # CASTLING STRATEGY
+  # CASTLING STRATEGY -
   def update_castling_rook(coords)
     king_rank = coords[:row]
     king_file = coords[:column]
@@ -197,7 +197,7 @@ class Board
     end
   end
 
-  # CASTLING STRATEGY
+  # CASTLING STRATEGY -
   def update_king_side_rook(rank)
     castling_rook = @data[rank][7]
     @data[rank][7] = nil
@@ -205,7 +205,7 @@ class Board
     castling_rook.update_location(rank, 5)
   end
 
-  # CASTLING STRATEGY
+  # CASTLING STRATEGY -
   def update_queen_side_rook(rank)
     castling_rook = @data[rank][0]
     @data[rank][0] = nil
