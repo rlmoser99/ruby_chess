@@ -46,18 +46,17 @@ class Board
   # Script Method -> No tests needed (test inside methods)
   def update(coords)
     if en_passant_capture?(coords)
-      @movement ||= EnPassantMovement.new
+      @movement = EnPassantMovement.new
       @movement.update_pieces(self, coords)
     elsif pawn_promotion?(coords)
-      update_pawn_promotion(coords)
-      # @movement ||= PawnPromotionMovement.new
-      # @movement.update_pieces(self, coords)
+      @movement = PawnPromotionMovement.new
+      @movement.update_pieces(self, coords)
     elsif castling?(coords)
       update_castling(coords)
       # @movement ||= CastlingMovement.new
       # @movement.update_pieces(self, coords)
     else
-      @movement ||= BasicMovement.new
+      @movement = BasicMovement.new
       @movement.update_pieces(self, coords)
     end
     # @movement.update_pieces(self, coords)
@@ -214,7 +213,7 @@ class Board
     castling_rook.update_location(rank, 3)
   end
 
-  # PAWN PROMOTION STRATEGY
+  # PAWN PROMOTION STRATEGY -
   # Handles updating board when pawn is promoted (all methods inside tested).
   def update_pawn_promotion(coords)
     puts pawn_promotion_choices
@@ -225,7 +224,7 @@ class Board
     update_promotion_coordinates(coords, new_piece)
   end
 
-  # PAWN PROMOTION STRATEGY
+  # PAWN PROMOTION STRATEGY <
   # EN PASSANT STRATEGY <
   # BASE STRATEGY -
   def remove_piece_observer(coords)
@@ -234,7 +233,7 @@ class Board
     delete_observer(@data[row][column]) if @data[row][column]
   end
 
-  # PAWN PROMOTION STRATEGY
+  # PAWN PROMOTION STRATEGY -
   def remove_old_observer
     location = @active_piece.location
     delete_observer(@data[location[0]][location[1]])
@@ -276,7 +275,7 @@ class Board
     update_active_piece_location(new_coords)
   end
 
-  # PAWN PROMOTION STRATEGY
+  # PAWN PROMOTION STRATEGY ???
   # EN PASSANT STRATEGY -
   # Removes old piece and observer during en_passant capture
   def remove_en_passant_capture(coords)
@@ -321,7 +320,7 @@ class Board
     (color == :white && rank.zero?) || (color == :black && rank == 7)
   end
 
-  # PAWN PROMOTION STRATEGY
+  # PAWN PROMOTION STRATEGY -
   # Tested
   def select_promotion_piece
     choice = gets.chomp
@@ -331,7 +330,7 @@ class Board
     select_promotion_piece
   end
 
-  # PAWN PROMOTION STRATEGY
+  # PAWN PROMOTION STRATEGY -
   # Tested
   # rubocop:disable Metrics/MethodLength
   def create_promotion_piece(choice, coords)
@@ -351,14 +350,14 @@ class Board
   end
   # rubocop:enable Metrics/MethodLength
 
-  # PAWN PROMOTION STRATEGY
+  # PAWN PROMOTION STRATEGY -
   # Tested
   def update_promotion_coordinates(coords, piece)
     @data[coords[:row]][coords[:column]] = piece
     @active_piece = piece
   end
 
-  # PAWN PROMOTION STRATEGY
+  # PAWN PROMOTION STRATEGY -
   def pawn_promotion_choices
     <<~HEREDOC
       To promote your pawn, enter one of the following numbers:

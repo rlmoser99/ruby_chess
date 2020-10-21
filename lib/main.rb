@@ -16,6 +16,7 @@ require_relative 'pieces/knight.rb'
 require_relative 'pieces/pawn.rb'
 require_relative 'movement/basic_movement.rb'
 require_relative 'movement/en_passant_movement.rb'
+require_relative 'movement/pawn_promotion_movement.rb'
 
 game = Game.new
 game.play
