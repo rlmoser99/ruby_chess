@@ -12,6 +12,8 @@ class EnPassantMovement < BasicMovement
     update_en_passant_moves
   end
 
+  private
+
   def update_en_passant_moves
     remove_capture_piece_observer
     update_new_coordinates
