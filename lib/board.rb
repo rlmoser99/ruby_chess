@@ -7,7 +7,8 @@ require_relative 'displayable.rb'
 class Board
   include Displayable
   include Observable
-  attr_reader :data, :active_piece, :previous_piece, :black_king, :white_king
+  attr_reader :black_king, :white_king
+  attr_accessor :data, :active_piece, :previous_piece
 
   def initialize(data = Array.new(8) { Array.new(8) }, active_piece = nil)
     @data = data
@@ -15,19 +16,20 @@ class Board
     @previous_piece = nil
     @black_king = nil
     @white_king = nil
+    @movement = BasicMovement.new
   end
 
-  # Tested
+  # Tested (used in Game)
   def update_active_piece(coordinates)
     @active_piece = data[coordinates[:row]][coordinates[:column]]
   end
 
-  # Tested
+  # Tested (used in Game)
   def active_piece_moveable?
     @active_piece.moves.size >= 1 || @active_piece.captures.size >= 1
   end
 
-  # Tested
+  # Tested (used in Game)
   def valid_piece_movement?(coords)
     row = coords[:row]
     column = coords[:column]
@@ -35,7 +37,7 @@ class Board
       @active_piece.captures.any?([row, column])
   end
 
-  # Tested
+  # Tested (used in Game)
   def valid_piece?(coords, color)
     piece = @data[coords[:row]][coords[:column]]
     piece&.color == color
@@ -45,28 +47,36 @@ class Board
   def update(coords)
     if en_passant_capture?(coords)
       update_en_passant(coords)
+      # @movement ||= EnPassantmovement.new
+      # @movement.update_pieces(self, coords)
     elsif pawn_promotion?(coords)
       update_pawn_promotion(coords)
+      # @movement ||= PawnPromotionmovement.new
+      # @movement.update_pieces(self, coords)
     elsif castling?(coords)
       update_castling(coords)
+      # @movement ||= Castlingmovement.new
+      # @movement.update_pieces(self, coords)
     else
-      update_board(coords)
+      @movement ||= BasicMovement.new
+      @movement.update_pieces(self, coords)
     end
+    # @movement.update_pieces(self, coords)
     reset_board_values
   end
 
-  # Tested
+  # Tested (used in Game)
   def possible_en_passant?
     @active_piece&.captures&.include?(@previous_piece&.location) &&
       en_passant_pawn?
   end
 
-  # Tested
+  # Tested (used in Game)
   def possible_castling?
     @active_piece.symbol == " \u265A " && castling_moves?
   end
 
-  # Tested
+  # Tested (used in Board & Game)
   def check?(color)
     king = color == :white ? @white_king : @black_king
     pieces = @data.flatten(1).compact
@@ -77,7 +87,7 @@ class Board
     end
   end
 
-  # Tested
+  # Tested (used in Game)
   def game_over?
     return false unless @previous_piece
 
@@ -87,7 +97,7 @@ class Board
     no_legal_moves_captures?(color)
   end
 
-  # Tested
+  # Tested (used in Board)
   def initial_placement
     initial_row(:black, 0)
     initial_pawn_row(:black, 1)
@@ -98,7 +108,7 @@ class Board
     update_all_moves_captures
   end
 
-  # Only Puts Method -> No tests needed
+  # Only Puts Method -> No tests needed (used in Game)
   def to_s
     print_chess_game
   end
@@ -125,23 +135,29 @@ class Board
     ]
   end
 
+  # EN PASSANT STRATEGY
+  # BASE STRATEGY -
   # Tested (private, but used in a public script method)
   def update_new_coordinates(coords)
     remove_piece_observer(coords)
     @data[coords[:row]][coords[:column]] = @active_piece
   end
 
+  # BASE STRATEGY -
   # Tested (private, but used in a public script method)
   def remove_old_piece
     location = @active_piece.location
     @data[location[0]][location[1]] = nil
   end
 
+  # EN PASSANT STRATEGY
+  # BASE STRATEGY -
   # Tested (private, but used in a public script method)
   def update_active_piece_location(coords)
     @active_piece.update_location(coords[:row], coords[:column])
   end
 
+  # USED IN ALL STRATEGIES - PUT IN BASE STRATEGY ??? -
   # Tested (private, but used in a public script method)
   def reset_board_values
     @previous_piece = @active_piece
@@ -156,6 +172,8 @@ class Board
     pieces.each { |piece| piece.update(self) }
   end
 
+  # CASTLING STRATEGY
+  # BASE STRATEGY -
   # Handles updating board for basic turns (all methods inside tested).
   def update_board(coords)
     update_new_coordinates(coords)
@@ -163,12 +181,14 @@ class Board
     update_active_piece_location(coords)
   end
 
+  # CASTLING STRATEGY
   # Handles updating board for castling.
   def update_castling(coords)
     update_board(coords)
     update_castling_rook(coords)
   end
 
+  # CASTLING STRATEGY
   def update_castling_rook(coords)
     king_rank = coords[:row]
     king_file = coords[:column]
@@ -179,6 +199,7 @@ class Board
     end
   end
 
+  # CASTLING STRATEGY
   def update_king_side_rook(rank)
     castling_rook = @data[rank][7]
     @data[rank][7] = nil
@@ -186,6 +207,7 @@ class Board
     castling_rook.update_location(rank, 5)
   end
 
+  # CASTLING STRATEGY
   def update_queen_side_rook(rank)
     castling_rook = @data[rank][0]
     @data[rank][0] = nil
@@ -193,6 +215,7 @@ class Board
     castling_rook.update_location(rank, 3)
   end
 
+  # PAWN PROMOTION STRATEGY
   # Handles updating board when pawn is promoted (all methods inside tested).
   def update_pawn_promotion(coords)
     puts pawn_promotion_choices
@@ -203,39 +226,48 @@ class Board
     update_promotion_coordinates(coords, new_piece)
   end
 
+  # PAWN PROMOTION STRATEGY
+  # EN PASSANT STRATEGY
+  # BASE STRATEGY -
   def remove_piece_observer(coords)
     row = coords[:row]
     column = coords[:column]
     delete_observer(@data[row][column]) if @data[row][column]
   end
 
+  # PAWN PROMOTION STRATEGY
   def remove_old_observer
     location = @active_piece.location
     delete_observer(@data[location[0]][location[1]])
   end
 
+  # DETERMINES EN PASSANT STRATEGY
   # Checks if there is a en_passant capture during board update.
   def en_passant_capture?(coords)
     @previous_piece&.location == [coords[:row], coords[:column]] &&
       en_passant_pawn?
   end
 
+  # DETERMINES CASTLING STRATEGY
   # Checks if there is a castling moves during board update.
   def castling?(coords)
     file_difference = (coords[:column] - @active_piece.location[1]).abs
     @active_piece&.symbol == " \u265A " && file_difference == 2
   end
 
+  # Used in board -> for game#warning & determines strategy
   # Checks if previous & active pieces are pawns, and if previous is en passant.
   def en_passant_pawn?
     two_pawns? && @active_piece.en_passant_rank? && @previous_piece.en_passant
   end
 
+  # Used in board -> for game#warning & determines strategy
   # Checks is both pieces are pawns
   def two_pawns?
     @previous_piece.symbol == " \u265F " && @active_piece.symbol == " \u265F "
   end
 
+  # EN PASSANT STRATEGY
   # Handles extra piece placement during an en_passant capture
   def update_en_passant(coords)
     new_rank = coords[:row] + @active_piece.rank_direction
@@ -245,6 +277,8 @@ class Board
     update_active_piece_location(new_coords)
   end
 
+  # PAWN PROMOTION STRATEGY
+  # EN PASSANT STRATEGY
   # Removes old piece and observer during en_passant capture
   def remove_en_passant_capture(coords)
     remove_piece_observer(coords)
@@ -252,6 +286,7 @@ class Board
     remove_old_piece
   end
 
+  # Used in board -> for game#warning
   # Determines if active piece's moves include castling locations.
   def castling_moves?
     location = @active_piece.location
@@ -263,6 +298,7 @@ class Board
       @active_piece&.moves&.include?(queen_side)
   end
 
+  # Used in board -> for game_over?
   # Determines if there is no more legal moves or captures
   def no_legal_moves_captures?(color)
     pieces = @data.flatten(1).compact
@@ -273,17 +309,20 @@ class Board
     end
   end
 
+  # DETERMINES PAWN PROMOTION STRATEGY
   # Tested
   def pawn_promotion?(coords)
     @active_piece.symbol == " \u265F " && promotion_rank?(coords[:row])
   end
 
+  # Used in board -> determines strategy
   # Tested inside pawn_promotion?
   def promotion_rank?(rank)
     color = @active_piece.color
     (color == :white && rank.zero?) || (color == :black && rank == 7)
   end
 
+  # PAWN PROMOTION STRATEGY
   # Tested
   def select_promotion_piece
     choice = gets.chomp
@@ -293,6 +332,7 @@ class Board
     select_promotion_piece
   end
 
+  # PAWN PROMOTION STRATEGY
   # Tested
   # rubocop:disable Metrics/MethodLength
   def create_promotion_piece(choice, coords)
@@ -312,12 +352,14 @@ class Board
   end
   # rubocop:enable Metrics/MethodLength
 
+  # PAWN PROMOTION STRATEGY
   # Tested
   def update_promotion_coordinates(coords, piece)
     @data[coords[:row]][coords[:column]] = piece
     @active_piece = piece
   end
 
+  # PAWN PROMOTION STRATEGY
   def pawn_promotion_choices
     <<~HEREDOC
       To promote your pawn, enter one of the following numbers:
