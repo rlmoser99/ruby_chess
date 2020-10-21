@@ -281,59 +281,59 @@ RSpec.describe Board do
   end
 
   describe '#update' do
-    context 'when capture is pawn en passant' do
-      subject(:board) { described_class.new(data, black_pawn) }
-      let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: true) }
-      let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
-      let(:data) do
-        [
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, black_pawn, white_pawn, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil]
-        ]
-      end
+    # context 'when capture is pawn en passant' do
+    #   subject(:board) { described_class.new(data, black_pawn) }
+    #   let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: true) }
+    #   let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
+    #   let(:data) do
+    #     [
+    #       [nil, nil, nil, nil, nil, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil],
+    #       [nil, nil, black_pawn, white_pawn, nil, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil],
+    #       [nil, nil, nil, nil, nil, nil, nil, nil]
+    #     ]
+    #   end
 
-      it 'calls update_en_passant' do
-        board.instance_variable_set(:@previous_piece, white_pawn)
-        allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
-        coords = { row: 4, column: 3 }
-        expect(board).to receive(:update_en_passant).with(coords)
-        board.update(coords)
-      end
-    end
+    #   it 'calls update_en_passant' do
+    #     board.instance_variable_set(:@previous_piece, white_pawn)
+    #     allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
+    #     coords = { row: 4, column: 3 }
+    #     expect(board).to receive(:update_en_passant).with(coords)
+    #     board.update(coords)
+    #   end
+    # end
 
     context 'when capture is not pawn en passant' do
-      context 'when previous piece location does not match move coords' do
-        subject(:board) { described_class.new(data, black_pawn) }
-        let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: true) }
-        let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
-        let(:data) do
-          [
-            [nil, nil, nil, nil, nil, nil, nil, nil],
-            [nil, nil, nil, nil, nil, nil, nil, nil],
-            [nil, nil, nil, nil, nil, nil, nil, nil],
-            [nil, nil, nil, nil, nil, nil, nil, nil],
-            [nil, nil, black_pawn, white_pawn, nil, nil, nil, nil],
-            [nil, nil, nil, nil, nil, nil, nil, nil],
-            [nil, nil, nil, nil, nil, nil, nil, nil],
-            [nil, nil, nil, nil, nil, nil, nil, nil]
-          ]
-        end
+      # context 'when previous piece location does not match move coords' do
+      #   subject(:board) { described_class.new(data, black_pawn) }
+      #   let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: true) }
+      #   let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
+      #   let(:data) do
+      #     [
+      #       [nil, nil, nil, nil, nil, nil, nil, nil],
+      #       [nil, nil, nil, nil, nil, nil, nil, nil],
+      #       [nil, nil, nil, nil, nil, nil, nil, nil],
+      #       [nil, nil, nil, nil, nil, nil, nil, nil],
+      #       [nil, nil, black_pawn, white_pawn, nil, nil, nil, nil],
+      #       [nil, nil, nil, nil, nil, nil, nil, nil],
+      #       [nil, nil, nil, nil, nil, nil, nil, nil],
+      #       [nil, nil, nil, nil, nil, nil, nil, nil]
+      #     ]
+      #   end
 
-        it 'does not call update_en_passant' do
-          board.instance_variable_set(:@previous_piece, white_pawn)
-          allow(black_pawn).to receive(:update_location)
-          allow(black_pawn).to receive(:update)
-          coords = { row: 5, column: 2 }
-          expect(board).not_to receive(:update_en_passant).with(coords)
-          board.update(coords)
-        end
-      end
+      #   it 'does not call update_en_passant' do
+      #     board.instance_variable_set(:@previous_piece, white_pawn)
+      #     allow(black_pawn).to receive(:update_location)
+      #     allow(black_pawn).to receive(:update)
+      #     coords = { row: 5, column: 2 }
+      #     expect(board).not_to receive(:update_en_passant).with(coords)
+      #     board.update(coords)
+      #   end
+      # end
 
       # context 'when previous piece is not a pawn' do
       #   subject(:board) { described_class.new(data, black_pawn) }

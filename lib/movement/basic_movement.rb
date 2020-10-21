@@ -29,7 +29,7 @@ class BasicMovement
   end
 
   def remove_capture_piece_observer
-    delete_observer(@board.data[row][column])
+    @board.delete_observer(@board.data[row][column])
   end
 
   def update_new_coordinates

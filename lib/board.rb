@@ -46,16 +46,15 @@ class Board
   # Script Method -> No tests needed (test inside methods)
   def update(coords)
     if en_passant_capture?(coords)
-      update_en_passant(coords)
-      # @movement ||= EnPassantmovement.new
-      # @movement.update_pieces(self, coords)
+      @movement ||= EnPassantMovement.new
+      @movement.update_pieces(self, coords)
     elsif pawn_promotion?(coords)
       update_pawn_promotion(coords)
-      # @movement ||= PawnPromotionmovement.new
+      # @movement ||= PawnPromotionMovement.new
       # @movement.update_pieces(self, coords)
     elsif castling?(coords)
       update_castling(coords)
-      # @movement ||= Castlingmovement.new
+      # @movement ||= CastlingMovement.new
       # @movement.update_pieces(self, coords)
     else
       @movement ||= BasicMovement.new
@@ -135,7 +134,7 @@ class Board
     ]
   end
 
-  # EN PASSANT STRATEGY
+  # EN PASSANT STRATEGY <
   # BASE STRATEGY -
   # Tested (private, but used in a public script method)
   def update_new_coordinates(coords)
@@ -150,7 +149,7 @@ class Board
     @data[location[0]][location[1]] = nil
   end
 
-  # EN PASSANT STRATEGY
+  # EN PASSANT STRATEGY <
   # BASE STRATEGY -
   # Tested (private, but used in a public script method)
   def update_active_piece_location(coords)
@@ -227,7 +226,7 @@ class Board
   end
 
   # PAWN PROMOTION STRATEGY
-  # EN PASSANT STRATEGY
+  # EN PASSANT STRATEGY <
   # BASE STRATEGY -
   def remove_piece_observer(coords)
     row = coords[:row]
@@ -267,7 +266,7 @@ class Board
     @previous_piece.symbol == " \u265F " && @active_piece.symbol == " \u265F "
   end
 
-  # EN PASSANT STRATEGY
+  # EN PASSANT STRATEGY -
   # Handles extra piece placement during an en_passant capture
   def update_en_passant(coords)
     new_rank = coords[:row] + @active_piece.rank_direction
@@ -278,7 +277,7 @@ class Board
   end
 
   # PAWN PROMOTION STRATEGY
-  # EN PASSANT STRATEGY
+  # EN PASSANT STRATEGY -
   # Removes old piece and observer during en_passant capture
   def remove_en_passant_capture(coords)
     remove_piece_observer(coords)
