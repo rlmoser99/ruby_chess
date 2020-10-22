@@ -153,4 +153,84 @@ RSpec.describe Game do
       end
     end
   end
+
+  describe '#switch_color' do
+    subject(:game) { described_class.new }
+
+    context 'when current_turn is :white' do
+      it 'changes to :black' do
+        game.instance_variable_set(:@current_turn, :white)
+        game.send(:switch_color)
+        result = game.instance_variable_get(:@current_turn)
+        expect(result).to eq(:black)
+      end
+    end
+
+    context 'when current_turn is :black' do
+      it 'changes to :white' do
+        game.instance_variable_set(:@current_turn, :black)
+        game.send(:switch_color)
+        result = game.instance_variable_get(:@current_turn)
+        expect(result).to eq(:white)
+      end
+    end
+  end
+
+  describe '#human_player_turn' do
+    subject(:game) { described_class.new(board) }
+    let(:board) { instance_double(Board) }
+
+    it 'send update to board' do
+      allow(game).to receive(:select_piece_coordinates)
+      allow(board).to receive(:to_s)
+      allow(game).to receive(:select_move_coordinates).and_return({ row: 1, column: 1 })
+      allow(board).to receive(:update)
+      expect(board).to receive(:update).with({ row: 1, column: 1 })
+      game.send(:human_player_turn)
+    end
+  end
+
+  describe '#computer_player_turn' do
+    subject(:game) { described_class.new(board) }
+    let(:board) { instance_double(Board) }
+
+    before do
+      allow(game).to receive(:computer_select_random_piece).and_return({ row: 0, column: 0 })
+      allow(game).to receive(:computer_select_random_move).and_return({ row: 1, column: 1 })
+      allow(board).to receive(:update_active_piece)
+      allow(board).to receive(:update)
+      allow(board).to receive(:to_s)
+      allow(game).to receive(:sleep)
+    end
+
+    it 'send update_active_piece to board' do
+      expect(board).to receive(:update_active_piece).with({ row: 0, column: 0 })
+      game.send(:computer_player_turn)
+    end
+
+    it 'send update to board' do
+      expect(board).to receive(:update).with({ row: 1, column: 1 })
+      game.send(:computer_player_turn)
+    end
+  end
+
+  describe '#computer_select_random_piece' do
+    subject(:game) { described_class.new(board) }
+    let(:board) { instance_double(Board) }
+
+    it 'send random_black_piece to board' do
+      expect(board).to receive(:random_black_piece)
+      game.send(:computer_select_random_piece)
+    end
+  end
+
+  describe '#computer_select_random_move' do
+    subject(:game) { described_class.new(board) }
+    let(:board) { instance_double(Board) }
+
+    it 'send random_black_move to board' do
+      expect(board).to receive(:random_black_move)
+      game.send(:computer_select_random_move)
+    end
+  end
 end

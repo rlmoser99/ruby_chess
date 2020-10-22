@@ -22,9 +22,11 @@ require_relative 'movement/castling_movement.rb'
 game = Game.new
 game.play
 
+# BUG - en passant. white pawn in h5, previous piece black pawn in f5
+# triggered en passant. Make a test, then fix it!
+
 # RANDOM COMPUTER PLAYER:
 # Add a way to end the game early (resign)
-# Create 2 arrays of black & white pieces?
 
 # SAVE & LOAD GAME:
 # Idea: Make a saved game for "new" with pieces in original spots?

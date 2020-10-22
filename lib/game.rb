@@ -39,7 +39,8 @@ class Game
   # Public Script Method -> No tests needed (test inside methods)
   # Need to test any outgoing command messages & behavior of calling player_turn
   def play
-    @mode = select_game_mode
+    input = select_game_mode
+    @mode = :computer if input == '1'
     @board.initial_placement
     @board.to_s
     player_turn until @board.game_over?
@@ -50,11 +51,11 @@ class Game
   # Need to test any outgoing command messages ??
   def player_turn
     puts "#{@current_turn.capitalize}'s turn!"
-    # select_piece_coordinates
-    # @board.to_s
-    # move = select_move_coordinates
-    # @board.update(move)
-    turn_part_one
+    if @mode == :computer && @current_turn == :black
+      computer_player_turn
+    else
+      human_player_turn
+    end
     @board.to_s
     switch_color
   end
@@ -99,31 +100,36 @@ class Game
     select_game_mode
   end
 
-  def turn_part_one
+  # Tested
+  def human_player_turn
     select_piece_coordinates
     @board.to_s
     move = select_move_coordinates
     @board.update(move)
   end
 
-  def turn_part_two_computer
-    coords = computer_select_piece_coordinates
-    @board.update_active_piece(coords)
+  # Tested
+  def computer_player_turn
+    sleep(1.5)
+    coordinates = computer_select_random_piece
+    @board.update_active_piece(coordinates)
     @board.to_s
-    sleep(3)
-    move = computer_select_move_coordinates
+    sleep(1.5)
+    move = computer_select_random_move
     @board.update(move)
-    sleep(3)
   end
 
-  def computer_select_piece_coordinates
+  # Tested
+  def computer_select_random_piece
     @board.random_black_piece
   end
 
-  def computer_select_move_coordinates
+  # Tested
+  def computer_select_random_move
     @board.random_black_move
   end
 
+  # Tested
   def switch_color
     @current_turn = @current_turn == :white ? :black : :white
   end
