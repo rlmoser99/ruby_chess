@@ -14,13 +14,17 @@ require_relative 'pieces/rook.rb'
 require_relative 'pieces/bishop.rb'
 require_relative 'pieces/knight.rb'
 require_relative 'pieces/pawn.rb'
+require_relative 'movement/basic_movement.rb'
+require_relative 'movement/en_passant_movement.rb'
+require_relative 'movement/pawn_promotion_movement.rb'
+require_relative 'movement/castling_movement.rb'
 
 game = Game.new
 game.play
 
 # REFACTORING NOTES:
 # Board class is too big. Is there an abstraction or way that can reduce it?
-# Use strategy pattern for board#update
+# (done) Use strategy pattern for board#update
 
 # RANDOM COMPUTER PLAYER:
 # Add a way to end the game early (resign)
