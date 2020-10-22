@@ -20,13 +20,22 @@ class PawnPromotionMovement < BasicMovement
   private
 
   def update_pawn_promotion_moves
-    puts pawn_promotion_choices
-    choice = select_promotion_piece
+    remove_capture_piece_observer if @board.data[row][column]
     remove_pawn_observer
     remove_original_piece
-    new_piece = create_promotion_piece(choice)
+    new_piece = create_promoted_piece
     update_promotion_coordinates(new_piece)
     update_board_active_piece(new_piece)
+  end
+
+  def create_promoted_piece
+    if @board.game_mode == :computer && @board.active_piece.color == :black
+      create_promotion_piece('1')
+    else
+      puts pawn_promotion_choices
+      choice = select_promotion_piece
+      create_promotion_piece(choice)
+    end
   end
 
   def remove_pawn_observer

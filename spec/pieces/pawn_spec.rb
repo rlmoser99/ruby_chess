@@ -28,6 +28,16 @@ RSpec.describe Pawn do
           end
         end
 
+        context 'when first square is occupied' do
+          let(:data) { [[nil, nil], [black_pawn, nil], [piece, nil], [nil, nil]] }
+
+          it 'has no moves' do
+            allow(board).to receive(:data).and_return(data)
+            results = black_pawn.find_possible_moves(board)
+            expect(results).to be_empty
+          end
+        end
+
         context 'when bonus square is occupied' do
           let(:data) { [[nil, nil], [black_pawn, nil], [nil, nil], [piece, nil]] }
 
@@ -149,7 +159,7 @@ RSpec.describe Pawn do
         end
       end
 
-      context 'when pawn has en_passant' do
+      context 'when neighboring pawn has en_passant' do
         subject(:black_pawn) { described_class.new(board, { color: :black, location: [4, 1] }) }
         let(:white_pawn) { instance_double(Pawn, en_passant: true, location: [4, 2], symbol: " \u265F ") }
         let(:data) do
@@ -170,6 +180,30 @@ RSpec.describe Pawn do
           allow(board).to receive(:previous_piece).and_return(white_pawn)
           result = black_pawn.find_possible_captures(board)
           expect(result).to contain_exactly([4, 2])
+        end
+      end
+
+      context 'when non-neighboring pawn has en_passant' do
+        subject(:black_pawn) { described_class.new(board, { color: :black, location: [4, 1] }) }
+        let(:white_pawn) { instance_double(Pawn, en_passant: true, location: [4, 5], symbol: " \u265F ") }
+        let(:data) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, black_pawn, nil, nil, nil, white_pawn, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
+        end
+
+        it 'has no capture' do
+          allow(board).to receive(:data).and_return(data)
+          allow(board).to receive(:previous_piece).and_return(white_pawn)
+          result = black_pawn.find_possible_captures(board)
+          expect(result).to be_empty
         end
       end
 

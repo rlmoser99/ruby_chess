@@ -38,6 +38,7 @@ class MoveValidator
   end
 
   def find_king_location(move)
+    # binding.pry if @current_piece.nil?
     if @current_piece.symbol == " \u265A "
       move
     elsif @current_piece.color == :black

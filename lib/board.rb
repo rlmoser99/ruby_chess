@@ -7,7 +7,7 @@ require_relative 'displayable.rb'
 class Board
   include Displayable
   include Observable
-  attr_reader :black_king, :white_king
+  attr_reader :black_king, :white_king, :game_mode
   attr_accessor :data, :active_piece, :previous_piece
 
   def initialize(data = Array.new(8) { Array.new(8) }, active_piece = nil)
@@ -17,6 +17,7 @@ class Board
     @black_king = nil
     @white_king = nil
     @movement = nil
+    @game_mode = nil
   end
 
   # Tested (used in Game)
@@ -103,15 +104,32 @@ class Board
     { row: location[0], column: location[1] }
   end
 
+  # NEED TO TEST
+  def update_game_mode
+    @game_mode = :computer
+  end
+
   # Tested (used in Game)
   def game_over?
     return false unless @previous_piece
 
     color = @previous_piece.color == :white ? :black : :white
-    return false unless check?(color)
-
-    no_legal_moves_captures?(color)
+    if no_legal_moves_captures?(color)
+      true
+    else
+      false
+    end
   end
+
+  # PREVIOUS REFACTOR ->
+  # def game_over?
+  #   return false unless @previous_piece
+
+  #   color = @previous_piece.color == :white ? :black : :white
+  #   return true if no_legal_moves_captures?(color)
+  #   return false if check?(color) && !no_legal_moves_captures?(color)
+  #   return false unless check?(color)
+  # end
 
   # Tested (used in Board)
   def initial_placement

@@ -62,7 +62,14 @@ class Pawn < Piece
   def double_bonus_move(board)
     double_rank = @location[0] + (rank_direction * 2)
     bonus = [double_rank, @location[1]]
-    return bonus unless @moved || board.data[bonus[0]][bonus[1]]
+    return bonus unless invalid_bonus_move?(board, bonus)
+  end
+
+  def invalid_bonus_move?(board, bonus)
+    first_move = single_move(board)
+    return true unless first_move
+
+    @moved || board.data[bonus[0]][bonus[1]]
   end
 
   def basic_capture(board, file)
@@ -72,6 +79,11 @@ class Pawn < Piece
 
   def en_passant_capture(previous_piece)
     capture = previous_piece&.location
+    return unless capture
+
+    column_difference = (@location[1] - capture[1]).abs
+    return unless column_difference == 1
+
     return capture if valid_en_passant?(previous_piece)
   end
 

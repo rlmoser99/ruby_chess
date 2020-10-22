@@ -40,7 +40,7 @@ class Game
   # Need to test any outgoing command messages & behavior of calling player_turn
   def play
     input = select_game_mode
-    @mode = :computer if input == '1'
+    update_game_board_mode if input == '1'
     @board.initial_placement
     @board.to_s
     player_turn until @board.game_over?
@@ -93,11 +93,18 @@ class Game
   private
 
   def select_game_mode
-    user_mode = user_input('Press [1] to play computer or [2] for 2-player')
+    prompt = "Press \e[36m[1]\e[0m to play computer or \e[36m[2]\e[0m for a 2-player game."
+    user_mode = user_input(prompt)
     return user_mode if user_mode.match?(/^[12]$/)
 
     puts 'Input error! Enter 1 or 2'
     select_game_mode
+  end
+
+  # NEED TO TEST
+  def update_game_board_mode
+    @mode = :computer
+    @board.update_game_mode
   end
 
   # Tested

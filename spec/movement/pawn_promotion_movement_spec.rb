@@ -34,6 +34,7 @@ RSpec.describe PawnPromotionMovement do
       allow(board).to receive(:active_piece).and_return(black_pawn)
       allow(board).to receive(:delete_observer)
       allow(board).to receive(:active_piece=)
+      allow(board).to receive(:game_mode).and_return(nil)
     end
 
     it 'removes observer from original pawn' do

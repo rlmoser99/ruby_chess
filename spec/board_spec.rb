@@ -528,6 +528,32 @@ RSpec.describe Board do
         expect(board.game_over?).to be true
       end
     end
+
+    context 'when king is in stalemate & does not have any legal moves' do
+      subject(:board) { described_class.new(data) }
+      let(:black_queen) { instance_double(Queen, color: :black, location: [6, 0], moves: [[6, 1]], captures: []) }
+      let(:black_rook1) { instance_double(Rook, color: :black, location: [3, 2], moves: [[3, 1]], captures: []) }
+      let(:black_rook2) { instance_double(Rook, color: :black, location: [3, 4], moves: [[3, 5]], captures: []) }
+      let(:white_king) { instance_double(King, color: :white, location: [7, 4], moves: [], captures: []) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, black_rook1, nil, black_rook2, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [black_queen, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, white_king, nil, nil, nil]
+        ]
+      end
+
+      it 'is game over' do
+        board.instance_variable_set(:@previous_piece, black_queen)
+        board.instance_variable_set(:@white_king, white_king)
+        expect(board.game_over?).to be true
+      end
+    end
   end
 
   describe '#pawn_promotion?' do
