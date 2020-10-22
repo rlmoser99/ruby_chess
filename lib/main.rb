@@ -22,10 +22,6 @@ require_relative 'movement/castling_movement.rb'
 game = Game.new
 game.play
 
-# REFACTORING NOTES:
-# Board class is too big. Is there an abstraction or way that can reduce it?
-# (done) Use strategy pattern for board#update
-
 # RANDOM COMPUTER PLAYER:
 # Add a way to end the game early (resign)
 # Create 2 arrays of black & white pieces?
@@ -34,4 +30,5 @@ game.play
 # Idea: Make a saved game for "new" with pieces in original spots?
 
 # FUTURE:
+# Board class is still too big!
 # Remove testing notes & add method description comments

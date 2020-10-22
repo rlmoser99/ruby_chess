@@ -33,12 +33,13 @@ class Game
   def initialize(board = Board.new)
     @board = board
     @current_turn = :white
+    @mode = nil
   end
 
   # Public Script Method -> No tests needed (test inside methods)
   # Need to test any outgoing command messages & behavior of calling player_turn
   def play
-    game_mode
+    @mode = select_game_mode
     @board.initial_placement
     @board.to_s
     player_turn until @board.game_over?
@@ -49,10 +50,11 @@ class Game
   # Need to test any outgoing command messages ??
   def player_turn
     puts "#{@current_turn.capitalize}'s turn!"
-    select_piece_coordinates
-    @board.to_s
-    move = select_move_coordinates
-    @board.update(move)
+    # select_piece_coordinates
+    # @board.to_s
+    # move = select_move_coordinates
+    # @board.update(move)
+    turn_part_one
     @board.to_s
     switch_color
   end
@@ -89,12 +91,37 @@ class Game
 
   private
 
-  def game_mode
-    mode = user_input('Press [1] to play computer or [2] for 2-player')
-    return mode if mode.match?(/^[12]$/)
+  def select_game_mode
+    user_mode = user_input('Press [1] to play computer or [2] for 2-player')
+    return user_mode if user_mode.match?(/^[12]$/)
 
     puts 'Input error! Enter 1 or 2'
-    game_mode
+    select_game_mode
+  end
+
+  def turn_part_one
+    select_piece_coordinates
+    @board.to_s
+    move = select_move_coordinates
+    @board.update(move)
+  end
+
+  def turn_part_two_computer
+    coords = computer_select_piece_coordinates
+    @board.update_active_piece(coords)
+    @board.to_s
+    sleep(3)
+    move = computer_select_move_coordinates
+    @board.update(move)
+    sleep(3)
+  end
+
+  def computer_select_piece_coordinates
+    @board.random_black_piece
+  end
+
+  def computer_select_move_coordinates
+    @board.random_black_move
   end
 
   def switch_color

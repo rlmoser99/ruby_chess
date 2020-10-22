@@ -86,6 +86,23 @@ class Board
     end
   end
 
+  def random_black_piece
+    pieces = @data.flatten(1).compact
+    black_pieces = pieces.select do |piece|
+      next unless piece.color == :black
+
+      piece.moves.size.positive? || piece.captures.size.positive?
+    end
+    location = black_pieces.sample.location
+    { row: location[0], column: location[1] }
+  end
+
+  def random_black_move
+    possibilities = @active_piece.moves + @active_piece.captures
+    location = possibilities.sample
+    { row: location[0], column: location[1] }
+  end
+
   # Tested (used in Game)
   def game_over?
     return false unless @previous_piece

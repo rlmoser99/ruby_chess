@@ -631,7 +631,7 @@ RSpec.describe Board do
   describe '#possible_castling?' do
     context 'when castling is possible' do
       subject(:board) { described_class.new(data, white_king) }
-      subject(:white_king) { instance_double(King, color: :white, symbol: " \u265A ", location: [7, 4], moves: [[7, 5], [7, 6]]) }
+      let(:white_king) { instance_double(King, color: :white, symbol: " \u265A ", location: [7, 4], moves: [[7, 5], [7, 6]]) }
       let(:white_rook) { instance_double(Rook, color: :white, symbol: " \u265C ", moved: false, location: [7, 7]) }
       let(:piece) { instance_double(Piece, color: :white) }
       let(:data) do
@@ -675,6 +675,44 @@ RSpec.describe Board do
         result = board.possible_castling?
         expect(result).to be false
       end
+    end
+  end
+
+  describe '#random_black_piece' do
+    subject(:random_board) { described_class.new(random_data) }
+    let(:white_piece) { instance_double(Piece, color: :white, location: [7, 1]) }
+    let(:black_piece) { instance_double(Piece, color: :black, location: [0, 1], moves: [], captures: []) }
+    let(:black_king) { instance_double(Piece, color: :black, location: [1, 6], moves: [], captures: [[7, 1]]) }
+    let(:black_queen) { instance_double(Piece, color: :black, location: [2, 6], moves: [[3, 6]], captures: []) }
+    let(:random_data) do
+      [
+        [nil, black_piece, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, black_king, nil],
+        [nil, nil, nil, nil, nil, nil, black_queen, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, white_piece, nil, nil, nil, nil, nil, nil]
+      ]
+    end
+
+    it 'returns the location of a piece with moves' do
+      result = random_board.random_black_piece
+      possibilities = [{ row: 1, column: 6 }, { row: 2, column: 6 }]
+      expect(possibilities).to include(result)
+    end
+  end
+
+  describe '#random_black_move' do
+    subject(:board) { described_class.new(data, black_queen) }
+    let(:black_queen) { instance_double(Piece, moves: [[0, 0], [0, 2], [0, 3]], captures: [[1, 0]]) }
+    let(:data) { [[nil, black_queen, nil, nil], [nil, nil, nil, nil]] }
+
+    it 'returns random coordinates of active black piece' do
+      result = board.random_black_move
+      possibilities = [{ row: 0, column: 0 }, { row: 0, column: 2 }, { row: 0, column: 3 }, { row: 1, column: 0 }]
+      expect(possibilities).to include(result)
     end
   end
 end
