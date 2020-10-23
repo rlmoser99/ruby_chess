@@ -23,12 +23,12 @@ class PawnPromotionMovement < BasicMovement
     remove_capture_piece_observer if @board.data[row][column]
     remove_pawn_observer
     remove_original_piece
-    new_piece = create_promoted_piece
+    new_piece = new_promotion_piece
     update_promotion_coordinates(new_piece)
     update_board_active_piece(new_piece)
   end
 
-  def create_promoted_piece
+  def new_promotion_piece
     if @board.game_mode == :computer && @board.active_piece.color == :black
       create_promotion_piece('1')
     else

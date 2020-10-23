@@ -101,7 +101,7 @@ class Game
     select_game_mode
   end
 
-  # NEED TO TEST
+  # Tested
   def update_game_board_mode
     @mode = :computer
     @board.update_game_mode

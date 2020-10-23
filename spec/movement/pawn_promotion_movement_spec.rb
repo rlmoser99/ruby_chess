@@ -62,6 +62,57 @@ RSpec.describe PawnPromotionMovement do
     end
   end
 
+  describe '#new_promotion_piece' do
+    context 'when board game mode is computer' do
+      subject(:movement) { described_class.new }
+      let(:board) { instance_double(Board, active_piece: black_pawn) }
+      let(:black_pawn) { instance_double(Pawn, location: [6, 1], color: :black) }
+
+      it 'creates a new Queen' do
+        movement.instance_variable_set(:@board, board)
+        movement.instance_variable_set(:@row, 7)
+        movement.instance_variable_set(:@column, 1)
+        allow(board).to receive(:game_mode).and_return(:computer)
+        allow(board).to receive(:add_observer)
+        result = movement.send(:new_promotion_piece)
+        expect(result).to be_a(Queen)
+      end
+    end
+
+    context 'when board game mode is not computer' do
+      subject(:movement) { described_class.new }
+      let(:board) { instance_double(Board, active_piece: black_pawn, game_mode: nil) }
+      let(:black_pawn) { instance_double(Pawn, location: [6, 1], color: :black) }
+
+      before do
+        movement.instance_variable_set(:@board, board)
+        movement.instance_variable_set(:@row, 7)
+        movement.instance_variable_set(:@column, 1)
+        allow(movement).to receive(:puts)
+        allow(movement).to receive(:pawn_promotion_choices)
+        user_input = '2'
+        allow(movement).to receive(:select_promotion_piece).and_return(user_input)
+        allow(movement).to receive(:create_promotion_piece).with(user_input)
+      end
+
+      after do
+        movement.send(:new_promotion_piece)
+      end
+
+      it ' the promotion choices' do
+        expect(movement).to receive(:pawn_promotion_choices)
+      end
+
+      it 'gets the player choice' do
+        expect(movement).to receive(:select_promotion_piece).and_return('2')
+      end
+
+      it 'creates the chosen piece' do
+        expect(movement).to receive(:create_promotion_piece).with('2')
+      end
+    end
+  end
+
   describe '#create_promotion_piece' do
     subject(:movement) { described_class.new }
     let(:board) { instance_double(Board, active_piece: black_pawn) }

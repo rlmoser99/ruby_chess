@@ -176,6 +176,23 @@ RSpec.describe Game do
     end
   end
 
+  describe '#update_game_board_mode' do
+    subject(:game) { described_class.new(board) }
+    subject(:board) { instance_double(Board) }
+
+    it 'changes mode to :computer' do
+      allow(board).to receive(:update_game_mode)
+      game.send(:update_game_board_mode)
+      result = game.instance_variable_get(:@mode)
+      expect(result).to eq(:computer)
+    end
+
+    it 'sends update_game_mode to board' do
+      expect(board).to receive(:update_game_mode)
+      game.send(:update_game_board_mode)
+    end
+  end
+
   describe '#human_player_turn' do
     subject(:game) { described_class.new(board) }
     let(:board) { instance_double(Board) }
