@@ -21,10 +21,22 @@ class MoveValidator
   def legal_move?(move)
     temp_board = @possible_board
     temp_board.data[move[0]][move[1]] = @current_piece
-    king = find_king_location(move)
-    result = safe_king?(king, temp_board)
-    temp_board.data[move[0]][move[1]] = nil
+    safe_move?(temp_board, move)
+  end
+
+  def safe_move?(board, move)
+    if @possible_board.check?(@current_piece.color)
+      result = move_out_of_check?(board)
+    else
+      king = find_king_location(move)
+      result = safe_king?(king, board)
+    end
+    board.data[move[0]][move[1]] = nil
     result
+  end
+
+  def move_out_of_check?(board)
+    !board.check?(@current_piece.color)
   end
 
   def safe_king?(kings_location, board)
@@ -38,7 +50,7 @@ class MoveValidator
   end
 
   def find_king_location(move)
-    # binding.pry if @current_piece.nil?
+    binding.pry if @current_piece.nil?
     if @current_piece.symbol == " \u265A "
       move
     elsif @current_piece.color == :black

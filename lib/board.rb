@@ -114,22 +114,8 @@ class Board
     return false unless @previous_piece
 
     color = @previous_piece.color == :white ? :black : :white
-    if no_legal_moves_captures?(color)
-      true
-    else
-      false
-    end
+    no_legal_moves_captures?(color)
   end
-
-  # PREVIOUS REFACTOR ->
-  # def game_over?
-  #   return false unless @previous_piece
-
-  #   color = @previous_piece.color == :white ? :black : :white
-  #   return true if no_legal_moves_captures?(color)
-  #   return false if check?(color) && !no_legal_moves_captures?(color)
-  #   return false unless check?(color)
-  # end
 
   # Tested (used in Board)
   def initial_placement
