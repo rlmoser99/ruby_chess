@@ -137,7 +137,7 @@ RSpec.describe Game do
 
       it 'outputs checkmate message' do
         allow(board).to receive(:check?).and_return(true)
-        checkmate = "Black wins! The white king is in checkmate.\n"
+        checkmate = "\e[36mBlack\e[0m wins! The white king is in checkmate.\n"
         expect { game.send(:final_message) }.to output(checkmate).to_stdout
       end
     end
@@ -148,7 +148,7 @@ RSpec.describe Game do
 
       it 'outputs stalemate message' do
         allow(board).to receive(:check?).and_return(false)
-        checkmate = "Black wins in a stalemate!\n"
+        checkmate = "\e[36mBlack\e[0m wins in a stalemate!\n"
         expect { game.send(:final_message) }.to output(checkmate).to_stdout
       end
     end
