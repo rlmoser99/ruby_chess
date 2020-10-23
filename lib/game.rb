@@ -64,8 +64,9 @@ class Game
   # Need to test any outgoing command messages ??
   def select_piece_coordinates
     puts king_check_warning if @board.check?(@current_turn)
-    input = user_input('What piece would you like to move?')
+    input = user_input("What piece would you like to move, or \e[36m[Q]\e[0m to Quit?")
     validate_input(input)
+    resign_game if input.upcase == 'Q'
     coords = translate_coordinates(input)
     validate_piece_coordinates(coords)
     @board.update_active_piece(coords)
@@ -80,8 +81,9 @@ class Game
   def select_move_coordinates
     puts en_passant_warning if @board.possible_en_passant?
     puts castling_warning if @board.possible_castling?
-    input = user_input('Where would you like to move it?')
+    input = user_input('Where would you like to move this piece?')
     validate_input(input)
+    resign_game if input.upcase == 'Q'
     coords = translate_coordinates(input)
     validate_move(coords)
     coords
@@ -143,7 +145,7 @@ class Game
 
   # Tested (private, but used in a public script method)
   def validate_input(input)
-    raise InputError unless input.match?(/^[a-h][1-8]$/)
+    raise InputError unless input.match?(/^[a-h][1-8]$|^[q]$/i)
   end
 
   # Tested (private, but used in a public script method)
@@ -187,9 +189,17 @@ class Game
     puts "\e[91mWARNING!\e[0m If you choose to castle, the rook will move too!"
   end
 
+  def previous_color
+    @current_turn == :white ? 'Black' : 'White'
+  end
+
+  def resign_game
+    puts "#{previous_color} wins because #{@current_turn} resigned!"
+    exit(true)
+  end
+
   # Tested
   def final_message
-    previous_color = @current_turn == :white ? 'Black' : 'White'
     if @board.check?(@current_turn)
       puts "#{previous_color} wins! The #{@current_turn} king is in checkmate."
     else

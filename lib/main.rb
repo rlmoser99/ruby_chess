@@ -23,7 +23,7 @@ game = Game.new
 game.play
 
 # RANDOM COMPUTER PLAYER:
-# Add a way to end the game early (resign)
+# (done) Add a way to end the game early (resign)
 # (done) Add Computer Player option during pawn promotion
 
 # SAVE & LOAD GAME:
