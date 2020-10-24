@@ -14,17 +14,18 @@ class King < Piece
     @captures = []
   end
 
-  # Tested
+  # iterates through king's move_set and adds any castling moves
   def find_possible_moves(board)
     moves = move_set.inject([]) do |memo, move|
       memo << create_moves(board.data, move[0], move[1])
     end
-    moves += add_castling_moves(board)
+    moves += castling_moves(board)
     moves.compact
   end
 
   private
 
+  # creates moves based on move_set changing rank and file
   def create_moves(data, rank_change, file_change)
     rank = @location[0] + rank_change
     file = @location[1] + file_change
@@ -33,6 +34,7 @@ class King < Piece
     [rank, file] unless data[rank][file]
   end
 
+  # creates captures based on move_set changing rank and file
   def create_captures(data, rank_change, file_change)
     rank = @location[0] + rank_change
     file = @location[1] + file_change
@@ -41,45 +43,49 @@ class King < Piece
     [rank, file] if opposing_piece?(rank, file, data)
   end
 
-  def add_castling_moves(board)
+  # creates castling moves when specific conditions are met
+  def castling_moves(board)
     castling_moves = []
     castling_moves << [location[0], 6] if king_side_castling?(board)
     castling_moves << [location[0], 2] if queen_side_castling?(board)
     castling_moves
   end
 
-  # Tested
+  # defines the file numbers and checks conditions for king_side
   def king_side_castling?(board)
     king_side_pass = 5
     empty_files = [6]
     king_side_rook = 7
-    king_rook_unmoved?(board, king_side_rook) &&
-      empty_board_files(board, empty_files) &&
+    unmoved_king_rook?(board, king_side_rook) &&
+      empty_files?(board, empty_files) &&
       king_pass_through_safe?(board, king_side_pass)
   end
 
-  # Tested
+  # defines the file numbers and checks conditions for queen_side
   def queen_side_castling?(board)
     queen_side_rook = 0
     empty_files = [1, 2]
     queen_side_pass = 3
-    king_rook_unmoved?(board, queen_side_rook) &&
-      empty_board_files(board, empty_files) &&
+    unmoved_king_rook?(board, queen_side_rook) &&
+      empty_files?(board, empty_files) &&
       king_pass_through_safe?(board, queen_side_pass)
   end
 
-  def king_rook_unmoved?(board, file)
+  # returns true if king and rook have not moved
+  def unmoved_king_rook?(board, file)
     piece = board.data[location[0]][file]
     return false unless piece
 
     moved == false && piece.symbol == " \u265C " && piece.moved == false
   end
 
+  # returns true if neighboring square is empty & king has safe passage
   def king_pass_through_safe?(board, file)
     rank = location[0]
     board.data[rank][file].nil? && safe_passage?(board, [rank, file])
   end
 
+  # returns true if no pieces can move/capture in the neighboring square
   def safe_passage?(board, location)
     pieces = board.data.flatten(1).compact
     pieces.none? do |piece|
@@ -90,10 +96,12 @@ class King < Piece
     end
   end
 
-  def empty_board_files(board, files)
-    files.all? { |file| board.data[location[0]][file].nil? }
+  # returns true if the specifed files are empty
+  def empty_files?(board, files)
+    files.none? { |file| board.data[location[0]][file] }
   end
 
+  # list of possible directions that a king can move
   def move_set
     [[0, 1], [0, -1], [-1, 0], [1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]]
   end
