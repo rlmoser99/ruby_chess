@@ -33,6 +33,10 @@ game.play
 # (done) Game welcome screen
 # Remove testing notes & add method description comments
 # Re-write tests using 3-letter abbreviations, to be able to see clearly ???
+# Remove any mention of pry throughout project
+
+# WHEN PLAYING GAME TO TEST/DE-BUG -> MOVE_VALIDATOR:
+# binding.pry if @current_piece.nil?
 
 # SAVE & LOAD GAME:
 # Idea: Make a saved game for "new" with pieces in original spots?
