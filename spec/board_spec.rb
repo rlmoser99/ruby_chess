@@ -254,21 +254,21 @@ RSpec.describe Board do
     let(:basic_movement) { instance_double(BasicMovement) }
 
     it 'send update_pieces to movement' do
-      allow(board).to receive(:update_movement).and_return(basic_movement)
+      allow(board).to receive(:create_movement).and_return(basic_movement)
       coordinates = { row: 0, column: 0 }
       expect(basic_movement).to receive(:update_pieces).with(board, coordinates)
       board.update(coordinates)
     end
   end
 
-  describe '#update_movement' do
+  describe '#create_movement' do
     subject(:board) { described_class.new }
     context 'when there is an en passant capture' do
       it 'creates EnPassantMovement' do
         allow(board).to receive(:en_passant_capture?).and_return(true)
         expect(EnPassantMovement).to receive(:new)
         coordinates = { row: 0, column: 0 }
-        board.update_movement(coordinates)
+        board.send(:create_movement, coordinates)
       end
     end
 
@@ -278,7 +278,7 @@ RSpec.describe Board do
         allow(board).to receive(:pawn_promotion?).and_return(true)
         expect(PawnPromotionMovement).to receive(:new)
         coordinates = { row: 0, column: 0 }
-        board.update_movement(coordinates)
+        board.send(:create_movement, coordinates)
       end
     end
 
@@ -289,7 +289,7 @@ RSpec.describe Board do
         allow(board).to receive(:castling?).and_return(true)
         expect(CastlingMovement).to receive(:new)
         coordinates = { row: 0, column: 0 }
-        board.update_movement(coordinates)
+        board.send(:create_movement, coordinates)
       end
     end
 
@@ -300,7 +300,7 @@ RSpec.describe Board do
         allow(board).to receive(:castling?).and_return(false)
         expect(BasicMovement).to receive(:new)
         coordinates = { row: 0, column: 0 }
-        board.update_movement(coordinates)
+        board.send(:create_movement, coordinates)
       end
     end
   end

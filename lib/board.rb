@@ -16,21 +16,20 @@ class Board
     @previous_piece = nil
     @black_king = nil
     @white_king = nil
-    @movement = nil
     @game_mode = nil
   end
 
-  # Tested (used in Game)
+  # updates the board's active piece to use during a player's turn
   def update_active_piece(coordinates)
     @active_piece = data[coordinates[:row]][coordinates[:column]]
   end
 
-  # Tested (used in Game)
+  # returns true if active piece has legal moves or captures
   def active_piece_moveable?
     @active_piece.moves.size >= 1 || @active_piece.captures.size >= 1
   end
 
-  # Tested (used in Game)
+  # returns true if coords are one of the active piece's legal moves or captures
   def valid_piece_movement?(coords)
     row = coords[:row]
     column = coords[:column]
@@ -38,45 +37,31 @@ class Board
       @active_piece.captures.any?([row, column])
   end
 
-  # Tested (used in Game)
+  # returns true if coords are a piece of the specified color
   def valid_piece?(coords, color)
     piece = @data[coords[:row]][coords[:column]]
     piece&.color == color
   end
 
-  # Script Method -> No tests needed (test inside methods)
-  # Tested (movement received update_pieces)
+  # script to update the pieces based on movement strategy & reset for next turn
   def update(coords)
-    @movement = update_movement(coords)
-    @movement.update_pieces(self, coords)
+    movement = create_movement(coords)
+    movement.update_pieces(self, coords)
     reset_board_values
   end
 
-  # Tested
-  def update_movement(coords)
-    if en_passant_capture?(coords)
-      EnPassantMovement.new
-    elsif pawn_promotion?(coords)
-      PawnPromotionMovement.new
-    elsif castling?(coords)
-      CastlingMovement.new
-    else
-      BasicMovement.new
-    end
-  end
-
-  # Tested (used in Game)
+  # returns true if active piece can capture the previous piece en passant
   def possible_en_passant?
     @active_piece&.captures&.include?(@previous_piece&.location) &&
       en_passant_pawn?
   end
 
-  # Tested (used in Game)
+  # returns true if active piece is a king and can castle with their rook
   def possible_castling?
     @active_piece.symbol == " \u265A " && castling_moves?
   end
 
-  # Tested (used in Board & Game)
+  # returns true if specified color king can be captured
   def check?(color)
     king = color == :white ? @white_king : @black_king
     pieces = @data.flatten(1).compact
@@ -87,7 +72,7 @@ class Board
     end
   end
 
-  # Tested
+  # returns the coordinates of a black piece that has legal moves/captures
   def random_black_piece
     pieces = @data.flatten(1).compact
     black_pieces = pieces.select do |piece|
@@ -99,27 +84,27 @@ class Board
     { row: location[0], column: location[1] }
   end
 
-  # Tested
+  # returns the coordinates of a legal move/capture of the active piece
   def random_black_move
     possibilities = @active_piece.moves + @active_piece.captures
     location = possibilities.sample
     { row: location[0], column: location[1] }
   end
 
-  # Tested
+  # changes the game mode to :computer
   def update_game_mode
     @game_mode = :computer
   end
 
-  # Tested (used in Game)
+  # returns true when there are no legal moves or captures for previous color
   def game_over?
     return false unless @previous_piece
 
-    color = @previous_piece.color == :white ? :black : :white
-    no_legal_moves_captures?(color)
+    previous_color = @previous_piece.color == :white ? :black : :white
+    no_legal_moves_captures?(previous_color)
   end
 
-  # Tested (used in Board)
+  # script to create and update pieces for a new game
   def initial_placement
     initial_row(:black, 0)
     initial_pawn_row(:black, 1)
@@ -130,13 +115,14 @@ class Board
     update_all_moves_captures
   end
 
-  # Only Puts Method -> No tests needed (used in Game)
+  # prints chess board using the displayable module
   def to_s
-    print_chess_game
+    print_chess_board
   end
 
   private
 
+  # creates eight pawns for the specified color and row number
   def initial_pawn_row(color, number)
     8.times do |index|
       @data[number][index] =
@@ -144,6 +130,7 @@ class Board
     end
   end
 
+  # creates eight pieces for the specified color and row number
   def initial_row(color, number)
     @data[number] = [
       Rook.new(self, { color: color, location: [number, 0] }),
@@ -157,7 +144,43 @@ class Board
     ]
   end
 
-  # Tested (private, but used in a public script method)
+  # updates moves/captures for all pieces (used at the beginning of game)
+  def update_all_moves_captures
+    pieces = @data.flatten(1).compact
+    pieces.each { |piece| piece.update(self) }
+  end
+
+  # creates movement strategy based on the coordinates of the move
+  def create_movement(coords)
+    if en_passant_capture?(coords)
+      EnPassantMovement.new
+    elsif pawn_promotion?(coords)
+      PawnPromotionMovement.new
+    elsif castling?(coords)
+      CastlingMovement.new
+    else
+      BasicMovement.new
+    end
+  end
+
+  # returns true when coords are a pawn captured en_passant
+  def en_passant_capture?(coords)
+    @previous_piece&.location == [coords[:row], coords[:column]] &&
+      en_passant_pawn?
+  end
+
+  # returns true when active piece is a pawn & coords are its promotion rank
+  def pawn_promotion?(coords)
+    @active_piece.symbol == " \u265F " && promotion_rank?(coords[:row])
+  end
+
+  # returns true when active piece is a king & coords column is 2 files away
+  def castling?(coords)
+    file_difference = (coords[:column] - @active_piece.location[1]).abs
+    @active_piece&.symbol == " \u265A " && file_difference == 2
+  end
+
+  # script to reset for next turn and notify pieces to update moves/captures
   def reset_board_values
     @previous_piece = @active_piece
     @active_piece = nil
@@ -165,50 +188,23 @@ class Board
     notify_observers(self)
   end
 
-  # Used at beginning of game to update all pieces moves/captures
-  def update_all_moves_captures
-    pieces = @data.flatten(1).compact
-    pieces.each { |piece| piece.update(self) }
-  end
-
-  # Checks if there is a en_passant capture during board update.
-  def en_passant_capture?(coords)
-    @previous_piece&.location == [coords[:row], coords[:column]] &&
-      en_passant_pawn?
-  end
-
-  # Checks if there is a castling moves during board update.
-  def castling?(coords)
-    file_difference = (coords[:column] - @active_piece.location[1]).abs
-    @active_piece&.symbol == " \u265A " && file_difference == 2
-  end
-
-  # Tested - Checks if there is a pawn promotion moves during board update.
-  def pawn_promotion?(coords)
-    @active_piece.symbol == " \u265F " && promotion_rank?(coords[:row])
-  end
-
-  # Used in board -> determines strategy
-  # Tested inside pawn_promotion?
+  # returns true if color of active piece matches the cooresponding rank
   def promotion_rank?(rank)
     color = @active_piece.color
     (color == :white && rank.zero?) || (color == :black && rank == 7)
   end
 
-  # Used in board -> for game#warning & determines strategy
-  # Checks if previous & active pieces are pawns, and if previous is en passant.
+  # returns true if active is pawn in rank & previous is a pawn with en passant
   def en_passant_pawn?
     two_pawns? && @active_piece.en_passant_rank? && @previous_piece.en_passant
   end
 
-  # Used in board -> for game#warning & determines strategy
-  # Checks is both pieces are pawns
+  # returns true if previous piece and active piece are both pawns
   def two_pawns?
     @previous_piece.symbol == " \u265F " && @active_piece.symbol == " \u265F "
   end
 
-  # Used in board -> for game#warning
-  # Determines if active piece's moves include castling locations.
+  # returns true if active piece's moves include king-side or queen-side move
   def castling_moves?
     location = @active_piece.location
     rank = location[0]
@@ -219,8 +215,7 @@ class Board
       @active_piece&.moves&.include?(queen_side)
   end
 
-  # Used in board -> for game_over?
-  # Determines if there is no more legal moves or captures
+  # returns true if pieces of specified color have no legal moves/captures
   def no_legal_moves_captures?(color)
     pieces = @data.flatten(1).compact
     pieces.none? do |piece|

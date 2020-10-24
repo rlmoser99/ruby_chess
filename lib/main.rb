@@ -25,8 +25,9 @@ game.play
 
 # REFACTOR:
 # Game class is too big - ok?
-# Board class is still too big - ok?
+# Board class is still too big - ok? -> move initial placement into module?
 # Remove testing notes & add method description comments
+# Make sure methods are private if not used outside of class
 # Re-write tests using 3-letter abbreviations, to be able to see clearly ???
 # Remove any mention of pry throughout project
 

@@ -2,8 +2,9 @@
 
 # Manipulates Board's data array into chess board.
 module Displayable
-  # 36 = Cyan Text (94 light blue looks good too)
-  def print_chess_game
+  # outputs the chess board with letter and number coordinates
+  # 36 = cyan colored text
+  def print_chess_board
     system 'clear'
     puts
     puts "\e[36m    a  b  c  d  e  f  g  h \e[0m"
@@ -12,6 +13,8 @@ module Displayable
     puts
   end
 
+  # interates through each row of board and adds number coordinates
+  # 36 = cyan colored text
   def print_board
     @data.each_with_index do |row, index|
       print "\e[36m #{8 - index} \e[0m"
@@ -21,6 +24,7 @@ module Displayable
     end
   end
 
+  # creates each row to be printed with different background_color
   def print_row(row, row_index)
     row.each_with_index do |square, index|
       background_color = select_background(row_index, index)
@@ -28,14 +32,14 @@ module Displayable
     end
   end
 
-  # Background Color ->
-  # 47 = Light Gray (even)
-  # 100 = Dark Gray (odd)
-  # 46 = Cyan (active piece to move) (44 blue looks good too)
-  # 101 = Light Red (capture background)
+  # returns color of background based on specific conditions
+  # 47 = light gray background (even)
+  # 100 = dark gray background (odd)
+  # 46 = cyan  background (active piece to move)
+  # 101 = light red background (captures)
   def select_background(row_index, column_index)
     index_total = row_index + column_index
-    if @active_piece && @active_piece.location == [row_index, column_index]
+    if @active_piece&.location == [row_index, column_index]
       46
     elsif capture_background?(row_index, column_index)
       101
@@ -46,14 +50,15 @@ module Displayable
     end
   end
 
+  # returns true if row/column is a active piece's capture location
   def capture_background?(row, column)
     @active_piece&.captures&.any?([row, column]) && @data[row][column]
   end
 
-  # Font Color ->
-  # 97 = White (chess pieces)
-  # 30 = Black (chess pieces)
-  # 91 = Light Red (possible moves)
+  # determines the font colors each square based on specific conditions
+  # 97 = white font color (chess pieces)
+  # 30 = black font color (chess pieces)
+  # 91 = light red font color (possible moves circle \u25CF)
   def print_square(row_index, column_index, square, background)
     if square
       text_color = square.color == :white ? 97 : 30
@@ -65,6 +70,7 @@ module Displayable
     end
   end
 
+  # prints the final square with specified font, background, and string (symbol)
   def color_square(font, background, string)
     print "\e[#{font};#{background}m#{string}\e[0m"
   end
