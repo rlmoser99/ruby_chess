@@ -23,10 +23,6 @@ require_relative 'movement/castling_movement.rb'
 game = Game.new
 game.play
 
-# RANDOM COMPUTER PLAYER:
-# (done) Add a way to end the game early (resign)
-# (done) Add Computer Player option during pawn promotion
-
 # REFACTOR:
 # Game class is too big - ok?
 # Board class is still too big - ok?
