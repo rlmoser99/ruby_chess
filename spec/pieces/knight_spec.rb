@@ -12,18 +12,18 @@ RSpec.describe Knight do
   end
 
   describe '#find_possible_moves' do
-    let(:piece) { instance_double(Piece) }
+    let(:pic) { instance_double(Piece) }
 
     context 'when all moves are blocked' do
-      subject(:black_knight) { described_class.new(board, { color: :black, location: [3, 3] }) }
+      subject(:bnt) { described_class.new(board, { color: :black, location: [3, 3] }) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, piece, nil, piece, nil, nil, nil],
-          [nil, piece, nil, nil, nil, piece, nil, nil],
-          [nil, nil, nil, black_knight, nil, nil, nil, nil],
-          [nil, piece, nil, nil, nil, piece, nil, nil],
-          [nil, nil, piece, nil, piece, nil, nil, nil],
+          [nil, nil, pic, nil, pic, nil, nil, nil],
+          [nil, pic, nil, nil, nil, pic, nil, nil],
+          [nil, nil, nil, bnt, nil, nil, nil, nil],
+          [nil, pic, nil, nil, nil, pic, nil, nil],
+          [nil, nil, pic, nil, pic, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil]
         ]
@@ -31,17 +31,17 @@ RSpec.describe Knight do
 
       it 'has no moves' do
         allow(board).to receive(:data).and_return(data)
-        results = black_knight.find_possible_moves(board)
+        results = bnt.find_possible_moves(board)
         expect(results).to be_empty
       end
     end
 
     context 'during initial board setup' do
-      subject(:black_knight) { described_class.new(board, { color: :black, location: [0, 1] }) }
+      subject(:bnt) { described_class.new(board, { color: :black, location: [0, 1] }) }
       let(:data) do
         [
-          [piece, black_knight, piece, piece, piece, piece, piece, piece],
-          [piece, piece, piece, piece, piece, piece, piece, piece],
+          [pic, bnt, pic, pic, pic, pic, pic, pic],
+          [pic, pic, pic, pic, pic, pic, pic, pic],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -53,19 +53,19 @@ RSpec.describe Knight do
 
       it 'has two moves' do
         allow(board).to receive(:data).and_return(data)
-        results = black_knight.find_possible_moves(board)
+        results = bnt.find_possible_moves(board)
         expect(results).to contain_exactly([2, 0], [2, 2])
       end
     end
 
     context 'when board is empty' do
-      subject(:black_knight) { described_class.new(board, { color: :black, location: [3, 3] }) }
+      subject(:bnt) { described_class.new(board, { color: :black, location: [3, 3] }) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, black_knight, nil, nil, nil, nil],
+          [nil, nil, nil, bnt, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -75,48 +75,48 @@ RSpec.describe Knight do
 
       it 'has eight moves' do
         allow(board).to receive(:data).and_return(data)
-        results = black_knight.find_possible_moves(board)
+        results = bnt.find_possible_moves(board)
         expect(results).to contain_exactly([1, 2], [1, 4], [2, 1], [2, 5], [4, 1], [4, 5], [5, 2], [5, 4])
       end
     end
   end
 
   describe '#find_possible_captures' do
-    let(:white_piece) { instance_double(Piece, color: :white) }
-    let(:black_piece) { instance_double(Piece, color: :black) }
+    let(:wpc) { instance_double(Piece, color: :white) }
+    let(:bpc) { instance_double(Piece, color: :black) }
 
     context 'when there are no opposing pieces to capture' do
-      subject(:black_knight) { described_class.new(board, { color: :black, location: [4, 7] }) }
+      subject(:bnt) { described_class.new(board, { color: :black, location: [4, 7] }) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, black_piece, nil],
-          [nil, nil, nil, nil, nil, black_piece, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, black_knight],
-          [nil, nil, nil, nil, nil, black_piece, nil, nil],
-          [nil, nil, nil, nil, nil, nil, black_piece, nil],
+          [nil, nil, nil, nil, nil, nil, bpc, nil],
+          [nil, nil, nil, nil, nil, bpc, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, bnt],
+          [nil, nil, nil, nil, nil, bpc, nil, nil],
+          [nil, nil, nil, nil, nil, nil, bpc, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil]
         ]
       end
 
       it 'has no captures' do
         allow(board).to receive(:data).and_return(data)
-        result = black_knight.find_possible_captures(board)
+        result = bnt.find_possible_captures(board)
         expect(result).to be_empty
       end
     end
 
     context 'when there is four opposing pieces and four other pieces' do
-      subject(:black_knight) { described_class.new(board, { color: :black, location: [3, 3] }) }
+      subject(:bnt) { described_class.new(board, { color: :black, location: [3, 3] }) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, white_piece, nil, white_piece, nil, nil, nil],
-          [nil, black_piece, nil, nil, nil, black_piece, nil, nil],
-          [nil, nil, nil, black_knight, nil, nil, nil, nil],
-          [nil, black_piece, nil, nil, nil, black_piece, nil, nil],
-          [nil, nil, white_piece, nil, white_piece, nil, nil, nil],
+          [nil, nil, wpc, nil, wpc, nil, nil, nil],
+          [nil, bpc, nil, nil, nil, bpc, nil, nil],
+          [nil, nil, nil, bnt, nil, nil, nil, nil],
+          [nil, bpc, nil, nil, nil, bpc, nil, nil],
+          [nil, nil, wpc, nil, wpc, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil]
         ]
@@ -124,20 +124,20 @@ RSpec.describe Knight do
 
       it 'has four captures' do
         allow(board).to receive(:data).and_return(data)
-        result = black_knight.find_possible_captures(board)
+        result = bnt.find_possible_captures(board)
         expect(result).to contain_exactly([1, 2], [1, 4], [5, 2], [5, 4])
       end
     end
 
     context 'when there is four opposing pieces and four empty places' do
-      subject(:black_knight) { described_class.new(board, { color: :black, location: [3, 3] }) }
+      subject(:bnt) { described_class.new(board, { color: :black, location: [3, 3] }) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, white_piece, nil, nil, nil, white_piece, nil, nil],
-          [nil, nil, nil, black_knight, nil, nil, nil, nil],
-          [nil, white_piece, nil, nil, nil, white_piece, nil, nil],
+          [nil, wpc, nil, nil, nil, wpc, nil, nil],
+          [nil, nil, nil, bnt, nil, nil, nil, nil],
+          [nil, wpc, nil, nil, nil, wpc, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil]
@@ -146,7 +146,7 @@ RSpec.describe Knight do
 
       it 'has four captures' do
         allow(board).to receive(:data).and_return(data)
-        result = black_knight.find_possible_captures(board)
+        result = bnt.find_possible_captures(board)
         expect(result).to contain_exactly([2, 1], [2, 5], [4, 1], [4, 5])
       end
     end
