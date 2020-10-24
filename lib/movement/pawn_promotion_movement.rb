@@ -32,7 +32,7 @@ class PawnPromotionMovement < BasicMovement
 
   # script to create the promoted piece depending on human or computer player
   def new_promotion_piece
-    if @board.game_mode == :computer && @board.active_piece.color == :black
+    if @board.mode == :computer && @board.active_piece.color == :black
       create_promotion_piece('1')
     else
       puts pawn_promotion_choices

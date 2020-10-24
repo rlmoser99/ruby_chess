@@ -746,8 +746,8 @@ RSpec.describe Board do
     subject(:board) { described_class.new }
 
     it 'updates value of game_mode to :computer' do
-      board.update_game_mode
-      expect(board.game_mode).to eq(:computer)
+      board.update_mode
+      expect(board.mode).to eq(:computer)
     end
   end
 end

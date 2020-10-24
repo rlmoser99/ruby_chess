@@ -7,7 +7,7 @@ require_relative 'displayable.rb'
 class Board
   include Displayable
   include Observable
-  attr_reader :black_king, :white_king, :game_mode
+  attr_reader :black_king, :white_king, :mode
   attr_accessor :data, :active_piece, :previous_piece
 
   def initialize(data = Array.new(8) { Array.new(8) }, active_piece = nil)
@@ -16,7 +16,7 @@ class Board
     @previous_piece = nil
     @black_king = nil
     @white_king = nil
-    @game_mode = nil
+    @mode = :user_prompts
   end
 
   # updates the board's active piece to use during a player's turn
@@ -91,9 +91,9 @@ class Board
     { row: location[0], column: location[1] }
   end
 
-  # changes the game mode to :computer
-  def update_game_mode
-    @game_mode = :computer
+  # changes the mode to :computer to enable computer player turns
+  def update_mode
+    @mode = :computer
   end
 
   # returns true when there are no legal moves or captures for previous color
