@@ -62,7 +62,7 @@ class Board
   end
 
   # returns true if specified color king can be captured
-  def check?(color)
+  def king_in_check?(color)
     king = color == :white ? @white_king : @black_king
     pieces = @data.flatten(1).compact
     pieces.any? do |piece|

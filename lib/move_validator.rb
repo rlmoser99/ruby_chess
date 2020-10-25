@@ -28,7 +28,7 @@ class MoveValidator
 
   # returns true if king is no longer in check or if king is still safe
   def safe_move?(board, move)
-    if @possible_board.check?(@current_piece.color)
+    if @possible_board.king_in_check?(@current_piece.color)
       result = move_out_of_check?(board)
     else
       king = find_king_location(move)
@@ -40,7 +40,7 @@ class MoveValidator
 
   # returns true if king is not in check
   def move_out_of_check?(board)
-    !board.check?(@current_piece.color)
+    !board.king_in_check?(@current_piece.color)
   end
 
   # returns true if no opposing piece can capture king

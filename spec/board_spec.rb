@@ -405,7 +405,7 @@ RSpec.describe Board do
 
       it 'returns true' do
         board.instance_variable_set(:@white_king, white_king)
-        result = board.check?(:white)
+        result = board.king_in_check?(:white)
         expect(result).to be true
       end
     end
@@ -429,7 +429,7 @@ RSpec.describe Board do
 
       it 'returns false' do
         board.instance_variable_set(:@white_king, white_king)
-        result = board.check?(:white)
+        result = board.king_in_check?(:white)
         expect(result).to be false
       end
     end

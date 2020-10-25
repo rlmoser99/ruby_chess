@@ -319,7 +319,7 @@ RSpec.describe Game do
       let(:board) { instance_double(Board) }
 
       it 'outputs checkmate message' do
-        allow(board).to receive(:check?).and_return(true)
+        allow(board).to receive(:king_in_check?).and_return(true)
         checkmate = "\e[36mBlack\e[0m wins! The white king is in checkmate.\n"
         expect { game.send(:final_message) }.to output(checkmate).to_stdout
       end
@@ -330,7 +330,7 @@ RSpec.describe Game do
       let(:board) { instance_double(Board) }
 
       it 'outputs stalemate message' do
-        allow(board).to receive(:check?).and_return(false)
+        allow(board).to receive(:king_in_check?).and_return(false)
         checkmate = "\e[36mBlack\e[0m wins in a stalemate!\n"
         expect { game.send(:final_message) }.to output(checkmate).to_stdout
       end

@@ -64,7 +64,7 @@ module GamePrompts
   end
 
   def final_message
-    if @board.check?(@current_turn)
+    if @board.king_in_check?(@current_turn)
       puts "\e[36m#{previous_color}\e[0m wins! The #{@current_turn} king is in checkmate."
     else
       puts "\e[36m#{previous_color}\e[0m wins in a stalemate!"

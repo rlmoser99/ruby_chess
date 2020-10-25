@@ -25,12 +25,9 @@ game.play
 
 # REFACTOR:
 # Game class is too big - ok?
-# Board class is still too big - ok? -> move initial placement into module?
-# Remove testing notes & add method description comments
-# Make sure methods are private if not used outside of class
-# Re-write tests using 3-letter abbreviations, to be able to see clearly ???
+# Board class is still too big - ok?
+# -> move initial placement into module or serialize it?
 # rename check? to be king_in_check?
-# check comment above each class
 # Remove any mention of pry throughout project
 
 # WHEN PLAYING GAME TO TEST/DE-BUG -> MOVE_VALIDATOR:

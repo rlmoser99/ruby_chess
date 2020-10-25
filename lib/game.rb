@@ -107,7 +107,7 @@ class Game
 
   # script for user to input piece to move, or quit the game
   def user_select_piece
-    puts king_check_warning if @board.check?(@current_turn)
+    puts king_check_warning if @board.king_in_check?(@current_turn)
     input = user_input(user_piece_selection)
     validate_input(input)
     resign_game if input.upcase == 'Q'

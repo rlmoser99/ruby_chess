@@ -10,7 +10,7 @@ RSpec.describe MoveValidator do
   describe '#verify_possible_moves' do
     context 'when moving queen can put king in check' do
       subject(:validator) { described_class.new([2, 4], board, [[1, 4], [3, 4], [4, 4], [5, 4], [2, 3], [2, 5]]) }
-      let(:board) { instance_double(Board, data: data, black_king: bkg, check?: false) }
+      let(:board) { instance_double(Board, data: data, black_king: bkg, king_in_check?: false) }
       let(:bqn) { instance_double(Piece, color: :black, location: [2, 4], symbol: " \u265B ") }
       let(:bkg) { instance_double(Piece, color: :black, location: [0, 4]) }
       let(:bpc) { instance_double(Piece, color: :black) }
@@ -57,7 +57,7 @@ RSpec.describe MoveValidator do
 
       it 'returns move for king to capture rook' do
         validator.instance_variable_set(:@current_piece, bkg)
-        allow(board).to receive(:check?).and_return(true, false, true)
+        allow(board).to receive(:king_in_check?).and_return(true, false, true)
         results = validator.verify_possible_moves
         expect(results).to contain_exactly([0, 3])
       end
@@ -86,7 +86,7 @@ RSpec.describe MoveValidator do
 
       it 'returns move for rook to capture white queen' do
         validator.instance_variable_set(:@current_piece, brk)
-        allow(board).to receive(:check?).and_return(true, false, true)
+        allow(board).to receive(:king_in_check?).and_return(true, false, true)
         allow(wqn).to receive(:find_possible_captures).and_return([], [[0, 4]])
         allow(wpn).to receive(:find_possible_captures).and_return([], [])
         results = validator.verify_possible_moves
