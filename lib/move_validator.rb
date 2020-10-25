@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# checks possible_moves to determine if it would put King in check
+# removes any moves/captures that would put their King in check
 class MoveValidator
   def initialize(location, board, moves)
     @current_location = location
@@ -9,6 +9,7 @@ class MoveValidator
     @current_piece = @possible_board.data[location[0]][location[1]]
   end
 
+  # iterates over the possible moves and keeps the legal ones
   def verify_possible_moves
     @possible_board.data[@current_location[0]][@current_location[1]] = nil
     @possible_moves.select do |move|
@@ -18,12 +19,14 @@ class MoveValidator
 
   private
 
+  # creates a copy of board with piece moved to check if king is safe
   def legal_move?(move)
     temp_board = @possible_board
     temp_board.data[move[0]][move[1]] = @current_piece
     safe_move?(temp_board, move)
   end
 
+  # returns true if king is no longer in check or if king is still safe
   def safe_move?(board, move)
     if @possible_board.check?(@current_piece.color)
       result = move_out_of_check?(board)
@@ -35,10 +38,12 @@ class MoveValidator
     result
   end
 
+  # returns true if king is not in check
   def move_out_of_check?(board)
     !board.check?(@current_piece.color)
   end
 
+  # returns true if no opposing piece can capture king
   def safe_king?(kings_location, board)
     pieces = board.data.flatten(1).compact
     pieces.none? do |piece|
@@ -49,6 +54,7 @@ class MoveValidator
     end
   end
 
+  # returns location of king, even when current piece is king and has moved
   def find_king_location(move)
     # binding.pry if @current_piece.nil?
     if @current_piece.symbol == " \u265A "

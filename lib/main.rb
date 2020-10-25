@@ -29,6 +29,7 @@ game.play
 # Remove testing notes & add method description comments
 # Make sure methods are private if not used outside of class
 # Re-write tests using 3-letter abbreviations, to be able to see clearly ???
+# rename check? to be king_in_check?
 # Remove any mention of pry throughout project
 
 # WHEN PLAYING GAME TO TEST/DE-BUG -> MOVE_VALIDATOR:
