@@ -2,7 +2,7 @@
 
 require_relative 'piece'
 
-# logic for each chess piece
+# logic for pawn chess piece
 class Pawn < Piece
   attr_reader :en_passant
 

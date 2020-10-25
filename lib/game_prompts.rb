@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Text Content for Chess Game
+# contains the text content for chess game
 module GamePrompts
   def game_mode_choices
     <<~HEREDOC

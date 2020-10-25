@@ -2,7 +2,7 @@
 
 require_relative 'game_prompts'
 
-# contains logic for chess board
+# contains script to play a chess game
 class Game
   # Declares error message when user enters invalid input
   class InputError < StandardError

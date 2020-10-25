@@ -3,7 +3,7 @@
 require_relative '../board'
 require_relative '../move_validator'
 
-# logic for each chess piece
+# base logic for chess pieces
 class Piece
   attr_reader :color, :location, :symbol, :moves, :captures, :moved
 
