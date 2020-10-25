@@ -2,6 +2,8 @@
 
 # contains the text content for chess game
 module GamePrompts
+  private
+
   def game_mode_choices
     <<~HEREDOC
 
