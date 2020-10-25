@@ -46,8 +46,9 @@ class King < Piece
   # creates castling moves when specific conditions are met
   def castling_moves(board)
     castling_moves = []
-    castling_moves << [location[0], 6] if king_side_castling?(board)
-    castling_moves << [location[0], 2] if queen_side_castling?(board)
+    rank = location[0]
+    castling_moves << [rank, 6] if king_side_castling?(board)
+    castling_moves << [rank, 2] if queen_side_castling?(board)
     castling_moves
   end
 

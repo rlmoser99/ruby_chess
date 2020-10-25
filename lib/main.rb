@@ -27,8 +27,8 @@ game.play
 # Game class is too big - ok?
 # Board class is still too big - ok?
 # -> move initial placement into module or serialize it?
-# rename check? to be king_in_check?
 # Remove any mention of pry throughout project
+# Remove the reek ideas.md file
 
 # WHEN PLAYING GAME TO TEST/DE-BUG -> MOVE_VALIDATOR:
 # binding.pry if @current_piece.nil?
