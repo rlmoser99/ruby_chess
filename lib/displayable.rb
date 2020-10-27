@@ -35,17 +35,19 @@ module Displayable
   end
 
   # returns color of background based on specific conditions
+  # 106 = light cyan background (active piece to move)
+  # 101 = light red background (captures)
+  # 46 = cyan background (previous piece that moved)
   # 47 = light gray background (even)
   # 100 = dark gray background (odd)
-  # 46 = cyan  background (active piece to move)
-  # 101 = light red background (captures)
   def select_background(row_index, column_index)
-    index_total = row_index + column_index
     if @active_piece&.location == [row_index, column_index]
-      46
+      106
     elsif capture_background?(row_index, column_index)
       101
-    elsif index_total.even?
+    elsif @previous_piece&.location == [row_index, column_index]
+      46
+    elsif (row_index + column_index).even?
       47
     else
       100

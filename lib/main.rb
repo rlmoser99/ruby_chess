@@ -23,6 +23,7 @@ game.play
 
 # SAVE & LOAD GAME:
 # Idea: Make a saved game for "new" with pieces in original spots?
+# Make the game save & EXIT only at start of turn
 
 # REFACTOR:
 # Game class is too big - ok?
