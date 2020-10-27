@@ -2,7 +2,7 @@
 
 require_relative 'piece'
 
-# logic for each chess piece
+# logic for queen chess piece
 class Queen < Piece
   def initialize(board, args)
     board.add_observer(self)

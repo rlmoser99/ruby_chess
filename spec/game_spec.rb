@@ -35,6 +35,189 @@ RSpec.describe Game do
     end
   end
 
+  describe '#play' do
+    context 'when user input is 1' do
+      subject(:game) { described_class.new(board) }
+      let(:board) { instance_double(Board) }
+
+      it 'calls update_game_board_mode' do
+        allow(game).to receive(:select_game_mode).and_return('1')
+        allow(board).to receive(:initial_placement)
+        allow(board).to receive(:to_s)
+        allow(game).to receive(:player_turn)
+        allow(board).to receive(:game_over?).and_return(true)
+        allow(game).to receive(:final_message)
+        expect(board).to receive(:update_mode)
+        game.play
+      end
+    end
+
+    context 'when user input is not 1' do
+      subject(:game) { described_class.new(board) }
+      let(:board) { instance_double(Board) }
+
+      it 'does not call update_game_board_mode' do
+        allow(game).to receive(:select_game_mode).and_return('2')
+        allow(board).to receive(:initial_placement)
+        allow(board).to receive(:to_s)
+        allow(game).to receive(:player_turn)
+        allow(board).to receive(:game_over?).and_return(true)
+        allow(game).to receive(:final_message)
+        expect(board).not_to receive(:update_mode)
+        game.play
+      end
+    end
+
+    context 'when game_over? is false four times' do
+      subject(:game) { described_class.new(board) }
+      let(:board) { instance_double(Board) }
+
+      it 'calls #player_turn four times' do
+        allow(game).to receive(:select_game_mode).and_return('2')
+        allow(board).to receive(:initial_placement)
+        allow(board).to receive(:to_s)
+        allow(board).to receive(:game_over?).and_return(false, false, false, false, true)
+        allow(game).to receive(:final_message)
+        expect(game).to receive(:player_turn).exactly(4).times
+        game.play
+      end
+    end
+  end
+
+  describe '#player_turn' do
+    context 'when board mode is not :computer' do
+      subject(:game) { described_class.new(board) }
+      let(:board) { instance_double(Board, mode: :user_prompts) }
+
+      it 'calls #human_player_turn' do
+        allow(game).to receive(:puts)
+        game.instance_variable_set(:@current_turn, :black)
+        allow(board).to receive(:to_s)
+        allow(game).to receive(:switch_color)
+        expect(game).to receive(:human_player_turn)
+        game.send(:player_turn)
+      end
+    end
+
+    context 'when board mode is :computer and @current_turn is :white' do
+      subject(:game) { described_class.new(board) }
+      let(:board) { instance_double(Board, mode: :computer) }
+
+      it 'calls #human_player_turn' do
+        allow(game).to receive(:puts)
+        game.instance_variable_set(:@current_turn, :white)
+        allow(board).to receive(:to_s)
+        allow(game).to receive(:switch_color)
+        expect(game).to receive(:human_player_turn)
+        game.send(:player_turn)
+      end
+    end
+
+    context 'when board mode is :computer and @current_turn is :black' do
+      subject(:game) { described_class.new(board) }
+      let(:board) { instance_double(Board, mode: :computer) }
+
+      it 'calls #computer_player_turn' do
+        allow(game).to receive(:puts)
+        game.instance_variable_set(:@current_turn, :black)
+        allow(board).to receive(:to_s)
+        allow(game).to receive(:switch_color)
+        expect(game).to receive(:computer_player_turn)
+        game.send(:player_turn)
+      end
+    end
+  end
+
+  describe '#human_player_turn' do
+    subject(:game) { described_class.new(board) }
+    let(:board) { instance_double(Board, mode: :user_prompts) }
+
+    it 'sends #update to board' do
+      allow(game).to receive(:select_piece_coordinates)
+      allow(board).to receive(:to_s)
+      coords = { row: 6, column: 5 }
+      allow(game).to receive(:select_move_coordinates).and_return(coords)
+      expect(board).to receive(:update).with(coords)
+      game.send(:human_player_turn)
+    end
+  end
+
+  describe '#computer_player_turn' do
+    subject(:game) { described_class.new(board) }
+    let(:board) { instance_double(Board, mode: :user_prompts) }
+
+    it 'sends #update_active_piece to board' do
+      allow(game).to receive(:sleep)
+      allow(board).to receive(:to_s)
+      allow(game).to receive(:computer_select_random_move)
+      allow(board).to receive(:update)
+      coords = { row: 6, column: 5 }
+      allow(game).to receive(:computer_select_random_piece).and_return(coords)
+      expect(board).to receive(:update_active_piece).with(coords)
+      game.send(:computer_player_turn)
+    end
+
+    it 'sends #update to board' do
+      allow(game).to receive(:sleep)
+      allow(game).to receive(:computer_select_random_piece)
+      allow(board).to receive(:update_active_piece)
+      allow(board).to receive(:to_s)
+      coords = { row: 6, column: 5 }
+      allow(game).to receive(:computer_select_random_move).and_return(coords)
+      expect(board).to receive(:update).with(coords)
+      game.send(:computer_player_turn)
+    end
+  end
+
+  describe '#select_piece_coordinates' do
+    subject(:game) { described_class.new(board) }
+    let(:board) { instance_double(Board) }
+
+    it 'sends #update_active_piece to board' do
+      allow(game).to receive(:user_select_piece)
+      coords = { row: 6, column: 5 }
+      allow(game).to receive(:translate_coordinates).and_return(coords)
+      allow(game).to receive(:validate_piece_coordinates).with(coords)
+      allow(game).to receive(:validate_active_piece)
+      expect(board).to receive(:update_active_piece).with(coords)
+      game.send(:select_piece_coordinates)
+    end
+  end
+
+  describe '#select_game_mode' do
+    subject(:game) { described_class.new }
+
+    context 'when user input is valid' do
+      it 'returns valid user input' do
+        input = '1'
+        allow(game).to receive(:user_input).and_return(input)
+        result = game.send(:select_game_mode)
+        expect(result).to eq('1')
+      end
+    end
+
+    context 'when user input is not valid' do
+      it 'outputs an input error warning' do
+        warning = 'Input error! Enter 1-digit (1 or 2).'
+        expect(game).to receive(:puts).with(warning).once
+        valid_input = '1'
+        invalid_input = 'a'
+        allow(game).to receive(:user_input).and_return(invalid_input, valid_input)
+        game.send(:select_game_mode)
+      end
+
+      it 'returns second valid user input' do
+        warning = 'Input error! Enter 1-digit (1 or 2).'
+        expect(game).to receive(:puts).with(warning).once
+        valid_input = '1'
+        invalid_input = 'a'
+        allow(game).to receive(:user_input).and_return(invalid_input, valid_input)
+        result = game.send(:select_game_mode)
+        expect(result).to eq('1')
+      end
+    end
+  end
+
   describe '#validate_input' do
     subject(:game) { described_class.new }
 
@@ -136,8 +319,8 @@ RSpec.describe Game do
       let(:board) { instance_double(Board) }
 
       it 'outputs checkmate message' do
-        allow(board).to receive(:check?).and_return(true)
-        checkmate = "Black wins! The white king is in checkmate.\n"
+        allow(board).to receive(:king_in_check?).and_return(true)
+        checkmate = "\e[36mBlack\e[0m wins! The white king is in checkmate.\n"
         expect { game.send(:final_message) }.to output(checkmate).to_stdout
       end
     end
@@ -147,10 +330,90 @@ RSpec.describe Game do
       let(:board) { instance_double(Board) }
 
       it 'outputs stalemate message' do
-        allow(board).to receive(:check?).and_return(false)
-        checkmate = "Black wins in a stalemate!\n"
+        allow(board).to receive(:king_in_check?).and_return(false)
+        checkmate = "\e[36mBlack\e[0m wins in a stalemate!\n"
         expect { game.send(:final_message) }.to output(checkmate).to_stdout
       end
+    end
+  end
+
+  describe '#switch_color' do
+    subject(:game) { described_class.new }
+
+    context 'when current_turn is :white' do
+      it 'changes to :black' do
+        game.instance_variable_set(:@current_turn, :white)
+        game.send(:switch_color)
+        result = game.instance_variable_get(:@current_turn)
+        expect(result).to eq(:black)
+      end
+    end
+
+    context 'when current_turn is :black' do
+      it 'changes to :white' do
+        game.instance_variable_set(:@current_turn, :black)
+        game.send(:switch_color)
+        result = game.instance_variable_get(:@current_turn)
+        expect(result).to eq(:white)
+      end
+    end
+  end
+
+  describe '#human_player_turn' do
+    subject(:game) { described_class.new(board) }
+    let(:board) { instance_double(Board) }
+
+    it 'send update to board' do
+      allow(game).to receive(:select_piece_coordinates)
+      allow(board).to receive(:to_s)
+      allow(game).to receive(:select_move_coordinates).and_return({ row: 1, column: 1 })
+      allow(board).to receive(:update)
+      expect(board).to receive(:update).with({ row: 1, column: 1 })
+      game.send(:human_player_turn)
+    end
+  end
+
+  describe '#computer_player_turn' do
+    subject(:game) { described_class.new(board) }
+    let(:board) { instance_double(Board) }
+
+    before do
+      allow(game).to receive(:computer_select_random_piece).and_return({ row: 0, column: 0 })
+      allow(game).to receive(:computer_select_random_move).and_return({ row: 1, column: 1 })
+      allow(board).to receive(:update_active_piece)
+      allow(board).to receive(:update)
+      allow(board).to receive(:to_s)
+      allow(game).to receive(:sleep)
+    end
+
+    it 'send update_active_piece to board' do
+      expect(board).to receive(:update_active_piece).with({ row: 0, column: 0 })
+      game.send(:computer_player_turn)
+    end
+
+    it 'send update to board' do
+      expect(board).to receive(:update).with({ row: 1, column: 1 })
+      game.send(:computer_player_turn)
+    end
+  end
+
+  describe '#computer_select_random_piece' do
+    subject(:game) { described_class.new(board) }
+    let(:board) { instance_double(Board) }
+
+    it 'send random_black_piece to board' do
+      expect(board).to receive(:random_black_piece)
+      game.send(:computer_select_random_piece)
+    end
+  end
+
+  describe '#computer_select_random_move' do
+    subject(:game) { described_class.new(board) }
+    let(:board) { instance_double(Board) }
+
+    it 'send random_black_move to board' do
+      expect(board).to receive(:random_black_move)
+      game.send(:computer_select_random_move)
     end
   end
 end

@@ -12,153 +12,186 @@ RSpec.describe Pawn do
   end
 
   describe '#find_possible_moves' do
-    let(:piece) { instance_double(Piece) }
+    let(:pic) { instance_double(Piece) }
 
-    context 'when pawn is black' do
-      context 'when pawn has not moved' do
-        subject(:black_pawn) { described_class.new(board, { color: :black, location: [1, 0] }) }
+    context 'when pawn is black and has not moved' do
+      subject(:bpn) { described_class.new(board, { color: :black, location: [1, 0] }) }
 
-        context 'when bonus square is empty' do
-          let(:data) { [[nil, nil], [black_pawn, nil], [nil, nil], [nil, nil]] }
-
-          it 'has two moves' do
-            allow(board).to receive(:data).and_return(data)
-            results = black_pawn.find_possible_moves(board)
-            expect(results).to contain_exactly([2, 0], [3, 0])
-          end
+      context 'when first & second bonus square is empty' do
+        let(:data) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [bpn, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
         end
 
-        context 'when bonus square is occupied' do
-          let(:data) { [[nil, nil], [black_pawn, nil], [nil, nil], [piece, nil]] }
+        it 'has two moves' do
+          allow(board).to receive(:data).and_return(data)
+          results = bpn.find_possible_moves(board)
+          expect(results).to contain_exactly([2, 0], [3, 0])
+        end
+      end
 
-          it 'has one move' do
-            allow(board).to receive(:data).and_return(data)
-            results = black_pawn.find_possible_moves(board)
-            expect(results).to contain_exactly([2, 0])
-          end
+      context 'when first square is occupied' do
+        let(:data) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [bpn, nil, nil, nil, nil, nil, nil, nil],
+            [pic, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
+        end
+
+        it 'has no moves' do
+          allow(board).to receive(:data).and_return(data)
+          results = bpn.find_possible_moves(board)
+          expect(results).to be_empty
+        end
+      end
+
+      context 'when second bonus square is occupied' do
+        let(:data) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [bpn, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [pic, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
+        end
+
+        it 'has one move' do
+          allow(board).to receive(:data).and_return(data)
+          results = bpn.find_possible_moves(board)
+          expect(results).to contain_exactly([2, 0])
         end
       end
     end
 
-    context 'when pawn is white' do
-      context 'when pawn has moved' do
-        subject(:white_pawn) { described_class.new(board, { color: :white, location: [2, 0] }) }
+    context 'when pawn is white and has moved' do
+      subject(:wpn) { described_class.new(board, { color: :white, location: [6, 0] }) }
 
-        before do
-          white_pawn.update_location(1, 0)
+      before do
+        wpn.update_location(5, 0)
+      end
+
+      context 'when next square is empty' do
+        let(:data) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [wpn, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
         end
 
-        context 'when next square is empty' do
-          let(:data) { [[nil, nil], [nil, nil], [white_pawn, nil], [nil, nil]] }
+        it 'has one move' do
+          allow(board).to receive(:data).and_return(data)
+          results = wpn.find_possible_moves(board)
+          expect(results).to contain_exactly([4, 0])
+        end
+      end
 
-          it 'has one move' do
-            allow(board).to receive(:data).and_return(data)
-            results = white_pawn.find_possible_moves(board)
-            expect(results).to contain_exactly([0, 0])
-          end
+      context 'when next square is occupied' do
+        let(:data) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [pic, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [wpn, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
         end
 
-        context 'when next square is occupied' do
-          let(:data) { [[piece, nil], [nil, nil], [white_pawn, nil], [nil, nil]] }
-
-          it 'has no moves' do
-            allow(board).to receive(:data).and_return(data)
-            results = white_pawn.find_possible_moves(board)
-            expect(results).to be_empty
-          end
+        it 'has no moves' do
+          allow(board).to receive(:data).and_return(data)
+          results = wpn.find_possible_moves(board)
+          expect(results).to be_empty
         end
       end
     end
   end
 
   describe '#find_possible_captures' do
-    let(:black_piece) { instance_double(Piece, color: :black, symbol: nil) }
-    let(:white_piece) { instance_double(Piece, color: :white, symbol: nil) }
+    let(:bpc) { instance_double(Piece, color: :black, symbol: nil) }
+    let(:wpc) { instance_double(Piece, color: :white, symbol: nil) }
 
     context 'when pawn is black' do
-      context 'when pawn is in first file' do
-        subject(:black_pawn) { described_class.new(board, { color: :black, location: [1, 0] }) }
-
-        context 'when there is nothing to capture' do
-          let(:data) do
-            [
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [black_pawn, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil]
-            ]
-          end
-
-          it 'has no captures' do
-            allow(board).to receive(:data).and_return(data)
-            allow(board).to receive(:previous_piece)
-            result = black_pawn.find_possible_captures(board)
-            expect(result).to be_empty
-          end
-        end
-
-        context 'when a same color piece in capture square' do
-          let(:data) do
-            [
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [black_pawn, nil, nil, nil, nil, nil, nil, nil],
-              [nil, black_piece, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil]
-            ]
-          end
-
-          it 'has no captures' do
-            allow(board).to receive(:data).and_return(data)
-            allow(board).to receive(:previous_piece)
-            result = black_pawn.find_possible_captures(board)
-            expect(result).to be_empty
-          end
-        end
-      end
-
-      context 'when pawn is in second file' do
-        context 'when an opposing piece in capture square' do
-          subject(:black_pawn) { described_class.new(board, { color: :black, location: [1, 1] }) }
-          let(:data) do
-            [
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, black_pawn, black_piece, nil, nil, nil, nil, nil],
-              [white_piece, nil, nil, nil, nil, nil, nil, nil],
-              [black_piece, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil]
-            ]
-          end
-
-          it 'has one capture' do
-            allow(board).to receive(:data).and_return(data)
-            allow(board).to receive(:previous_piece)
-            result = black_pawn.find_possible_captures(board)
-            expect(result).to contain_exactly([2, 0])
-          end
-        end
-      end
-
-      context 'when pawn has en_passant' do
-        subject(:black_pawn) { described_class.new(board, { color: :black, location: [4, 1] }) }
-        let(:white_pawn) { instance_double(Pawn, en_passant: true, location: [4, 2], symbol: " \u265F ") }
+      context 'when there is nothing to capture' do
+        subject(:bpn) { described_class.new(board, { color: :black, location: [1, 0] }) }
         let(:data) do
           [
             [nil, nil, nil, nil, nil, nil, nil, nil],
+            [bpn, nil, nil, nil, nil, nil, nil, nil],
             [nil, nil, nil, nil, nil, nil, nil, nil],
             [nil, nil, nil, nil, nil, nil, nil, nil],
             [nil, nil, nil, nil, nil, nil, nil, nil],
-            [nil, black_pawn, white_pawn, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
+        end
+
+        it 'has no captures' do
+          allow(board).to receive(:data).and_return(data)
+          allow(board).to receive(:previous_piece)
+          result = bpn.find_possible_captures(board)
+          expect(result).to be_empty
+        end
+      end
+
+      context 'when a same color piece in capture square' do
+        subject(:bpn) { described_class.new(board, { color: :black, location: [1, 0] }) }
+        let(:data) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [bpn, nil, nil, nil, nil, nil, nil, nil],
+            [nil, bpc, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
+        end
+
+        it 'has no captures' do
+          allow(board).to receive(:data).and_return(data)
+          allow(board).to receive(:previous_piece)
+          result = bpn.find_possible_captures(board)
+          expect(result).to be_empty
+        end
+      end
+
+      context 'when an opposing piece in capture square' do
+        subject(:bpn) { described_class.new(board, { color: :black, location: [1, 1] }) }
+        let(:data) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, bpn, nil, nil, nil, nil, nil, nil],
+            [wpc, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
             [nil, nil, nil, nil, nil, nil, nil, nil],
             [nil, nil, nil, nil, nil, nil, nil, nil],
             [nil, nil, nil, nil, nil, nil, nil, nil]
@@ -167,23 +200,71 @@ RSpec.describe Pawn do
 
         it 'has one capture' do
           allow(board).to receive(:data).and_return(data)
-          allow(board).to receive(:previous_piece).and_return(white_pawn)
-          result = black_pawn.find_possible_captures(board)
+          allow(board).to receive(:previous_piece)
+          result = bpn.find_possible_captures(board)
+          expect(result).to contain_exactly([2, 0])
+        end
+      end
+
+      context 'when neighboring pawn has en_passant' do
+        subject(:bpn) { described_class.new(board, { color: :black, location: [4, 1] }) }
+        let(:wpn) { instance_double(Pawn, en_passant: true, location: [4, 2], symbol: " \u265F ") }
+        let(:data) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, bpn, wpn, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
+        end
+
+        it 'has one capture' do
+          allow(board).to receive(:data).and_return(data)
+          allow(board).to receive(:previous_piece).and_return(wpn)
+          result = bpn.find_possible_captures(board)
           expect(result).to contain_exactly([4, 2])
         end
       end
 
-      context 'when pawn has a capture and is next to a pawn without en_passant' do
-        subject(:black_pawn) { described_class.new(board, { color: :black, location: [4, 1] }) }
-        let(:white_pawn) { instance_double(Pawn, en_passant: false, location: [4, 2], symbol: " \u265F ") }
+      context 'when non-neighboring pawn has en_passant' do
+        subject(:bpn) { described_class.new(board, { color: :black, location: [4, 1] }) }
+        let(:wpn) { instance_double(Pawn, en_passant: true, location: [4, 5], symbol: " \u265F ") }
         let(:data) do
           [
             [nil, nil, nil, nil, nil, nil, nil, nil],
             [nil, nil, nil, nil, nil, nil, nil, nil],
             [nil, nil, nil, nil, nil, nil, nil, nil],
             [nil, nil, nil, nil, nil, nil, nil, nil],
-            [nil, black_pawn, white_pawn, nil, nil, nil, nil, nil],
-            [white_piece, nil, nil, nil, nil, nil, nil, nil],
+            [nil, bpn, nil, nil, nil, wpn, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
+        end
+
+        it 'has no capture' do
+          allow(board).to receive(:data).and_return(data)
+          allow(board).to receive(:previous_piece).and_return(wpn)
+          result = bpn.find_possible_captures(board)
+          expect(result).to be_empty
+        end
+      end
+
+      context 'when pawn has a capture and is next to a pawn without en_passant' do
+        subject(:bpn) { described_class.new(board, { color: :black, location: [4, 1] }) }
+        let(:wpn) { instance_double(Pawn, color: :white, en_passant: false, location: [4, 2], symbol: " \u265F ") }
+        let(:data) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, bpn, wpn, nil, nil, nil, nil, nil],
+            [wpn, nil, nil, nil, nil, nil, nil, nil],
             [nil, nil, nil, nil, nil, nil, nil, nil],
             [nil, nil, nil, nil, nil, nil, nil, nil]
           ]
@@ -191,110 +272,106 @@ RSpec.describe Pawn do
 
         it 'has one capture' do
           allow(board).to receive(:data).and_return(data)
-          allow(board).to receive(:previous_piece).and_return(white_pawn)
-          result = black_pawn.find_possible_captures(board)
+          allow(board).to receive(:previous_piece).and_return(wpn)
+          result = bpn.find_possible_captures(board)
           expect(result).to contain_exactly([5, 0])
         end
       end
     end
 
     context 'when pawn is white' do
-      context 'when pawn is in last file' do
-        context 'when an opposite color piece in capture square' do
-          subject(:white_pawn) { described_class.new(board, { color: :white, location: [6, 7] }) }
-          let(:data) do
-            [
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, black_piece, nil],
-              [nil, nil, nil, nil, nil, nil, nil, white_pawn],
-              [nil, nil, nil, nil, nil, nil, nil, nil]
-            ]
-          end
+      context 'when an opposite color piece in capture square' do
+        subject(:wpn) { described_class.new(board, { color: :white, location: [6, 7] }) }
+        let(:data) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, bpc, nil],
+            [nil, nil, nil, nil, nil, nil, nil, wpn],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
+        end
 
-          it 'has one capture' do
-            allow(board).to receive(:data).and_return(data)
-            allow(board).to receive(:previous_piece)
-            result = white_pawn.find_possible_captures(board)
-            expect(result).to contain_exactly([5, 6])
-          end
+        it 'has one capture' do
+          allow(board).to receive(:data).and_return(data)
+          allow(board).to receive(:previous_piece)
+          result = wpn.find_possible_captures(board)
+          expect(result).to contain_exactly([5, 6])
         end
       end
 
-      context 'when pawn is in middle file' do
-        context 'when two opposite color pieces are in capture squares' do
-          subject(:white_pawn) { described_class.new(board, { color: :white, location: [6, 4] }) }
-          let(:data) do
-            [
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, black_piece, nil, black_piece, nil, nil],
-              [nil, nil, nil, nil, white_pawn, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil]
-            ]
-          end
-
-          it 'has two captures' do
-            allow(board).to receive(:data).and_return(data)
-            allow(board).to receive(:previous_piece)
-            result = white_pawn.find_possible_captures(board)
-            expect(result).to contain_exactly([5, 5], [5, 3])
-          end
+      context 'when two opposite color pieces are in capture squares' do
+        subject(:wpn) { described_class.new(board, { color: :white, location: [6, 4] }) }
+        let(:data) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, bpc, nil, bpc, nil, nil],
+            [nil, nil, nil, nil, wpn, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
         end
 
-        context 'when pawn has a basic and en_passant capture' do
-          subject(:white_pawn) { described_class.new(board, { color: :white, location: [3, 3] }) }
-          let(:black_pawn) { instance_double(Pawn, en_passant: true, location: [3, 4], symbol: " \u265F ") }
-          let(:data) do
-            [
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, black_piece, nil, nil, nil, nil, nil],
-              [nil, nil, nil, white_pawn, black_pawn, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil]
-            ]
-          end
+        it 'has two captures' do
+          allow(board).to receive(:data).and_return(data)
+          allow(board).to receive(:previous_piece)
+          result = wpn.find_possible_captures(board)
+          expect(result).to contain_exactly([5, 5], [5, 3])
+        end
+      end
 
-          it 'has two captures' do
-            allow(board).to receive(:data).and_return(data)
-            allow(board).to receive(:previous_piece).and_return(black_pawn)
-            result = white_pawn.find_possible_captures(board)
-            expect(result).to contain_exactly([3, 4], [2, 2])
-          end
+      context 'when pawn has a basic and en_passant capture' do
+        subject(:wpn) { described_class.new(board, { color: :white, location: [3, 3] }) }
+        let(:bpn) { instance_double(Pawn, en_passant: true, location: [3, 4], symbol: " \u265F ") }
+        let(:data) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, bpc, nil, nil, nil, nil, nil],
+            [nil, nil, nil, wpn, bpn, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
         end
 
-        context 'when pawn has en_passant but is not previous_piece' do
-          subject(:white_pawn) { described_class.new(board, { color: :white, location: [3, 3] }) }
-          let(:black_pawn) { instance_double(Pawn, en_passant: true, location: [3, 4], symbol: " \u265F ") }
-          let(:data) do
-            [
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, black_piece, nil, nil, nil, nil, nil],
-              [nil, nil, nil, white_pawn, black_pawn, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil],
-              [nil, nil, nil, nil, nil, nil, nil, nil]
-            ]
-          end
+        it 'has two captures' do
+          allow(board).to receive(:data).and_return(data)
+          allow(board).to receive(:previous_piece).and_return(bpn)
+          result = wpn.find_possible_captures(board)
+          expect(result).to contain_exactly([3, 4], [2, 2])
+        end
+      end
 
-          it 'has one capture' do
-            allow(board).to receive(:data).and_return(data)
-            allow(board).to receive(:previous_piece).and_return(black_piece)
-            allow(black_piece).to receive(:location).and_return([2, 2])
-            result = white_pawn.find_possible_captures(board)
-            expect(result).to contain_exactly([2, 2])
-          end
+      context 'when pawn has en_passant but is not previous_piece' do
+        subject(:wpn) { described_class.new(board, { color: :white, location: [3, 3] }) }
+        let(:bpn) { instance_double(Pawn, en_passant: true, location: [3, 4], symbol: " \u265F ") }
+        let(:data) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, bpc, nil, nil, nil, nil, nil],
+            [nil, nil, nil, wpn, bpn, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
+        end
+
+        it 'has one capture' do
+          allow(board).to receive(:data).and_return(data)
+          allow(board).to receive(:previous_piece).and_return(bpc)
+          allow(bpc).to receive(:location).and_return([2, 2])
+          result = wpn.find_possible_captures(board)
+          expect(result).to contain_exactly([2, 2])
         end
       end
     end
@@ -302,11 +379,11 @@ RSpec.describe Pawn do
 
   describe '#update_location' do
     context 'when pawn moves one square' do
-      subject(:black_pawn) { described_class.new(board, { color: :black, location: [1, 1] }) }
+      subject(:bpn) { described_class.new(board, { color: :black, location: [1, 1] }) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, black_pawn, nil, nil, nil, nil, nil, nil],
+          [nil, bpn, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -317,17 +394,17 @@ RSpec.describe Pawn do
       end
 
       it 'is not en passant' do
-        black_pawn.update_location(2, 1)
-        expect(black_pawn.en_passant).to be false
+        bpn.update_location(2, 1)
+        expect(bpn.en_passant).to be false
       end
     end
 
     context 'when pawn moves two squares' do
-      subject(:black_pawn) { described_class.new(board, { color: :black, location: [1, 1] }) }
+      subject(:bpn) { described_class.new(board, { color: :black, location: [1, 1] }) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, black_pawn, nil, nil, nil, nil, nil, nil],
+          [nil, bpn, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -338,8 +415,8 @@ RSpec.describe Pawn do
       end
 
       it 'is en passant' do
-        black_pawn.update_location(3, 1)
-        expect(black_pawn.en_passant).to be true
+        bpn.update_location(3, 1)
+        expect(bpn.en_passant).to be true
       end
     end
   end
@@ -347,19 +424,19 @@ RSpec.describe Pawn do
   describe '#en_passant_rank?' do
     context 'when pawn is in correct rank for en passant' do
       context 'when pawn is white' do
-        subject(:white_pawn) { described_class.new(board, { color: :white, location: [3, 4] }) }
+        subject(:wpn) { described_class.new(board, { color: :white, location: [3, 4] }) }
 
         it 'returns true' do
-          result = white_pawn.en_passant_rank?
+          result = wpn.en_passant_rank?
           expect(result).to be true
         end
       end
 
       context 'when pawn is black' do
-        subject(:black_pawn) { described_class.new(board, { color: :black, location: [4, 4] }) }
+        subject(:bpn) { described_class.new(board, { color: :black, location: [4, 4] }) }
 
         it 'returns true' do
-          result = black_pawn.en_passant_rank?
+          result = bpn.en_passant_rank?
           expect(result).to be true
         end
       end

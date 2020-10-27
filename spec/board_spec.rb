@@ -254,21 +254,21 @@ RSpec.describe Board do
     let(:basic_movement) { instance_double(BasicMovement) }
 
     it 'send update_pieces to movement' do
-      allow(board).to receive(:update_movement).and_return(basic_movement)
+      allow(board).to receive(:create_movement).and_return(basic_movement)
       coordinates = { row: 0, column: 0 }
       expect(basic_movement).to receive(:update_pieces).with(board, coordinates)
       board.update(coordinates)
     end
   end
 
-  describe '#update_movement' do
+  describe '#create_movement' do
     subject(:board) { described_class.new }
     context 'when there is an en passant capture' do
       it 'creates EnPassantMovement' do
         allow(board).to receive(:en_passant_capture?).and_return(true)
         expect(EnPassantMovement).to receive(:new)
         coordinates = { row: 0, column: 0 }
-        board.update_movement(coordinates)
+        board.send(:create_movement, coordinates)
       end
     end
 
@@ -278,7 +278,7 @@ RSpec.describe Board do
         allow(board).to receive(:pawn_promotion?).and_return(true)
         expect(PawnPromotionMovement).to receive(:new)
         coordinates = { row: 0, column: 0 }
-        board.update_movement(coordinates)
+        board.send(:create_movement, coordinates)
       end
     end
 
@@ -289,7 +289,7 @@ RSpec.describe Board do
         allow(board).to receive(:castling?).and_return(true)
         expect(CastlingMovement).to receive(:new)
         coordinates = { row: 0, column: 0 }
-        board.update_movement(coordinates)
+        board.send(:create_movement, coordinates)
       end
     end
 
@@ -300,7 +300,7 @@ RSpec.describe Board do
         allow(board).to receive(:castling?).and_return(false)
         expect(BasicMovement).to receive(:new)
         coordinates = { row: 0, column: 0 }
-        board.update_movement(coordinates)
+        board.send(:create_movement, coordinates)
       end
     end
   end
@@ -405,7 +405,7 @@ RSpec.describe Board do
 
       it 'returns true' do
         board.instance_variable_set(:@white_king, white_king)
-        result = board.check?(:white)
+        result = board.king_in_check?(:white)
         expect(result).to be true
       end
     end
@@ -429,7 +429,7 @@ RSpec.describe Board do
 
       it 'returns false' do
         board.instance_variable_set(:@white_king, white_king)
-        result = board.check?(:white)
+        result = board.king_in_check?(:white)
         expect(result).to be false
       end
     end
@@ -506,9 +506,9 @@ RSpec.describe Board do
 
     context 'when king is in check & does not have any legal moves' do
       subject(:board) { described_class.new(data) }
-      let(:black_queen) { instance_double(Queen, color: :black, location: [7, 0], captures: [[7, 4]]) }
-      let(:black_rook) { instance_double(Rook, color: :black, location: [6, 7], captures: []) }
-      let(:white_king) { instance_double(King, color: :white, location: [7, 4], moves: [], captures: []) }
+      let(:bqn) { instance_double(Queen, color: :black, location: [7, 0], captures: [[7, 4]]) }
+      let(:brk) { instance_double(Rook, color: :black, location: [6, 7], captures: []) }
+      let(:wkg) { instance_double(King, color: :white, location: [7, 4], moves: [], captures: []) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -517,14 +517,40 @@ RSpec.describe Board do
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, black_rook],
-          [black_queen, nil, nil, nil, white_king, nil, nil, nil]
+          [nil, nil, nil, nil, nil, nil, nil, brk],
+          [bqn, nil, nil, nil, wkg, nil, nil, nil]
         ]
       end
 
       it 'is game over' do
-        board.instance_variable_set(:@previous_piece, black_queen)
-        board.instance_variable_set(:@white_king, white_king)
+        board.instance_variable_set(:@previous_piece, bqn)
+        board.instance_variable_set(:@white_king, wkg)
+        expect(board.game_over?).to be true
+      end
+    end
+
+    context 'when king is in stalemate & does not have any legal moves' do
+      subject(:board) { described_class.new(data) }
+      let(:bqn) { instance_double(Queen, color: :black, location: [6, 0], moves: [[6, 1]], captures: []) }
+      let(:br1) { instance_double(Rook, color: :black, location: [3, 2], moves: [[3, 1]], captures: []) }
+      let(:br2) { instance_double(Rook, color: :black, location: [3, 4], moves: [[3, 5]], captures: []) }
+      let(:wkg) { instance_double(King, color: :white, location: [7, 4], moves: [], captures: []) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, br1, nil, br2, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [bqn, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, wkg, nil, nil, nil]
+        ]
+      end
+
+      it 'is game over' do
+        board.instance_variable_set(:@previous_piece, bqn)
+        board.instance_variable_set(:@white_king, wkg)
         expect(board.game_over?).to be true
       end
     end
@@ -630,10 +656,10 @@ RSpec.describe Board do
 
   describe '#possible_castling?' do
     context 'when castling is possible' do
-      subject(:board) { described_class.new(data, white_king) }
-      subject(:white_king) { instance_double(King, color: :white, symbol: " \u265A ", location: [7, 4], moves: [[7, 5], [7, 6]]) }
-      let(:white_rook) { instance_double(Rook, color: :white, symbol: " \u265C ", moved: false, location: [7, 7]) }
-      let(:piece) { instance_double(Piece, color: :white) }
+      subject(:board) { described_class.new(data, wkg) }
+      let(:wkg) { instance_double(King, color: :white, symbol: " \u265A ", location: [7, 4], moves: [[7, 5], [7, 6]]) }
+      let(:wrk) { instance_double(Rook, color: :white, symbol: " \u265C ", moved: false, location: [7, 7]) }
+      let(:wpc) { instance_double(Piece, color: :white) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -642,8 +668,8 @@ RSpec.describe Board do
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, piece, piece, piece, nil, nil],
-          [nil, nil, nil, piece, white_king, nil, nil, white_rook]
+          [nil, nil, nil, wpc, wpc, wpc, nil, nil],
+          [nil, nil, nil, wpc, wkg, nil, nil, wrk]
         ]
       end
 
@@ -654,10 +680,10 @@ RSpec.describe Board do
     end
 
     context 'when castling is not possible' do
-      subject(:board) { described_class.new(data, white_rook) }
-      subject(:white_rook) { instance_double(King, color: :white, symbol: " \u265C ", location: [7, 4], moves: [[7, 5], [7, 6]]) }
-      let(:white_rook) { instance_double(Rook, color: :white, symbol: " \u265C ", moved: false, location: [7, 7]) }
-      let(:piece) { instance_double(Piece, color: :white) }
+      subject(:board) { described_class.new(data, wr1) }
+      subject(:wr1) { instance_double(King, color: :white, symbol: " \u265C ", location: [7, 4], moves: [[7, 5], [7, 6]]) }
+      let(:wr2) { instance_double(Rook, color: :white, symbol: " \u265C ", moved: false, location: [7, 7]) }
+      let(:wpc) { instance_double(Piece, color: :white) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -666,8 +692,8 @@ RSpec.describe Board do
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, piece, piece, piece, nil, nil],
-          [nil, nil, nil, piece, white_rook, nil, nil, white_rook]
+          [nil, nil, nil, wpc, wpc, wpc, nil, nil],
+          [nil, nil, nil, wpc, wr1, nil, nil, wr2]
         ]
       end
 
@@ -675,6 +701,53 @@ RSpec.describe Board do
         result = board.possible_castling?
         expect(result).to be false
       end
+    end
+  end
+
+  describe '#random_black_piece' do
+    subject(:random_board) { described_class.new(random_data) }
+    let(:wpc) { instance_double(Piece, color: :white, location: [7, 1]) }
+    let(:bpc) { instance_double(Piece, color: :black, location: [0, 1], moves: [], captures: []) }
+    let(:bkg) { instance_double(Piece, color: :black, location: [1, 6], moves: [], captures: [[7, 1]]) }
+    let(:bqn) { instance_double(Piece, color: :black, location: [2, 6], moves: [[3, 6]], captures: []) }
+    let(:random_data) do
+      [
+        [nil, bpc, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, bkg, nil],
+        [nil, nil, nil, nil, nil, nil, bqn, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, wpc, nil, nil, nil, nil, nil, nil]
+      ]
+    end
+
+    it 'returns the location of a piece with moves' do
+      result = random_board.random_black_piece
+      possibilities = [{ row: 1, column: 6 }, { row: 2, column: 6 }]
+      expect(possibilities).to include(result)
+    end
+  end
+
+  describe '#random_black_move' do
+    subject(:board) { described_class.new(data, black_queen) }
+    let(:black_queen) { instance_double(Piece, moves: [[0, 0], [0, 2], [0, 3]], captures: [[1, 0]]) }
+    let(:data) { [[nil, black_queen, nil, nil], [nil, nil, nil, nil]] }
+
+    it 'returns random coordinates of active black piece' do
+      result = board.random_black_move
+      possibilities = [{ row: 0, column: 0 }, { row: 0, column: 2 }, { row: 0, column: 3 }, { row: 1, column: 0 }]
+      expect(possibilities).to include(result)
+    end
+  end
+
+  describe '#update_game_mode' do
+    subject(:board) { described_class.new }
+
+    it 'updates value of game_mode to :computer' do
+      board.update_mode
+      expect(board.mode).to eq(:computer)
     end
   end
 end

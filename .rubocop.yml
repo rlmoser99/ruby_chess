@@ -9,3 +9,11 @@ Metrics/BlockLength:
 Layout/LineLength:
   Exclude:
     - 'spec/**/*'
+    - 'lib/game_prompts.rb'
+Metrics/ClassLength:
+  Exclude:
+    - 'lib/game.rb'
+    - 'lib/board.rb'
+Metrics/MethodLength:
+  Exclude:
+    - 'lib/displayable.rb'
