@@ -39,7 +39,7 @@ end
 
 # SAVE & LOAD GAME:
 # (done) Make the game save & EXIT only at start of turn
-# It errors when there is not a saved game!
+# (done) It errors when there is not a saved game!
 # Write Tests
 # -> why did board print? did #setup_board & #play mess things up?
 
@@ -48,3 +48,4 @@ end
 # Board class is still too big - ok?
 # -> move initial placement into module or serialize it?
 # Remove the reek ideas.md file
+# Go through game and try to 'break' user input with invalid info

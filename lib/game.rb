@@ -153,7 +153,7 @@ class Game
 
   # raises an error if input is not valid
   def validate_move_input(input)
-    raise InputError unless input.match?(/^[a-h][1-8]$/)
+    raise InputError unless input.match?(/^[a-h][1-8]$/i)
   end
 
   # raises an error if coordinates is not a valid piece

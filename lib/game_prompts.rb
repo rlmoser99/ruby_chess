@@ -79,7 +79,7 @@ module GamePrompts
 
   def resign_game
     puts "\e[36m#{previous_color}\e[0m wins because #{@current_turn} resigned!"
-    exit(true)
+    exit
   end
 
   def final_message

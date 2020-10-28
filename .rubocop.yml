@@ -17,3 +17,9 @@ Metrics/ClassLength:
 Metrics/MethodLength:
   Exclude:
     - 'lib/displayable.rb'
+Style/MixinUsage:
+  Exclude:
+    - 'lib/main.rb'
+Security/MarshalLoad:
+  Exclude:
+    - 'lib/serializer.rb'
