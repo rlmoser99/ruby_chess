@@ -6,26 +6,26 @@ This is the final project in the Ruby curriculum at [The Odin Project](https://w
 <img src="demo/chess_demo.gif" alt="chess demo" width=auto height="400px"/>
 
 ## Use of Design Patterns
-Right after I started working on this project, I joined a book club reading through *Design Patterns in Ruby*, by Russ Olsen. When we are done reading, I hope to come back to this project to review and refactor. Currently, I have implemented two design patterns that we've studied.
+Right after I started working on this project, I joined a book club reading *Design Patterns in Ruby*, by Russ Olsen. When we are done reading, I hope to come back to this project to review and refactor. Currently, I have implemented two design patterns that we've studied.
 
 **Strategy:** 
-I implemented this pattern using the `Board` class as the context and the four `Movement` classes as the different strategies. The `Board` changes its strategy movement to update the position of the piece(s) based on if the move is a basic move, en passant move, castling move, or pawn promotion move. 
+I implemented this pattern using the `Board` class as the context and the four `Movement` classes as different strategies. The `Board` changes its strategy movement to update the position of the piece(s) based on if the move is a basic move, en passant move, castling move, or pawn promotion move. 
 
 **Observer:** 
-I implemented this pattern using the `Board` class as the subject and the `Piece` classes as the observers. When each instance of `Piece` is created it becomes an observer of the instance of `Board` that created it. Every time a `Piece` moves in the `Board`, all of the pieces update their legal moves and captures. In addition, when a `Piece` is removed from the `Board`, that observer must also be removed.
+I implemented this pattern using the `Board` class as the subject and the `Piece` classes as the observers. When an instance of `Piece` is created, it becomes an observer of the `Board` instance. Every time a `Piece` moves in the `Board`, all of the pieces update their legal moves and captures. In addition, when a `Piece` is removed from the `Board`, that observer must also be removed.
 
 ## Project Requirements
 **2-Player Game with Legal Moves:** 
-I wanted to create a similar UI as [chess.com](chess.com) to visually display the opponent's previous piece and the active piece's moves and captures. Therefore, I split each player turn into two parts.
+I wanted to create a similar UI as [chess.com](chess.com) to visually display the opponent's previous piece, the active piece, and the legal moves/captures. Therefore, I needed to divide each turn into two different parts.
 
 **Save and Load Games:** 
-Players can save (or quit) a game at the beginning of every turn. A new game can only be loaded at the start of the application. 
+Players can save (or quit) a game at the beginning of every turn. Before a game starts, players have the choice to play a new game or load a saved game.
 
-**Write Tests:** 
-I used a mixture of TDD and writing tests as I wrote each method. I used TDD when I needed it to guide the results, for example the different piece's moves and captures. I wrote unit tests for incoming command methods, incoming query methods, and outgoing command methods.
+**Tests:** 
+I wrote unit tests for incoming command methods, incoming query methods, and outgoing command methods. Most of the time, I wrote tests and the method in tandem. Occasionally, I used TDD when I wanted the test to guide the results. For example, I used TDD as I developed the methods that determined each piece's moves and captures.
 
 **Add Simple Computer Player:** 
-Since the white player always goes first and has a slightly higher advantage, I decided to have the computer player always be the black player to keep game set-up simple. The computer player simply chooses a piece with legal moves and/or captures.
+Since the white player always goes first and has a slightly higher advantage, I decided to have the computer player always be black to keep the game set-up simple. The computer player selects a piece with legal moves and/or captures.
 
 ## How to Play
 This chess game will look slightly different on other command line interfaces (CLI), such as repl.it or your computer. Not only will the colors vary, but the font size of my CLI is 24 points to increase the size of the unicode chess pieces.
