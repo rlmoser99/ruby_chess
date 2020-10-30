@@ -3,7 +3,7 @@
 This is the final project in the Ruby curriculum at [The Odin Project](https://www.theodinproject.com/courses/ruby-programming/lessons/ruby-final-project?ref=lnav).
 
 ## Demo
-![Chess Game Demo](demo/chess_demo.gif)
+<img src="demo/chess_demo1.gif" alt="chess demo" width=auto height="400px"/>
 
 ## Use of Design Patterns
 Right after I started working on this project, I joined a book club reading through *Design Patterns in Ruby*, by Russ Olsen. When we are done reading, I hope to come back to this project to review and refactor. Currently, I have implemented two design patterns that we've studied.
@@ -16,7 +16,7 @@ I implemented this pattern using the `Board` class as the subject and the `Piece
 
 ## Project Requirements
 **2-Player Game with Legal Moves:** 
-I choose to split each player turn into two parts, so that I could display the legal moves and captures on the board. I am not an experienced chess player, so creating this visual indicator was important to me. 
+I wanted to create a similar UI as [chess.com](chess.com) to visually display the opponent's previous piece and the active piece's moves and captures. Therefore, I split each player turn into two parts.
 
 **Save and Load Games:** 
 Players can save (or quit) a game at the beginning of every turn. A new game can only be loaded at the start of the application. 
@@ -25,4 +25,4 @@ Players can save (or quit) a game at the beginning of every turn. A new game can
 I used a mixture of TDD and writing tests as I wrote each method. I used TDD when I needed it to guide the results, for example the different piece's moves and captures. I wrote unit tests for incoming command methods, incoming query methods, and outgoing command methods.
 
 **Add Simple Computer Player:** 
-Since the white player always goes first and has a slightly higher advantage, I decided to have the computer player always be the black player to keep game set-up simple. The computer player chooses a piece with legal moves and/or captures.
+Since the white player always goes first and has a slightly higher advantage, I decided to have the computer player always be the black player to keep game set-up simple. The computer player simply chooses a piece with legal moves and/or captures.
