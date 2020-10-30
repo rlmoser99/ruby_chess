@@ -37,15 +37,7 @@ elsif input == '3'
   load_game.play
 end
 
-# SAVE & LOAD GAME:
-# (done) Make the game save & EXIT only at start of turn
-# (done) It errors when there is not a saved game!
-# (done) Write Tests
-# Send link to Mark to review code.
-
-# REFACTOR:
+# REFACTOR/QUESIONS:
 # Game class is too big - ok?
 # Board class is still too big - ok?
 # -> move initial placement into module or serialize it?
-# Remove the reek ideas.md file
-# Go through game and try to 'break' user input with invalid info
