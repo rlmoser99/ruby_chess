@@ -3,7 +3,7 @@
 This is the final project in the Ruby curriculum at [The Odin Project](https://www.theodinproject.com/courses/ruby-programming/lessons/ruby-final-project?ref=lnav).
 
 ## Demo
-![Chess Game Demo](demo/chess_demo.gif)
+![Chess Game Demo](demo/chess_demo2.gif)
 
 ## Use of Design Patterns
 Right after I started working on this project, I joined a book club reading through *Design Patterns in Ruby*, by Russ Olsen. When we are done reading, I hope to come back to this project to review and refactor. Currently, I have implemented two design patterns that we've studied.
