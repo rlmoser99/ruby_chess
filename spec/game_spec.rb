@@ -35,46 +35,50 @@ RSpec.describe Game do
     end
   end
 
-  describe '#play' do
-    context 'when user input is 1' do
-      subject(:game) { described_class.new(board) }
+  describe '#setup_board' do
+    context 'when there is one player' do
+      player_count = 1
+      subject(:game) { described_class.new(player_count, board) }
       let(:board) { instance_double(Board) }
 
-      it 'calls update_game_board_mode' do
-        allow(game).to receive(:select_game_mode).and_return('1')
+      it 'sends update_mode to board' do
         allow(board).to receive(:initial_placement)
-        allow(board).to receive(:to_s)
-        allow(game).to receive(:player_turn)
-        allow(board).to receive(:game_over?).and_return(true)
-        allow(game).to receive(:final_message)
         expect(board).to receive(:update_mode)
-        game.play
+        game.setup_board
+      end
+
+      it 'sends initial_placement to board' do
+        allow(board).to receive(:update_mode)
+        expect(board).to receive(:initial_placement)
+        game.setup_board
       end
     end
 
-    context 'when user input is not 1' do
-      subject(:game) { described_class.new(board) }
+    context 'when there are two players' do
+      player_count = 2
+      subject(:game) { described_class.new(player_count, board) }
       let(:board) { instance_double(Board) }
 
-      it 'does not call update_game_board_mode' do
-        allow(game).to receive(:select_game_mode).and_return('2')
+      it 'does not send update_mode to board' do
         allow(board).to receive(:initial_placement)
-        allow(board).to receive(:to_s)
-        allow(game).to receive(:player_turn)
-        allow(board).to receive(:game_over?).and_return(true)
-        allow(game).to receive(:final_message)
         expect(board).not_to receive(:update_mode)
-        game.play
+        game.setup_board
+      end
+
+      it 'sends initial_placement to board' do
+        expect(board).to receive(:initial_placement)
+        game.setup_board
       end
     end
+  end
 
+  describe '#play' do
     context 'when game_over? is false four times' do
-      subject(:game) { described_class.new(board) }
+      player_count = 2
+      subject(:game) { described_class.new(player_count, board) }
       let(:board) { instance_double(Board) }
 
       it 'calls #player_turn four times' do
-        allow(game).to receive(:select_game_mode).and_return('2')
-        allow(board).to receive(:initial_placement)
         allow(board).to receive(:to_s)
         allow(board).to receive(:game_over?).and_return(false, false, false, false, true)
         allow(game).to receive(:final_message)
@@ -85,9 +89,10 @@ RSpec.describe Game do
   end
 
   describe '#player_turn' do
-    context 'when board mode is not :computer' do
-      subject(:game) { described_class.new(board) }
-      let(:board) { instance_double(Board, mode: :user_prompts) }
+    context 'when @player_count is one' do
+      player_count = 2
+      subject(:game) { described_class.new(player_count, board) }
+      let(:board) { instance_double(Board) }
 
       it 'calls #human_player_turn' do
         allow(game).to receive(:puts)
@@ -99,9 +104,10 @@ RSpec.describe Game do
       end
     end
 
-    context 'when board mode is :computer and @current_turn is :white' do
-      subject(:game) { described_class.new(board) }
-      let(:board) { instance_double(Board, mode: :computer) }
+    context 'when @player_count is 1 and @current_turn is :white' do
+      player_count = 1
+      subject(:game) { described_class.new(player_count, board) }
+      let(:board) { instance_double(Board) }
 
       it 'calls #human_player_turn' do
         allow(game).to receive(:puts)
@@ -113,9 +119,10 @@ RSpec.describe Game do
       end
     end
 
-    context 'when board mode is :computer and @current_turn is :black' do
-      subject(:game) { described_class.new(board) }
-      let(:board) { instance_double(Board, mode: :computer) }
+    context 'when @player_count is 1 and @current_turn is :black' do
+      player_count = 1
+      subject(:game) { described_class.new(player_count, board) }
+      let(:board) { instance_double(Board) }
 
       it 'calls #computer_player_turn' do
         allow(game).to receive(:puts)
@@ -129,7 +136,8 @@ RSpec.describe Game do
   end
 
   describe '#human_player_turn' do
-    subject(:game) { described_class.new(board) }
+    player_count = 2
+    subject(:game) { described_class.new(player_count, board) }
     let(:board) { instance_double(Board, mode: :user_prompts) }
 
     it 'sends #update to board' do
@@ -143,8 +151,9 @@ RSpec.describe Game do
   end
 
   describe '#computer_player_turn' do
-    subject(:game) { described_class.new(board) }
-    let(:board) { instance_double(Board, mode: :user_prompts) }
+    player_count = 1
+    subject(:game) { described_class.new(player_count, board) }
+    let(:board) { instance_double(Board) }
 
     it 'sends #update_active_piece to board' do
       allow(game).to receive(:sleep)
@@ -170,7 +179,8 @@ RSpec.describe Game do
   end
 
   describe '#select_piece_coordinates' do
-    subject(:game) { described_class.new(board) }
+    player_count = 2
+    subject(:game) { described_class.new(player_count, board) }
     let(:board) { instance_double(Board) }
 
     it 'sends #update_active_piece to board' do
@@ -185,12 +195,13 @@ RSpec.describe Game do
   end
 
   describe '#select_game_mode' do
-    subject(:game) { described_class.new }
+    player_count = 2
+    subject(:game) { described_class.new(player_count) }
 
     context 'when user input is valid' do
       it 'returns valid user input' do
         input = '1'
-        allow(game).to receive(:user_input).and_return(input)
+        allow(game).to receive(:gets).and_return(input)
         result = game.send(:select_game_mode)
         expect(result).to eq('1')
       end
@@ -198,52 +209,54 @@ RSpec.describe Game do
 
     context 'when user input is not valid' do
       it 'outputs an input error warning' do
-        warning = 'Input error! Enter 1-digit (1 or 2).'
+        warning = 'Input error! Enter 1-digit (1, 2, or 3).'
         expect(game).to receive(:puts).with(warning).once
         valid_input = '1'
         invalid_input = 'a'
-        allow(game).to receive(:user_input).and_return(invalid_input, valid_input)
+        allow(game).to receive(:gets).and_return(invalid_input, valid_input)
         game.send(:select_game_mode)
       end
 
       it 'returns second valid user input' do
-        warning = 'Input error! Enter 1-digit (1 or 2).'
-        expect(game).to receive(:puts).with(warning).once
+        warning = 'Input error! Enter 1-digit (1, 2, or 3).'
+        allow(game).to receive(:puts).with(warning).once
         valid_input = '1'
         invalid_input = 'a'
-        allow(game).to receive(:user_input).and_return(invalid_input, valid_input)
+        allow(game).to receive(:gets).and_return(invalid_input, valid_input)
         result = game.send(:select_game_mode)
         expect(result).to eq('1')
       end
     end
   end
 
-  describe '#validate_input' do
-    subject(:game) { described_class.new }
+  describe '#validate_move_input' do
+    player_count = 2
+    subject(:game) { described_class.new(player_count) }
 
     context 'when input is valid' do
       it 'does not raise an error' do
-        expect { game.send(:validate_input, 'c7') }.not_to raise_error
+        expect { game.send(:validate_move_input, 'c7') }.not_to raise_error
       end
     end
 
     context 'when input is not valid' do
       it 'raises an error' do
-        expect { game.send(:validate_input, '7c') }.to raise_error(Game::InputError)
+        expect { game.send(:validate_move_input, '7c') }.to raise_error(Game::InputError)
       end
 
       it 'raises an error' do
-        expect { game.send(:validate_input, '77') }.to raise_error(Game::InputError)
+        expect { game.send(:validate_move_input, '77') }.to raise_error(Game::InputError)
       end
 
       it 'raises an error' do
-        expect { game.send(:validate_input, 'cc') }.to raise_error(Game::InputError)
+        expect { game.send(:validate_move_input, 'cc') }.to raise_error(Game::InputError)
       end
     end
   end
 
   describe '#validate_piece_coordinates' do
-    subject(:game) { described_class.new(board) }
+    player_count = 2
+    subject(:game) { described_class.new(player_count, board) }
     let(:board) { instance_double(Board) }
 
     context 'when board coordinates contains a piece' do
@@ -264,7 +277,8 @@ RSpec.describe Game do
   end
 
   describe '#validate_move' do
-    subject(:game) { described_class.new(board) }
+    player_count = 2
+    subject(:game) { described_class.new(player_count, board) }
     let(:board) { instance_double(Board) }
 
     context 'when coordinates is a valid piece movement' do
@@ -285,7 +299,8 @@ RSpec.describe Game do
   end
 
   describe '#validate_active_piece' do
-    subject(:game) { described_class.new(board) }
+    player_count = 2
+    subject(:game) { described_class.new(player_count, board) }
     let(:board) { instance_double(Board) }
 
     context 'when active piece is moveable' do
@@ -304,7 +319,8 @@ RSpec.describe Game do
   end
 
   describe '#translate_coordinates' do
-    subject(:game) { described_class.new }
+    player_count = 2
+    subject(:game) { described_class.new(player_count) }
 
     it 'sends command message to NotationTranslator' do
       user_input = 'd2'
@@ -315,7 +331,8 @@ RSpec.describe Game do
 
   describe '#final_message' do
     context 'when game has a king in check' do
-      subject(:game) { described_class.new(board) }
+      player_count = 2
+      subject(:game) { described_class.new(player_count, board) }
       let(:board) { instance_double(Board) }
 
       it 'outputs checkmate message' do
@@ -326,7 +343,8 @@ RSpec.describe Game do
     end
 
     context 'when game does not have a king in check' do
-      subject(:game) { described_class.new(board) }
+      player_count = 2
+      subject(:game) { described_class.new(player_count, board) }
       let(:board) { instance_double(Board) }
 
       it 'outputs stalemate message' do
@@ -338,7 +356,8 @@ RSpec.describe Game do
   end
 
   describe '#switch_color' do
-    subject(:game) { described_class.new }
+    player_count = 2
+    subject(:game) { described_class.new(player_count) }
 
     context 'when current_turn is :white' do
       it 'changes to :black' do
@@ -360,7 +379,8 @@ RSpec.describe Game do
   end
 
   describe '#human_player_turn' do
-    subject(:game) { described_class.new(board) }
+    player_count = 2
+    subject(:game) { described_class.new(player_count, board) }
     let(:board) { instance_double(Board) }
 
     it 'send update to board' do
@@ -374,7 +394,8 @@ RSpec.describe Game do
   end
 
   describe '#computer_player_turn' do
-    subject(:game) { described_class.new(board) }
+    player_count = 2
+    subject(:game) { described_class.new(player_count, board) }
     let(:board) { instance_double(Board) }
 
     before do
@@ -398,7 +419,8 @@ RSpec.describe Game do
   end
 
   describe '#computer_select_random_piece' do
-    subject(:game) { described_class.new(board) }
+    player_count = 2
+    subject(:game) { described_class.new(player_count, board) }
     let(:board) { instance_double(Board) }
 
     it 'send random_black_piece to board' do
@@ -408,7 +430,8 @@ RSpec.describe Game do
   end
 
   describe '#computer_select_random_move' do
-    subject(:game) { described_class.new(board) }
+    player_count = 2
+    subject(:game) { described_class.new(player_count, board) }
     let(:board) { instance_double(Board) }
 
     it 'send random_black_move to board' do

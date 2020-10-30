@@ -19,17 +19,36 @@ module GamePrompts
 
 
       To begin, enter one of the following to play:
-        \e[36m[1]\e[0m for a 1-player game against the computer
-        \e[36m[2]\e[0m for a 2-player game
+        \e[36m[1]\e[0m to play a \e[36mnew 1-player\e[0m game against the computer
+        \e[36m[2]\e[0m to play a \e[36mnew 2-player\e[0m game
+        \e[36m[3]\e[0m to play a \e[36msaved\e[0m game
     HEREDOC
   end
 
+  # script for user to input game mode, repeats for invalid input
+  def select_game_mode
+    user_mode = gets.chomp
+    return user_mode if user_mode.match?(/^[123]$/)
+
+    puts 'Input error! Enter 1-digit (1, 2, or 3).'
+    select_game_mode
+  end
+
   def user_piece_selection
-    "Enter the coordinates of the piece you want to move (or \e[36m[Q]\e[0m to Quit the game)."
+    <<~HEREDOC
+
+      Enter the coordinates of the piece you want to move.
+      \e[36m[Q]\e[0m to Quit or \e[36m[S]\e[0m to Save
+
+    HEREDOC
   end
 
   def user_move_selection
-    "Enter the coordinates of a highlighted move (or \e[36m[Q]\e[0m to Quit the game)."
+    <<~HEREDOC
+
+      Enter the coordinates of a highlighted move.
+
+    HEREDOC
   end
 
   def en_passant_warning
@@ -60,7 +79,7 @@ module GamePrompts
 
   def resign_game
     puts "\e[36m#{previous_color}\e[0m wins because #{@current_turn} resigned!"
-    exit(true)
+    exit
   end
 
   def final_message

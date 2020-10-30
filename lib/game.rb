@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'game_prompts'
+require_relative 'serializer'
 
 # contains script to play a chess game
 class Game
@@ -33,17 +34,22 @@ class Game
   end
 
   include GamePrompts
+  include Serializer
 
-  def initialize(board = Board.new)
+  def initialize(number, board = Board.new)
+    @player_count = number
     @board = board
     @current_turn = :white
   end
 
-  # script to play an entire game of chess
-  def play
-    input = select_game_mode
-    @board.update_mode if input == '1'
+  # script to set-up board for new game of chess
+  def setup_board
+    @board.update_mode if @player_count == 1
     @board.initial_placement
+  end
+
+  # script to play a game of chess
+  def play
     @board.to_s
     player_turn until @board.game_over?
     final_message
@@ -54,7 +60,7 @@ class Game
   # script for computer/human turn, display board & switches @current_turn color
   def player_turn
     puts "#{@current_turn.capitalize}'s turn!"
-    if @board.mode == :computer && @current_turn == :black
+    if @player_count == 1 && @current_turn == :black
       computer_player_turn
     else
       human_player_turn
@@ -109,8 +115,9 @@ class Game
   def user_select_piece
     puts king_check_warning if @board.king_in_check?(@current_turn)
     input = user_input(user_piece_selection)
-    validate_input(input)
+    validate_piece_input(input)
     resign_game if input.upcase == 'Q'
+    save_game if input.upcase == 'S'
     input
   end
 
@@ -119,18 +126,9 @@ class Game
     puts en_passant_warning if @board.possible_en_passant?
     puts castling_warning if @board.possible_castling?
     input = user_input(user_move_selection)
-    validate_input(input)
+    validate_move_input(input)
     resign_game if input.upcase == 'Q'
     input
-  end
-
-  # script for user to input game mode, repeats for invalid input
-  def select_game_mode
-    user_mode = user_input(game_mode_choices)
-    return user_mode if user_mode.match?(/^[12]$/)
-
-    puts 'Input error! Enter 1-digit (1 or 2).'
-    select_game_mode
   end
 
   # alternates between :black and :white for #player_turn
@@ -149,8 +147,13 @@ class Game
   end
 
   # raises an error if input is not valid
-  def validate_input(input)
-    raise InputError unless input.match?(/^[a-h][1-8]$|^[q]$/i)
+  def validate_piece_input(input)
+    raise InputError unless input.match?(/^[a-h][1-8]$|^[q]$|^[s]$/i)
+  end
+
+  # raises an error if input is not valid
+  def validate_move_input(input)
+    raise InputError unless input.match?(/^[a-h][1-8]$/i)
   end
 
   # raises an error if coordinates is not a valid piece
