@@ -40,8 +40,8 @@ end
 # SAVE & LOAD GAME:
 # (done) Make the game save & EXIT only at start of turn
 # (done) It errors when there is not a saved game!
-# Write Tests
-# -> why did board print? did #setup_board & #play mess things up?
+# (done) Write Tests
+# Send link to Mark to review code.
 
 # REFACTOR:
 # Game class is too big - ok?

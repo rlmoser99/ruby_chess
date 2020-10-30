@@ -219,7 +219,7 @@ RSpec.describe Game do
 
       it 'returns second valid user input' do
         warning = 'Input error! Enter 1-digit (1, 2, or 3).'
-        expect(game).to receive(:puts).with(warning).once
+        allow(game).to receive(:puts).with(warning).once
         valid_input = '1'
         invalid_input = 'a'
         allow(game).to receive(:gets).and_return(invalid_input, valid_input)
