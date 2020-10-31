@@ -6,10 +6,10 @@ This is the final project in the Ruby curriculum at [The Odin Project](https://w
 <img src="demo/chess_demo.gif" alt="chess demo" width=auto height="400px"/>
 
 ## Use of Design Patterns
-Right after I started working on this project, I joined a book club reading *Design Patterns in Ruby*, by Russ Olsen. When we are done reading, I hope to come back to this project to review and refactor. Currently, we've studied six patterns and I have identified two that are useful in this application.
+Right after I started working on this project, I joined a book club reading [Design Patterns in Ruby](https://www.amazon.com/Design-Patterns-Ruby-Russ-Olsen/dp/0321490452). When we are done reading, I hope to come back to this project to review and refactor. Currently, we've studied six patterns and I have identified two that are useful in this application.
 
-**[Strategy]https://sourcemaking.com/design_patterns/strategy:** 
-I implemented this pattern using the `Board` class as the context and the four `Movement` classes as different strategies. The `Board` changes its strategy movement to update the position of the piece(s) based on if the move is a basic move, en passant move, castling move, or pawn promotion move. 
+**[Strategy](https://sourcemaking.com/design_patterns/strategy):** 
+I implemented this pattern using the `Board` class as the context and the four `Movement` classes as different strategies. The `Board` changes its movement strategy to update the position of the piece(s) based on if the move is a basic move, en passant move, castling move, or pawn promotion move. 
 
 **[Observer](https://sourcemaking.com/design_patterns/observer):** 
 I implemented this pattern using the `Board` class as the subject and the `Piece` classes as the observers. When an instance of `Piece` is created, it becomes an observer of the `Board` instance. Every time a `Piece` moves in the `Board`, all of the pieces update their legal moves and captures. In addition, when a `Piece` is removed from the `Board`, that observer must also be removed.
@@ -45,3 +45,9 @@ If you want to play this chess game without installing it on your computer, you 
 ### To Play
 - Run `ruby lib/main.rb` 
 - Play a 1-player or 2-player game (can save a game to load at a later time)
+
+## Running the tests
+- To run the entire test suite, run `rspec`
+- To run the tests for one file in the spec folder, run `rspec spec/file_name.rb` 
+- To run the tests for one file in the pieces folder, run `rspec spec/pieces/file_name.rb` 
+- To run the tests for one file in the movement folder, run `rspec spec/movement/file_name.rb` 
