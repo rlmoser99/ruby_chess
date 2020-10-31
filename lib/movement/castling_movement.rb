@@ -4,10 +4,10 @@ require_relative 'basic_movement'
 
 # contains logic for castling moves
 class CastlingMovement < BasicMovement
-  def initialize
-    @board = nil
-    @row = nil
-    @column = nil
+  def initialize(board = nil, row = nil, column = nil)
+    @board = board
+    @row = row
+    @column = column
   end
 
   # updates instance variables and runs script to update castling moves

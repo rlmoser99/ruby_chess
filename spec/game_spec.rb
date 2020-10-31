@@ -91,12 +91,11 @@ RSpec.describe Game do
   describe '#player_turn' do
     context 'when @player_count is one' do
       player_count = 2
-      subject(:game) { described_class.new(player_count, board) }
+      subject(:game) { described_class.new(player_count, board, :black) }
       let(:board) { instance_double(Board) }
 
       it 'calls #human_player_turn' do
         allow(game).to receive(:puts)
-        game.instance_variable_set(:@current_turn, :black)
         allow(board).to receive(:to_s)
         allow(game).to receive(:switch_color)
         expect(game).to receive(:human_player_turn)
@@ -106,12 +105,11 @@ RSpec.describe Game do
 
     context 'when @player_count is 1 and @current_turn is :white' do
       player_count = 1
-      subject(:game) { described_class.new(player_count, board) }
+      subject(:game) { described_class.new(player_count, board, :white) }
       let(:board) { instance_double(Board) }
 
       it 'calls #human_player_turn' do
         allow(game).to receive(:puts)
-        game.instance_variable_set(:@current_turn, :white)
         allow(board).to receive(:to_s)
         allow(game).to receive(:switch_color)
         expect(game).to receive(:human_player_turn)
@@ -121,12 +119,11 @@ RSpec.describe Game do
 
     context 'when @player_count is 1 and @current_turn is :black' do
       player_count = 1
-      subject(:game) { described_class.new(player_count, board) }
+      subject(:game) { described_class.new(player_count, board, :black) }
       let(:board) { instance_double(Board) }
 
       it 'calls #computer_player_turn' do
         allow(game).to receive(:puts)
-        game.instance_variable_set(:@current_turn, :black)
         allow(board).to receive(:to_s)
         allow(game).to receive(:switch_color)
         expect(game).to receive(:computer_player_turn)
@@ -356,12 +353,12 @@ RSpec.describe Game do
   end
 
   describe '#switch_color' do
-    player_count = 2
-    subject(:game) { described_class.new(player_count) }
-
     context 'when current_turn is :white' do
+      player_count = 2
+      subject(:game) { described_class.new(player_count, board, :white) }
+      let(:board) { instance_double(Board) }
+
       it 'changes to :black' do
-        game.instance_variable_set(:@current_turn, :white)
         game.send(:switch_color)
         result = game.instance_variable_get(:@current_turn)
         expect(result).to eq(:black)
@@ -369,8 +366,11 @@ RSpec.describe Game do
     end
 
     context 'when current_turn is :black' do
+      player_count = 2
+      subject(:game) { described_class.new(player_count, board, :black) }
+      let(:board) { instance_double(Board) }
+
       it 'changes to :white' do
-        game.instance_variable_set(:@current_turn, :black)
         game.send(:switch_color)
         result = game.instance_variable_get(:@current_turn)
         expect(result).to eq(:white)

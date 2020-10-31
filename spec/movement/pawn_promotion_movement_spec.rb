@@ -64,14 +64,11 @@ RSpec.describe PawnPromotionMovement do
 
   describe '#new_promotion_piece' do
     context 'when board mode is :computer' do
-      subject(:movement) { described_class.new }
+      subject(:movement) { described_class.new(board, 7, 1) }
       let(:board) { instance_double(Board, active_piece: black_pawn) }
       let(:black_pawn) { instance_double(Pawn, location: [6, 1], color: :black) }
 
       it 'creates a new Queen' do
-        movement.instance_variable_set(:@board, board)
-        movement.instance_variable_set(:@row, 7)
-        movement.instance_variable_set(:@column, 1)
         allow(board).to receive(:mode).and_return(:computer)
         allow(board).to receive(:add_observer)
         result = movement.send(:new_promotion_piece)
@@ -80,14 +77,11 @@ RSpec.describe PawnPromotionMovement do
     end
 
     context 'when board mode is not :computer' do
-      subject(:movement) { described_class.new }
+      subject(:movement) { described_class.new(board, 7, 1) }
       let(:board) { instance_double(Board, active_piece: black_pawn, mode: nil) }
       let(:black_pawn) { instance_double(Pawn, location: [6, 1], color: :black) }
 
       before do
-        movement.instance_variable_set(:@board, board)
-        movement.instance_variable_set(:@row, 7)
-        movement.instance_variable_set(:@column, 1)
         allow(movement).to receive(:puts)
         allow(movement).to receive(:pawn_promotion_choices)
         user_input = '2'
@@ -114,14 +108,11 @@ RSpec.describe PawnPromotionMovement do
   end
 
   describe '#create_promotion_piece' do
-    subject(:movement) { described_class.new }
+    subject(:movement) { described_class.new(board, 7, 1) }
     let(:board) { instance_double(Board, active_piece: black_pawn) }
     let(:black_pawn) { instance_double(Pawn, location: [6, 1], color: :black) }
 
     it 'creates a new piece' do
-      movement.instance_variable_set(:@board, board)
-      movement.instance_variable_set(:@row, 7)
-      movement.instance_variable_set(:@column, 1)
       pawn_move_info = { color: :black, location: [7, 1] }
       expect(Queen).to receive(:new).with(board, pawn_move_info)
       user_input = '1'

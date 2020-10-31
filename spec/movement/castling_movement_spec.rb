@@ -69,7 +69,7 @@ RSpec.describe CastlingMovement do
   end
 
   describe '#find_castling_rook' do
-    subject(:movement) { described_class.new }
+    subject(:movement) { described_class.new(board, 0, 6) }
     let(:board) { instance_double(Board) }
     let(:black_king) { instance_double(Piece, location: [0, 4]) }
     let(:black_rook) { instance_double(Piece, location: [0, 7]) }
@@ -88,9 +88,6 @@ RSpec.describe CastlingMovement do
 
     it 'returns king-side rook' do
       allow(board).to receive(:data).and_return(data)
-      movement.instance_variable_set(:@board, board)
-      movement.instance_variable_set(:@row, 0)
-      movement.instance_variable_set(:@column, 6)
       result = movement.send(:find_castling_rook)
       expect(result).to eq(black_rook)
     end

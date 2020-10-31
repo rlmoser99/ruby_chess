@@ -10,13 +10,13 @@ class Board
   attr_reader :black_king, :white_king, :mode
   attr_accessor :data, :active_piece, :previous_piece
 
-  def initialize(data = Array.new(8) { Array.new(8) }, active_piece = nil)
+  def initialize(data = Array.new(8) { Array.new(8) }, params = {})
     @data = data
-    @active_piece = active_piece
-    @previous_piece = nil
-    @black_king = nil
-    @white_king = nil
-    @mode = :user_prompts
+    @active_piece = params[:active_piece]
+    @previous_piece = params[:previous_piece]
+    @black_king = params[:black_king]
+    @white_king = params[:white_king]
+    @mode = params[:mode]
   end
 
   # updates the board's active piece to use during a player's turn

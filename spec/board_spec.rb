@@ -123,16 +123,16 @@ RSpec.describe Board do
   end
 
   describe '#active_piece_moveable?' do
-    subject(:board_moveable) { described_class.new(data_moveable, piece) }
-    let(:data_moveable) { [[piece, nil], [nil, nil]] }
     let(:piece) { double(Piece, location: [0, 0]) }
+    let(:data) { [[piece, nil], [nil, nil]] }
+    subject(:board) { described_class.new(data, { active_piece: data[0][0] }) }
 
     context 'when there is one current_move' do
       it 'returns true' do
         allow(piece).to receive(:moves).and_return([0, 1])
         allow(piece).to receive(:captures)
         allow(piece).to receive(:update)
-        result = board_moveable.active_piece_moveable?
+        result = board.active_piece_moveable?
         expect(result).to be true
       end
     end
@@ -142,7 +142,7 @@ RSpec.describe Board do
         allow(piece).to receive(:moves).and_return([])
         allow(piece).to receive(:captures).and_return([1, 1])
         allow(piece).to receive(:update)
-        result = board_moveable.active_piece_moveable?
+        result = board.active_piece_moveable?
         expect(result).to be true
       end
     end
@@ -152,7 +152,7 @@ RSpec.describe Board do
         allow(piece).to receive(:moves).and_return([])
         allow(piece).to receive(:captures).and_return([])
         allow(piece).to receive(:update)
-        result = board_moveable.active_piece_moveable?
+        result = board.active_piece_moveable?
         expect(result).to be false
       end
     end
@@ -160,51 +160,51 @@ RSpec.describe Board do
 
   describe '#valid_piece_movement?' do
     context 'when coordinates matches a valid move' do
-      subject(:board_valid) { described_class.new(data_valid, piece) }
-      let(:data_valid) { [[piece, nil], [nil, nil]] }
       let(:piece) { double(Piece, location: [0, 0]) }
+      let(:data) { [[piece, nil], [nil, nil]] }
+      subject(:board) { described_class.new(data, { active_piece: data[0][0] }) }
 
       it 'returns true' do
         allow(piece).to receive(:moves).and_return([[1, 0]])
         coordinates = { row: 1, column: 0 }
-        result = board_valid.valid_piece_movement?(coordinates)
+        result = board.valid_piece_movement?(coordinates)
         expect(result).to be true
       end
     end
 
     context 'when coordinates matches a valid capture' do
-      subject(:board_valid) { described_class.new(data_valid, piece) }
-      let(:data_valid) { [[piece, nil], [nil, nil]] }
       let(:piece) { double(Piece, location: [0, 0]) }
+      let(:data) { [[piece, nil], [nil, nil]] }
+      subject(:board) { described_class.new(data, { active_piece: data[0][0] }) }
 
       it 'returns true' do
         allow(piece).to receive(:moves).and_return([])
         allow(piece).to receive(:captures).and_return([[1, 0]])
         coordinates = { row: 1, column: 0 }
-        result = board_valid.valid_piece_movement?(coordinates)
+        result = board.valid_piece_movement?(coordinates)
         expect(result).to be true
       end
     end
 
     context 'when coordinates does not matches valid move or capture' do
-      subject(:board_valid) { described_class.new(data_valid, piece) }
-      let(:data_valid) { [[piece, nil], [nil, nil]] }
       let(:piece) { double(Piece, location: [0, 0]) }
+      let(:data) { [[piece, nil], [nil, nil]] }
+      subject(:board) { described_class.new(data, { active_piece: data[0][0] }) }
 
       it 'returns false' do
         allow(piece).to receive(:moves).and_return([])
         allow(piece).to receive(:captures).and_return([1, 0])
         coordinates = { row: 2, column: 0 }
-        result = board_valid.valid_piece_movement?(coordinates)
+        result = board.valid_piece_movement?(coordinates)
         expect(result).to be false
       end
     end
   end
 
   describe '#reset_board_values' do
-    subject(:board) { described_class.new(data, piece) }
-    let(:data) { [[piece, nil], [nil, nil]] }
     let(:piece) { double(Piece, location: [0, 0]) }
+    let(:data) { [[piece, nil], [nil, nil]] }
+    subject(:board) { described_class.new(data, { active_piece: data[0][0] }) }
 
     before do
       board.send(:reset_board_values)
@@ -220,14 +220,14 @@ RSpec.describe Board do
   end
 
   describe '#valid_piece?' do
-    subject(:board_piece) { described_class.new(data_piece, pawn) }
-    let(:data_piece) { [[pawn, nil], [nil, nil]] }
-    let(:pawn) { instance_double(Piece, color: :white) }
+    let(:piece) { instance_double(Piece, color: :white) }
+    let(:data) { [[piece, nil], [nil, nil]] }
+    subject(:board) { described_class.new(data, { active_piece: data[0][0] }) }
 
     context 'when coordinates is a piece of the right color' do
       it 'returns true' do
         coordinates = { row: 0, column: 0 }
-        results = board_piece.valid_piece?(coordinates, :white)
+        results = board.valid_piece?(coordinates, :white)
         expect(results).to be true
       end
     end
@@ -235,7 +235,7 @@ RSpec.describe Board do
     context 'when coordinates is not a piece' do
       it 'returns false' do
         coordinates = { row: 1, column: 0 }
-        results = board_piece.valid_piece?(coordinates, :white)
+        results = board.valid_piece?(coordinates, :white)
         expect(results).to be false
       end
     end
@@ -243,7 +243,7 @@ RSpec.describe Board do
     context 'when coordinates is a piece of the wrong color' do
       it 'returns false' do
         coordinates = { row: 0, column: 0 }
-        results = board_piece.valid_piece?(coordinates, :black)
+        results = board.valid_piece?(coordinates, :black)
         expect(results).to be false
       end
     end
@@ -307,7 +307,6 @@ RSpec.describe Board do
 
   describe '#possible_en_passant?' do
     context 'when en_passant is possible' do
-      subject(:board) { described_class.new(data, black_pawn) }
       let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: true) }
       let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
       let(:data) do
@@ -322,9 +321,9 @@ RSpec.describe Board do
           [nil, nil, nil, nil, nil, nil, nil, nil]
         ]
       end
+      subject(:board) { described_class.new(data, { active_piece: data[4][2], previous_piece: data[4][3] }) }
 
       it 'returns true' do
-        board.instance_variable_set(:@previous_piece, white_pawn)
         allow(black_pawn).to receive(:captures).and_return([[4, 3]])
         allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
         result = board.possible_en_passant?
@@ -333,7 +332,6 @@ RSpec.describe Board do
     end
 
     context 'when en_passant is not possible' do
-      subject(:board) { described_class.new(data, black_pawn) }
       let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 3], symbol: " \u265F ", en_passant: false) }
       let(:black_pawn) { instance_double(Pawn, color: :black, location: [4, 2], symbol: " \u265F ", en_passant: false) }
       let(:data) do
@@ -348,9 +346,9 @@ RSpec.describe Board do
           [nil, nil, nil, nil, nil, nil, nil, nil]
         ]
       end
+      subject(:board) { described_class.new(data, { active_piece: data[4][2], previous_piece: data[4][3] }) }
 
       it 'returns false' do
-        board.instance_variable_set(:@previous_piece, white_pawn)
         allow(black_pawn).to receive(:captures).and_return([[4, 3]])
         allow(black_pawn).to receive(:en_passant_rank?).and_return(true)
         result = board.possible_en_passant?
@@ -359,7 +357,6 @@ RSpec.describe Board do
     end
 
     context 'when en_passant is not possible' do
-      subject(:board) { described_class.new(data, white_pawn) }
       let(:white_pawn) { instance_double(Pawn, color: :white, location: [4, 2], symbol: " \u265F ", en_passant: true) }
       let(:black_pawn) { instance_double(Pawn, color: :black, location: [3, 3], symbol: " \u265F ", en_passant: true) }
       let(:data) do
@@ -374,9 +371,9 @@ RSpec.describe Board do
           [nil, nil, nil, nil, nil, nil, nil, nil]
         ]
       end
+      subject(:board) { described_class.new(data, { active_piece: data[4][2], previous_piece: data[3][3] }) }
 
       it 'returns false' do
-        board.instance_variable_set(:@previous_piece, black_pawn)
         allow(white_pawn).to receive(:captures).and_return([[3, 3]])
         allow(white_pawn).to receive(:en_passant_rank?).and_return(false)
         result = board.possible_en_passant?
@@ -385,9 +382,9 @@ RSpec.describe Board do
     end
   end
 
-  describe '#check?' do
+  describe '#king_in_check?' do
     context 'when king is in check' do
-      subject(:board) { described_class.new(data) }
+      subject(:board) { described_class.new(data, { white_king: data[7][4] }) }
       let(:black_queen) { instance_double(Queen, color: :black, location: [0, 4], captures: [[7, 4]]) }
       let(:white_king) { instance_double(King, color: :white, location: [7, 4]) }
       let(:data) do
@@ -404,14 +401,13 @@ RSpec.describe Board do
       end
 
       it 'returns true' do
-        board.instance_variable_set(:@white_king, white_king)
         result = board.king_in_check?(:white)
         expect(result).to be true
       end
     end
 
     context 'when king is not in check' do
-      subject(:board) { described_class.new(data) }
+      subject(:board) { described_class.new(data, { white_king: data[7][4] }) }
       let(:black_bishop) { instance_double(Bishop, color: :black, location: [0, 4], captures: [[1, 3], [2, 2]]) }
       let(:white_king) { instance_double(King, color: :white, location: [7, 4]) }
       let(:data) do
@@ -428,7 +424,6 @@ RSpec.describe Board do
       end
 
       it 'returns false' do
-        board.instance_variable_set(:@white_king, white_king)
         result = board.king_in_check?(:white)
         expect(result).to be false
       end
@@ -457,7 +452,7 @@ RSpec.describe Board do
     end
 
     context 'when king is not in check' do
-      subject(:board) { described_class.new(data) }
+      subject(:board) { described_class.new(data, { previous_piece: data[0][7], white_king: data[7][4] }) }
       let(:black_queen) { instance_double(Queen, color: :black, location: [0, 7], captures: []) }
       let(:white_king) { instance_double(King, color: :white, location: [7, 4], moves: [[7, 3], [7, 5]], captures: []) }
       let(:data) do
@@ -474,14 +469,12 @@ RSpec.describe Board do
       end
 
       it 'is not game over' do
-        board.instance_variable_set(:@previous_piece, black_queen)
-        board.instance_variable_set(:@white_king, white_king)
         expect(board.game_over?).to be false
       end
     end
 
     context 'when king is in check & has legal moves' do
-      subject(:board) { described_class.new(data) }
+      subject(:board) { described_class.new(data, { previous_piece: data[0][4], white_king: data[7][4] }) }
       let(:black_queen) { instance_double(Queen, color: :black, location: [0, 4], captures: [[7, 4]]) }
       let(:white_king) { instance_double(King, color: :white, location: [7, 4], moves: [[7, 3], [7, 5]], captures: []) }
       let(:data) do
@@ -498,14 +491,12 @@ RSpec.describe Board do
       end
 
       it 'is not game over' do
-        board.instance_variable_set(:@previous_piece, black_queen)
-        board.instance_variable_set(:@white_king, white_king)
         expect(board.game_over?).to be false
       end
     end
 
     context 'when king is in check & does not have any legal moves' do
-      subject(:board) { described_class.new(data) }
+      subject(:board) { described_class.new(data, { previous_piece: data[7][0], white_king: data[7][4] }) }
       let(:bqn) { instance_double(Queen, color: :black, location: [7, 0], captures: [[7, 4]]) }
       let(:brk) { instance_double(Rook, color: :black, location: [6, 7], captures: []) }
       let(:wkg) { instance_double(King, color: :white, location: [7, 4], moves: [], captures: []) }
@@ -523,14 +514,12 @@ RSpec.describe Board do
       end
 
       it 'is game over' do
-        board.instance_variable_set(:@previous_piece, bqn)
-        board.instance_variable_set(:@white_king, wkg)
         expect(board.game_over?).to be true
       end
     end
 
     context 'when king is in stalemate & does not have any legal moves' do
-      subject(:board) { described_class.new(data) }
+      subject(:board) { described_class.new(data, { previous_piece: data[6][0], white_king: data[7][4] }) }
       let(:bqn) { instance_double(Queen, color: :black, location: [6, 0], moves: [[6, 1]], captures: []) }
       let(:br1) { instance_double(Rook, color: :black, location: [3, 2], moves: [[3, 1]], captures: []) }
       let(:br2) { instance_double(Rook, color: :black, location: [3, 4], moves: [[3, 5]], captures: []) }
@@ -549,8 +538,6 @@ RSpec.describe Board do
       end
 
       it 'is game over' do
-        board.instance_variable_set(:@previous_piece, bqn)
-        board.instance_variable_set(:@white_king, wkg)
         expect(board.game_over?).to be true
       end
     end
@@ -558,7 +545,7 @@ RSpec.describe Board do
 
   describe '#pawn_promotion?' do
     context 'when a white pawn reaches 8th rank' do
-      subject(:board) { described_class.new(data) }
+      subject(:board) { described_class.new(data, { active_piece: data[0][1] }) }
       let(:white_pawn) { instance_double(Pawn, symbol: " \u265F ", color: :white, location: [0, 1]) }
       let(:data) do
         [
@@ -574,7 +561,6 @@ RSpec.describe Board do
       end
 
       it 'returns true' do
-        board.instance_variable_set(:@active_piece, white_pawn)
         coords = { row: 0, column: 1 }
         result = board.send(:pawn_promotion?, coords)
         expect(result).to be true
@@ -582,7 +568,7 @@ RSpec.describe Board do
     end
 
     context 'when a white rook reaches 8th rank' do
-      subject(:board) { described_class.new(data) }
+      subject(:board) { described_class.new(data, { active_piece: data[0][1] }) }
       let(:white_rook) { instance_double(Rook, symbol: " \u265C ", color: :white, location: [0, 1]) }
       let(:data) do
         [
@@ -598,7 +584,6 @@ RSpec.describe Board do
       end
 
       it 'returns false' do
-        board.instance_variable_set(:@active_piece, white_rook)
         coords = { row: 0, column: 1 }
         result = board.send(:pawn_promotion?, coords)
         expect(result).to be false
@@ -606,8 +591,8 @@ RSpec.describe Board do
     end
 
     context 'when a black pawn reaches 1st rank' do
-      subject(:board) { described_class.new(data) }
-      let(:black_pawn) { instance_double(Pawn, symbol: " \u265F ", color: :black, location: [0, 3]) }
+      subject(:board) { described_class.new(data, { active_piece: data[7][3] }) }
+      let(:black_pawn) { instance_double(Pawn, symbol: " \u265F ", color: :black, location: [7, 3]) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -622,7 +607,6 @@ RSpec.describe Board do
       end
 
       it 'returns true' do
-        board.instance_variable_set(:@active_piece, black_pawn)
         coords = { row: 7, column: 3 }
         result = board.send(:pawn_promotion?, coords)
         expect(result).to be true
@@ -630,8 +614,8 @@ RSpec.describe Board do
     end
 
     context 'when a black rook reaches 1st rank' do
-      subject(:board) { described_class.new(data) }
-      let(:black_rook) { instance_double(Rook, symbol: " \u265C ", color: :black, location: [0, 3]) }
+      subject(:board) { described_class.new(data, { active_piece: data[7][3] }) }
+      let(:black_rook) { instance_double(Rook, symbol: " \u265C ", color: :black, location: [7, 3]) }
       let(:data) do
         [
           [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -646,7 +630,6 @@ RSpec.describe Board do
       end
 
       it 'returns false' do
-        board.instance_variable_set(:@active_piece, black_rook)
         coords = { row: 7, column: 3 }
         result = board.send(:pawn_promotion?, coords)
         expect(result).to be false
@@ -656,7 +639,7 @@ RSpec.describe Board do
 
   describe '#possible_castling?' do
     context 'when castling is possible' do
-      subject(:board) { described_class.new(data, wkg) }
+      subject(:board) { described_class.new(data, { active_piece: data[7][4] }) }
       let(:wkg) { instance_double(King, color: :white, symbol: " \u265A ", location: [7, 4], moves: [[7, 5], [7, 6]]) }
       let(:wrk) { instance_double(Rook, color: :white, symbol: " \u265C ", moved: false, location: [7, 7]) }
       let(:wpc) { instance_double(Piece, color: :white) }
@@ -680,7 +663,7 @@ RSpec.describe Board do
     end
 
     context 'when castling is not possible' do
-      subject(:board) { described_class.new(data, wr1) }
+      subject(:board) { described_class.new(data, { active_piece: data[7][4] }) }
       subject(:wr1) { instance_double(King, color: :white, symbol: " \u265C ", location: [7, 4], moves: [[7, 5], [7, 6]]) }
       let(:wr2) { instance_double(Rook, color: :white, symbol: " \u265C ", moved: false, location: [7, 7]) }
       let(:wpc) { instance_double(Piece, color: :white) }
@@ -731,7 +714,7 @@ RSpec.describe Board do
   end
 
   describe '#random_black_move' do
-    subject(:board) { described_class.new(data, black_queen) }
+    subject(:board) { described_class.new(data, { active_piece: data[0][1] }) }
     let(:black_queen) { instance_double(Piece, moves: [[0, 0], [0, 2], [0, 3]], captures: [[1, 0]]) }
     let(:data) { [[nil, black_queen, nil, nil], [nil, nil, nil, nil]] }
 

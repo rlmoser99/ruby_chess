@@ -32,7 +32,6 @@ RSpec.describe MoveValidator do
 
       it 'returns move for king to capture rook' do
         board.instance_variable_set(:@black_king, board.data[0][4])
-        validator.instance_variable_set(:@current_piece, board.data[0][4])
         results = validator.verify_possible_moves
         expect(results).to contain_exactly([0, 3])
       end
@@ -61,7 +60,6 @@ RSpec.describe MoveValidator do
 
       it 'return moves that will not put King in check' do
         board.instance_variable_set(:@black_king, board.data[0][4])
-        validator.instance_variable_set(:@current_piece, board.data[2][4])
         results = validator.verify_possible_moves
         expect(results).to contain_exactly([1, 4], [3, 4], [4, 4], [5, 4])
       end
@@ -85,7 +83,6 @@ RSpec.describe MoveValidator do
 
         it 'returns move to kill the queen' do
           board.instance_variable_set(:@white_king, board.data[7][6])
-          validator.instance_variable_set(:@current_piece, board.data[2][7])
           results = validator.verify_possible_moves
           expect(results).to contain_exactly([3, 6])
         end
@@ -100,7 +97,6 @@ RSpec.describe MoveValidator do
 
         it 'returns move to block the queen' do
           board.instance_variable_set(:@white_king, board.data[7][6])
-          validator.instance_variable_set(:@current_piece, board.data[3][4])
           results = validator.verify_possible_moves
           expect(results).to contain_exactly([4, 6])
         end
@@ -115,7 +111,6 @@ RSpec.describe MoveValidator do
 
         it 'returns move to block the queen' do
           board.instance_variable_set(:@white_king, board.data[7][6])
-          validator.instance_variable_set(:@current_piece, board.data[4][5])
           results = validator.verify_possible_moves
           expect(results).to contain_exactly([4, 6])
         end
@@ -130,7 +125,6 @@ RSpec.describe MoveValidator do
 
         it 'returns two moves to block the queen' do
           board.instance_variable_set(:@white_king, board.data[7][6])
-          validator.instance_variable_set(:@current_piece, board.data[5][7])
           results = validator.verify_possible_moves
           expect(results).to contain_exactly([4, 6], [6, 6])
         end
@@ -144,7 +138,6 @@ RSpec.describe MoveValidator do
 
         it 'returns four legal moves' do
           board.instance_variable_set(:@white_king, board.data[7][6])
-          validator.instance_variable_set(:@current_piece, board.data[7][6])
           results = validator.verify_possible_moves
           expect(results).to contain_exactly([7, 5], [7, 7], [6, 5], [6, 7])
         end
@@ -159,7 +152,6 @@ RSpec.describe MoveValidator do
 
         it 'has no moves' do
           board.instance_variable_set(:@white_king, board.data[7][6])
-          pawn_validator.instance_variable_set(:@current_piece, board.data[6][4])
           results = pawn_validator.verify_possible_moves
           expect(results).to be_empty
         end
