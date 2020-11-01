@@ -32,7 +32,7 @@ module GamePrompts
       Enter the coordinates of the piece you want to move.
 
       \e[36mStep Two:\e[0m
-      The legal moves will be highlighted in \e[91mred\e[0m. Enter the coordinates of a legal move.
+      Enter the coordinates of any legal move \e[91;100m \u25CF \e[0m or capture \e[101m \u265F \e[0m.
 
 
       To begin, enter one of the following to play:
@@ -54,7 +54,7 @@ module GamePrompts
   def user_move_selection
     <<~HEREDOC
 
-      Enter the coordinates of a legal move \e[91;47m \u25CF \e[0m or capture \e[101m \u265F \e[0m.
+      Enter the coordinates of a legal move \e[91;100m \u25CF \e[0m or capture \e[101m \u265F \e[0m.
 
     HEREDOC
   end
