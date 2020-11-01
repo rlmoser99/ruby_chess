@@ -201,24 +201,6 @@ RSpec.describe Board do
     end
   end
 
-  describe '#reset_board_values' do
-    let(:piece) { double(Piece, location: [0, 0]) }
-    let(:data) { [[piece, nil], [nil, nil]] }
-    subject(:board) { described_class.new(data, { active_piece: data[0][0] }) }
-
-    before do
-      board.send(:reset_board_values)
-    end
-
-    it 'sets previous_piece to active_piece' do
-      expect(board.previous_piece).to eq(piece)
-    end
-
-    it 'sets active_piece to nil' do
-      expect(board.active_piece).to be_nil
-    end
-  end
-
   describe '#valid_piece?' do
     let(:piece) { instance_double(Piece, color: :white) }
     let(:data) { [[piece, nil], [nil, nil]] }
@@ -250,57 +232,149 @@ RSpec.describe Board do
   end
 
   describe '#update' do
-    subject(:board) { described_class.new }
-    let(:basic_movement) { instance_double(BasicMovement) }
+    context 'when movement is a en passant movement' do
+      let(:pawn_movement) { instance_double(EnPassantMovement) }
+      let(:white_pawn) { instance_double(Pawn, location: [3, 1], color: :white, rank_direction: -1, symbol: " \u265F ", en_passant_rank?: true) }
+      let(:black_pawn) { instance_double(Pawn, location: [3, 2], symbol: " \u265F ", en_passant: true) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, white_pawn, black_pawn, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+      subject(:board) { described_class.new(data, { active_piece: data[3][1], previous_piece: data[3][2] }) }
 
-    it 'send update_pieces to movement' do
-      allow(board).to receive(:create_movement).and_return(basic_movement)
-      coordinates = { row: 0, column: 0 }
-      expect(basic_movement).to receive(:update_pieces).with(board, coordinates)
-      board.update(coordinates)
-    end
-  end
+      before do
+        allow(white_pawn).to receive(:update_location)
+        allow(EnPassantMovement).to receive(:new).and_return(pawn_movement)
+        allow(pawn_movement).to receive(:update_pieces)
+      end
 
-  describe '#create_movement' do
-    subject(:board) { described_class.new }
-    context 'when there is an en passant capture' do
-      it 'creates EnPassantMovement' do
-        allow(board).to receive(:en_passant_capture?).and_return(true)
-        expect(EnPassantMovement).to receive(:new)
-        coordinates = { row: 0, column: 0 }
-        board.send(:create_movement, coordinates)
+      it 'creates a new EnPassantMovement' do
+        expect(EnPassantMovement).to receive(:new).and_return(pawn_movement)
+        coordinates = { row: 3, column: 2 }
+        board.update(coordinates)
+      end
+
+      it 'sends #update_pieces to the EnPassantMovement' do
+        coordinates = { row: 3, column: 2 }
+        expect(pawn_movement).to receive(:update_pieces).with(board, coordinates)
+        board.update(coordinates)
+      end
+
+      it 'changes the value of previous piece to the active piece' do
+        coordinates = { row: 3, column: 2 }
+        board.update(coordinates)
+        expect(board.previous_piece).to eq(white_pawn)
+      end
+
+      it 'changes the value of active piece to nil' do
+        coordinates = { row: 3, column: 2 }
+        board.update(coordinates)
+        expect(board.active_piece).to be nil
+      end
+
+      it 'notifies the observers' do
+        expect(board).to receive(:notify_observers)
+        coordinates = { row: 3, column: 2 }
+        board.update(coordinates)
       end
     end
 
-    context 'when there is a pawn promotion' do
-      it 'creates PawnPromotionMovement' do
-        allow(board).to receive(:en_passant_capture?).and_return(false)
-        allow(board).to receive(:pawn_promotion?).and_return(true)
-        expect(PawnPromotionMovement).to receive(:new)
-        coordinates = { row: 0, column: 0 }
-        board.send(:create_movement, coordinates)
+    context 'when movement is a pawn promotion movement' do
+      let(:promotion_movement) { instance_double(PawnPromotionMovement) }
+      let(:black_pawn) { instance_double(Pawn, location: [6, 5], color: :black, symbol: " \u265F ", en_passant_rank?: false) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, black_pawn, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+      subject(:board) { described_class.new(data, { active_piece: data[6][5] }) }
+
+      before do
+        allow(black_pawn).to receive(:update_location)
+        allow(PawnPromotionMovement).to receive(:new).and_return(promotion_movement)
+        allow(promotion_movement).to receive(:update_pieces)
+      end
+
+      it 'creates a new PawnPromotionMovement' do
+        expect(PawnPromotionMovement).to receive(:new).and_return(promotion_movement)
+        coordinates = { row: 7, column: 5 }
+        board.update(coordinates)
       end
     end
 
-    context 'when there is an castling move' do
-      it 'creates CastlingMovement' do
-        allow(board).to receive(:en_passant_capture?).and_return(false)
-        allow(board).to receive(:pawn_promotion?).and_return(false)
-        allow(board).to receive(:castling?).and_return(true)
-        expect(CastlingMovement).to receive(:new)
-        coordinates = { row: 0, column: 0 }
-        board.send(:create_movement, coordinates)
+    context 'when movement is a castling movement' do
+      let(:castling_movement) { instance_double(CastlingMovement) }
+      let(:black_king) { instance_double(Piece, location: [0, 4], color: :black, symbol: " \u265A ") }
+      let(:black_rook) { instance_double(Piece, location: [0, 7]) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, black_king, nil, nil, black_rook],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+      subject(:board) { described_class.new(data, { active_piece: data[0][4] }) }
+
+      before do
+        allow(black_king).to receive(:update_location)
+        allow(CastlingMovement).to receive(:new).and_return(castling_movement)
+        allow(castling_movement).to receive(:update_pieces)
+      end
+
+      it 'creates a new CastlingMovement' do
+        expect(CastlingMovement).to receive(:new).and_return(castling_movement)
+        coordinates = { row: 0, column: 6 }
+        board.update(coordinates)
       end
     end
 
-    context 'when there are no special moves' do
-      it 'creates BasicMovement' do
-        allow(board).to receive(:en_passant_capture?).and_return(false)
-        allow(board).to receive(:pawn_promotion?).and_return(false)
-        allow(board).to receive(:castling?).and_return(false)
-        expect(BasicMovement).to receive(:new)
-        coordinates = { row: 0, column: 0 }
-        board.send(:create_movement, coordinates)
+    context 'when movement is a basic movement' do
+      let(:basic_movement) { instance_double(BasicMovement) }
+      let(:black_knight) { instance_double(Piece, location: [0, 1], color: :black, symbol: " \u265E ") }
+      let(:data) do
+        [
+          [nil, black_knight, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil]
+        ]
+      end
+      subject(:board) { described_class.new(data, { active_piece: data[0][1] }) }
+
+      before do
+        allow(black_knight).to receive(:update_location)
+        allow(BasicMovement).to receive(:new).and_return(basic_movement)
+        allow(basic_movement).to receive(:update_pieces)
+      end
+
+      it 'creates a new BasicMovement' do
+        expect(BasicMovement).to receive(:new).and_return(basic_movement)
+        coordinates = { row: 2, column: 0 }
+        board.update(coordinates)
       end
     end
   end
@@ -539,100 +613,6 @@ RSpec.describe Board do
 
       it 'is game over' do
         expect(board.game_over?).to be true
-      end
-    end
-  end
-
-  describe '#pawn_promotion?' do
-    context 'when a white pawn reaches 8th rank' do
-      subject(:board) { described_class.new(data, { active_piece: data[0][1] }) }
-      let(:white_pawn) { instance_double(Pawn, symbol: " \u265F ", color: :white, location: [0, 1]) }
-      let(:data) do
-        [
-          [nil, white_pawn, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil]
-        ]
-      end
-
-      it 'returns true' do
-        coords = { row: 0, column: 1 }
-        result = board.send(:pawn_promotion?, coords)
-        expect(result).to be true
-      end
-    end
-
-    context 'when a white rook reaches 8th rank' do
-      subject(:board) { described_class.new(data, { active_piece: data[0][1] }) }
-      let(:white_rook) { instance_double(Rook, symbol: " \u265C ", color: :white, location: [0, 1]) }
-      let(:data) do
-        [
-          [nil, white_rook, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil]
-        ]
-      end
-
-      it 'returns false' do
-        coords = { row: 0, column: 1 }
-        result = board.send(:pawn_promotion?, coords)
-        expect(result).to be false
-      end
-    end
-
-    context 'when a black pawn reaches 1st rank' do
-      subject(:board) { described_class.new(data, { active_piece: data[7][3] }) }
-      let(:black_pawn) { instance_double(Pawn, symbol: " \u265F ", color: :black, location: [7, 3]) }
-      let(:data) do
-        [
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, black_pawn, nil, nil, nil, nil]
-        ]
-      end
-
-      it 'returns true' do
-        coords = { row: 7, column: 3 }
-        result = board.send(:pawn_promotion?, coords)
-        expect(result).to be true
-      end
-    end
-
-    context 'when a black rook reaches 1st rank' do
-      subject(:board) { described_class.new(data, { active_piece: data[7][3] }) }
-      let(:black_rook) { instance_double(Rook, symbol: " \u265C ", color: :black, location: [7, 3]) }
-      let(:data) do
-        [
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil, nil, nil, nil],
-          [nil, nil, nil, black_rook, nil, nil, nil, nil]
-        ]
-      end
-
-      it 'returns false' do
-        coords = { row: 7, column: 3 }
-        result = board.send(:pawn_promotion?, coords)
-        expect(result).to be false
       end
     end
   end
