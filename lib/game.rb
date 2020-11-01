@@ -55,8 +55,6 @@ class Game
     final_message
   end
 
-  private
-
   # script for computer/human turn, display board & switches @current_turn color
   def player_turn
     puts "#{@current_turn.capitalize}'s turn!"
@@ -176,6 +174,8 @@ class Game
     translator ||= NotationTranslator.new
     translator.translate_notation(input)
   end
+
+  private
 
   # outputs a prompt and returns the user's input
   def user_input(prompt)

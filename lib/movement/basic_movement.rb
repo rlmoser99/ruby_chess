@@ -18,8 +18,6 @@ class BasicMovement
     update_basic_moves
   end
 
-  private
-
   # script to update basic moves
   def update_basic_moves
     remove_capture_piece_observer if @board.data[row][column]

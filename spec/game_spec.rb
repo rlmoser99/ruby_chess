@@ -99,7 +99,7 @@ RSpec.describe Game do
         allow(board).to receive(:to_s)
         allow(game).to receive(:switch_color)
         expect(game).to receive(:human_player_turn)
-        game.send(:player_turn)
+        game.player_turn
       end
     end
 
@@ -113,7 +113,7 @@ RSpec.describe Game do
         allow(board).to receive(:to_s)
         allow(game).to receive(:switch_color)
         expect(game).to receive(:human_player_turn)
-        game.send(:player_turn)
+        game.player_turn
       end
     end
 
@@ -127,7 +127,7 @@ RSpec.describe Game do
         allow(board).to receive(:to_s)
         allow(game).to receive(:switch_color)
         expect(game).to receive(:computer_player_turn)
-        game.send(:player_turn)
+        game.player_turn
       end
     end
   end
@@ -143,7 +143,7 @@ RSpec.describe Game do
       coords = { row: 6, column: 5 }
       allow(game).to receive(:select_move_coordinates).and_return(coords)
       expect(board).to receive(:update).with(coords)
-      game.send(:human_player_turn)
+      game.human_player_turn
     end
   end
 
@@ -160,7 +160,7 @@ RSpec.describe Game do
       coords = { row: 6, column: 5 }
       allow(game).to receive(:computer_select_random_piece).and_return(coords)
       expect(board).to receive(:update_active_piece).with(coords)
-      game.send(:computer_player_turn)
+      game.computer_player_turn
     end
 
     it 'sends #update to board' do
@@ -171,7 +171,7 @@ RSpec.describe Game do
       coords = { row: 6, column: 5 }
       allow(game).to receive(:computer_select_random_move).and_return(coords)
       expect(board).to receive(:update).with(coords)
-      game.send(:computer_player_turn)
+      game.computer_player_turn
     end
   end
 
@@ -187,7 +187,7 @@ RSpec.describe Game do
       allow(game).to receive(:validate_piece_coordinates).with(coords)
       allow(game).to receive(:validate_active_piece)
       expect(board).to receive(:update_active_piece).with(coords)
-      game.send(:select_piece_coordinates)
+      game.select_piece_coordinates
     end
   end
 
@@ -199,7 +199,7 @@ RSpec.describe Game do
       it 'returns valid user input' do
         input = '1'
         allow(game).to receive(:gets).and_return(input)
-        result = game.send(:select_game_mode)
+        result = game.select_game_mode
         expect(result).to eq('1')
       end
     end
@@ -211,7 +211,7 @@ RSpec.describe Game do
         valid_input = '1'
         invalid_input = 'a'
         allow(game).to receive(:gets).and_return(invalid_input, valid_input)
-        game.send(:select_game_mode)
+        game.select_game_mode
       end
 
       it 'returns second valid user input' do
@@ -220,7 +220,7 @@ RSpec.describe Game do
         valid_input = '1'
         invalid_input = 'a'
         allow(game).to receive(:gets).and_return(invalid_input, valid_input)
-        result = game.send(:select_game_mode)
+        result = game.select_game_mode
         expect(result).to eq('1')
       end
     end
@@ -232,21 +232,21 @@ RSpec.describe Game do
 
     context 'when input is valid' do
       it 'does not raise an error' do
-        expect { game.send(:validate_move_input, 'c7') }.not_to raise_error
+        expect { game.validate_move_input('c7') }.not_to raise_error
       end
     end
 
     context 'when input is not valid' do
       it 'raises an error' do
-        expect { game.send(:validate_move_input, '7c') }.to raise_error(Game::InputError)
+        expect { game.validate_move_input('7c') }.to raise_error(Game::InputError)
       end
 
       it 'raises an error' do
-        expect { game.send(:validate_move_input, '77') }.to raise_error(Game::InputError)
+        expect { game.validate_move_input('77') }.to raise_error(Game::InputError)
       end
 
       it 'raises an error' do
-        expect { game.send(:validate_move_input, 'cc') }.to raise_error(Game::InputError)
+        expect { game.validate_move_input('cc') }.to raise_error(Game::InputError)
       end
     end
   end
@@ -260,7 +260,7 @@ RSpec.describe Game do
       it 'does not raise an error' do
         allow(board).to receive(:valid_piece?).and_return(true)
         coords = { row: 1, column: 0 }
-        expect { game.send(:validate_piece_coordinates, coords) }.not_to raise_error
+        expect { game.validate_piece_coordinates(coords) }.not_to raise_error
       end
     end
 
@@ -268,7 +268,7 @@ RSpec.describe Game do
       it 'raises an error' do
         allow(board).to receive(:valid_piece?).and_return(false)
         coords = { row: 1, column: 0 }
-        expect { game.send(:validate_piece_coordinates, coords) }.to raise_error(Game::CoordinatesError)
+        expect { game.validate_piece_coordinates(coords) }.to raise_error(Game::CoordinatesError)
       end
     end
   end
@@ -282,7 +282,7 @@ RSpec.describe Game do
       it 'does not raise an error' do
         allow(board).to receive(:valid_piece_movement?).and_return(true)
         coords = { row: 1, column: 0 }
-        expect { game.send(:validate_move, coords) }.not_to raise_error
+        expect { game.validate_move(coords) }.not_to raise_error
       end
     end
 
@@ -290,7 +290,7 @@ RSpec.describe Game do
       it 'raises an error' do
         allow(board).to receive(:valid_piece_movement?).and_return(false)
         coords = { row: 1, column: 0 }
-        expect { game.send(:validate_move, coords) }.to raise_error(Game::MoveError)
+        expect { game.validate_move(coords) }.to raise_error(Game::MoveError)
       end
     end
   end
@@ -303,14 +303,14 @@ RSpec.describe Game do
     context 'when active piece is moveable' do
       it 'does not raise an error' do
         allow(board).to receive(:active_piece_moveable?).and_return(true)
-        expect { game.send(:validate_active_piece) }.not_to raise_error
+        expect { game.validate_active_piece }.not_to raise_error
       end
     end
 
     context 'when active piece is not moveable' do
       it 'raises an error' do
         allow(board).to receive(:active_piece_moveable?).and_return(false)
-        expect { game.send(:validate_active_piece) }.to raise_error(Game::PieceError)
+        expect { game.validate_active_piece }.to raise_error(Game::PieceError)
       end
     end
   end
@@ -322,7 +322,7 @@ RSpec.describe Game do
     it 'sends command message to NotationTranslator' do
       user_input = 'd2'
       expect_any_instance_of(NotationTranslator).to receive(:translate_notation).with(user_input)
-      game.send(:translate_coordinates, user_input)
+      game.translate_coordinates(user_input)
     end
   end
 
@@ -335,7 +335,7 @@ RSpec.describe Game do
       it 'outputs checkmate message' do
         allow(board).to receive(:king_in_check?).and_return(true)
         checkmate = "\e[36mBlack\e[0m wins! The white king is in checkmate.\n"
-        expect { game.send(:final_message) }.to output(checkmate).to_stdout
+        expect { game.final_message }.to output(checkmate).to_stdout
       end
     end
 
@@ -347,7 +347,7 @@ RSpec.describe Game do
       it 'outputs stalemate message' do
         allow(board).to receive(:king_in_check?).and_return(false)
         checkmate = "\e[36mBlack\e[0m wins in a stalemate!\n"
-        expect { game.send(:final_message) }.to output(checkmate).to_stdout
+        expect { game.final_message }.to output(checkmate).to_stdout
       end
     end
   end
@@ -359,7 +359,7 @@ RSpec.describe Game do
       let(:board) { instance_double(Board) }
 
       it 'changes to :black' do
-        game.send(:switch_color)
+        game.switch_color
         result = game.instance_variable_get(:@current_turn)
         expect(result).to eq(:black)
       end
@@ -371,7 +371,7 @@ RSpec.describe Game do
       let(:board) { instance_double(Board) }
 
       it 'changes to :white' do
-        game.send(:switch_color)
+        game.switch_color
         result = game.instance_variable_get(:@current_turn)
         expect(result).to eq(:white)
       end
@@ -389,7 +389,7 @@ RSpec.describe Game do
       allow(game).to receive(:select_move_coordinates).and_return({ row: 1, column: 1 })
       allow(board).to receive(:update)
       expect(board).to receive(:update).with({ row: 1, column: 1 })
-      game.send(:human_player_turn)
+      game.human_player_turn
     end
   end
 
@@ -409,12 +409,12 @@ RSpec.describe Game do
 
     it 'send update_active_piece to board' do
       expect(board).to receive(:update_active_piece).with({ row: 0, column: 0 })
-      game.send(:computer_player_turn)
+      game.computer_player_turn
     end
 
     it 'send update to board' do
       expect(board).to receive(:update).with({ row: 1, column: 1 })
-      game.send(:computer_player_turn)
+      game.computer_player_turn
     end
   end
 
@@ -425,7 +425,7 @@ RSpec.describe Game do
 
     it 'send random_black_piece to board' do
       expect(board).to receive(:random_black_piece)
-      game.send(:computer_select_random_piece)
+      game.computer_select_random_piece
     end
   end
 
@@ -436,7 +436,7 @@ RSpec.describe Game do
 
     it 'send random_black_move to board' do
       expect(board).to receive(:random_black_move)
-      game.send(:computer_select_random_move)
+      game.computer_select_random_move
     end
   end
 end

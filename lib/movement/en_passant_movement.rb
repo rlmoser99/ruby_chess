@@ -18,8 +18,6 @@ class EnPassantMovement < BasicMovement
     update_en_passant_moves
   end
 
-  private
-
   # script to update en passant moves
   def update_en_passant_moves
     remove_capture_piece_observer
@@ -43,6 +41,8 @@ class EnPassantMovement < BasicMovement
   def update_active_piece_location
     @board.active_piece.update_location(new_rank, column)
   end
+
+  private
 
   # determines the new rank of the pawn based on its rank direction
   def new_rank

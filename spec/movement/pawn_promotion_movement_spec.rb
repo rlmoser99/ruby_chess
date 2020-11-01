@@ -71,7 +71,7 @@ RSpec.describe PawnPromotionMovement do
       it 'creates a new Queen' do
         allow(board).to receive(:mode).and_return(:computer)
         allow(board).to receive(:add_observer)
-        result = movement.send(:new_promotion_piece)
+        result = movement.new_promotion_piece
         expect(result).to be_a(Queen)
       end
     end
@@ -90,7 +90,7 @@ RSpec.describe PawnPromotionMovement do
       end
 
       after do
-        movement.send(:new_promotion_piece)
+        movement.new_promotion_piece
       end
 
       it ' the promotion choices' do
@@ -116,7 +116,7 @@ RSpec.describe PawnPromotionMovement do
       pawn_move_info = { color: :black, location: [7, 1] }
       expect(Queen).to receive(:new).with(board, pawn_move_info)
       user_input = '1'
-      movement.send(:create_promotion_piece, user_input)
+      movement.create_promotion_piece(user_input)
     end
   end
 
@@ -129,7 +129,7 @@ RSpec.describe PawnPromotionMovement do
       it 'returns valid user input' do
         user_input = '1'
         allow(movement).to receive(:gets).and_return(user_input)
-        result = movement.send(:select_promotion_piece)
+        result = movement.select_promotion_piece
         expect(result).to eq('1')
       end
     end
@@ -141,7 +141,7 @@ RSpec.describe PawnPromotionMovement do
         user_input = '1'
         letter_input = 'a'
         allow(movement).to receive(:gets).and_return(letter_input, user_input)
-        movement.send(:select_promotion_piece)
+        movement.select_promotion_piece
       end
 
       it 'returns second valid user input' do
@@ -150,7 +150,7 @@ RSpec.describe PawnPromotionMovement do
         allow(movement).to receive(:gets).and_return(letter_input, user_input)
         warning = 'Input error! Only enter 1-digit (1-4).'
         allow(movement).to receive(:puts).with(warning).once
-        result = movement.send(:select_promotion_piece)
+        result = movement.select_promotion_piece
         expect(result).to eq('1')
       end
     end

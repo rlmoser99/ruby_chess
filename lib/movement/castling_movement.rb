@@ -18,8 +18,6 @@ class CastlingMovement < BasicMovement
     update_castling_moves
   end
 
-  private
-
   # script to update castling moves
   def update_castling_moves
     update_new_coordinates
@@ -50,6 +48,8 @@ class CastlingMovement < BasicMovement
   def update_castling_piece_location(rook)
     rook.update_location(row, new_rook_column)
   end
+
+  private
 
   # determines rook's original location based on the column of the king's move
   def old_rook_column

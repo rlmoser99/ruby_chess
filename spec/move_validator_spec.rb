@@ -65,6 +65,28 @@ RSpec.describe MoveValidator do
       end
     end
 
+    # [-----, -----, -----, -----, -----, brook, -----, -----],
+    # [-----, -----, -----, -----, -----, -----, -----, -----],
+    # [-----, -----, -----, -----, -----, -----, -----, -----],
+    # [-----, -----, -----, -----, -----, -----, -----, -----],
+    # [-----, -----, -----, -----, -----, -----, -----, -----],
+    # [-----, -----, -----, -----, -----, -----, -----, -----],
+    # [-----, -----, -----, -----, -----, -----, -----, -----],
+    # [-----, -----, -----, -----, wking, -----, -----, wrook]
+    context 'when king can not castle' do
+      board = Board.new
+      board.data[7][4] = King.new(board, { color: :white, location: [7, 4] })
+      board.data[7][7] = Rook.new(board, { color: :white, location: [7, 7] })
+      board.data[0][5] = Rook.new(board, { color: :black, location: [0, 5] })
+      subject(:validator) { described_class.new([7, 4], board, [[7, 3], [6, 3], [6, 4], [7, 5], [6, 5]]) }
+
+      it 'return moves that will not put King in check' do
+        board.instance_variable_set(:@white_king, board.data[7][4])
+        results = validator.verify_possible_moves
+        expect(results).to contain_exactly([7, 3], [6, 3], [6, 4])
+      end
+    end
+
     context 'when king is in check at start of turn and 5 of 6 piece have valid moves' do
       # [-----, -----, -----, -----, -----, -----, -----, -----],
       # [-----, -----, -----, -----, -----, -----, -----, -----],

@@ -28,7 +28,6 @@ RSpec.describe CastlingMovement do
       allow(board).to receive(:active_piece).and_return(black_king)
       allow(black_king).to receive(:update_location).with(0, 6)
       allow(black_rook).to receive(:update_location).with(0, 5)
-      allow(movement).to receive(:find_castling_rook).and_return(black_rook)
     end
 
     it 'updates new coordinates with king' do
@@ -65,31 +64,6 @@ RSpec.describe CastlingMovement do
       expect(black_rook).to receive(:update_location).with(0, 5)
       coordinates = { row: 0, column: 6 }
       movement.update_pieces(board, coordinates)
-    end
-  end
-
-  describe '#find_castling_rook' do
-    subject(:movement) { described_class.new(board, 0, 6) }
-    let(:board) { instance_double(Board) }
-    let(:black_king) { instance_double(Piece, location: [0, 4]) }
-    let(:black_rook) { instance_double(Piece, location: [0, 7]) }
-    let(:data) do
-      [
-        [nil, nil, nil, nil, black_king, nil, nil, black_rook],
-        [nil, nil, nil, nil, nil, nil, nil, nil],
-        [nil, nil, nil, nil, nil, nil, nil, nil],
-        [nil, nil, nil, nil, nil, nil, nil, nil],
-        [nil, nil, nil, nil, nil, nil, nil, nil],
-        [nil, nil, nil, nil, nil, nil, nil, nil],
-        [nil, nil, nil, nil, nil, nil, nil, nil],
-        [nil, nil, nil, nil, nil, nil, nil, nil]
-      ]
-    end
-
-    it 'returns king-side rook' do
-      allow(board).to receive(:data).and_return(data)
-      result = movement.send(:find_castling_rook)
-      expect(result).to eq(black_rook)
     end
   end
 end

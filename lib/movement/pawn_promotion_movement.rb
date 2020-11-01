@@ -18,8 +18,6 @@ class PawnPromotionMovement < BasicMovement
     update_pawn_promotion_moves
   end
 
-  private
-
   # script to update pawn promotion moves
   def update_pawn_promotion_moves
     remove_capture_piece_observer if @board.data[row][column]
@@ -82,6 +80,8 @@ class PawnPromotionMovement < BasicMovement
     end
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+  private
 
   # lists the choices for a new piece during pawn promotion
   def pawn_promotion_choices
