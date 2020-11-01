@@ -6,7 +6,7 @@ This is the final project in the Ruby curriculum at [The Odin Project](https://w
 <img src="demo/chess_demo.gif" alt="chess demo" width=auto height="400px"/>
 
 ## Use of Design Patterns
-Right after I started working on this project, I joined a book club reading [Design Patterns in Ruby](https://www.amazon.com/Design-Patterns-Ruby-Russ-Olsen/dp/0321490452). When we are done reading, I hope to come back to this project to review and refactor. Currently, we've studied six patterns and I have identified two that are useful in this application.
+Right after I started working on this project, I joined a book club reading [Design Patterns in Ruby](https://www.amazon.com/Design-Patterns-Ruby-Russ-Olsen/dp/0321490452). When we are done reading and discussing all of the design patterns, I hope to come back to this project to review and refactor. Currently, we've studied six patterns and I have identified two that are useful in this application.
 
 **[Strategy](https://sourcemaking.com/design_patterns/strategy):** 
 I implemented this pattern using the `Board` class as the context and the four `Movement` classes as different strategies. The `Board` changes its movement strategy to update the position of the piece(s) based on if the move is a basic move, en passant move, castling move, or pawn promotion move. 
@@ -24,7 +24,7 @@ Players can save (or quit) a game at the beginning of every turn. Before a game 
 **Tests:** 
 I wrote unit tests for incoming command methods, incoming query methods, and outgoing command methods. Most of the time, I wrote tests and the method in tandem. Occasionally, I used TDD when I wanted the test to guide the results. For example, I used TDD as I developed the methods that determined each piece's moves and captures.
 
-**Add Simple Computer Player:** 
+**Simple Computer Player (Optional):** 
 Since the white player always goes first and has a slightly higher advantage, I decided to have the computer player always be black to keep the game set-up simple. The computer player selects a piece with legal moves and/or captures.
 
 ## How to Play
