@@ -54,7 +54,7 @@ module GamePrompts
   def user_move_selection
     <<~HEREDOC
 
-      Enter the coordinates of a legal move (red dot) or legal capture (red background).
+      Enter the coordinates of a legal move \e[91;47m \u25CF \e[0m or capture \e[101m \u265F \e[0m.
 
     HEREDOC
   end
