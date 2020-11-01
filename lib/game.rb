@@ -36,10 +36,10 @@ class Game
   include GamePrompts
   include Serializer
 
-  def initialize(number, board = Board.new)
+  def initialize(number, board = Board.new, current_turn = :white)
     @player_count = number
     @board = board
-    @current_turn = :white
+    @current_turn = current_turn
   end
 
   # script to set-up board for new game of chess
@@ -54,8 +54,6 @@ class Game
     player_turn until @board.game_over?
     final_message
   end
-
-  private
 
   # script for computer/human turn, display board & switches @current_turn color
   def player_turn
@@ -176,6 +174,8 @@ class Game
     translator ||= NotationTranslator.new
     translator.translate_notation(input)
   end
+
+  private
 
   # outputs a prompt and returns the user's input
   def user_input(prompt)

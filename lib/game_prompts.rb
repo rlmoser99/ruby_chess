@@ -2,6 +2,23 @@
 
 # contains the text content for chess game
 module GamePrompts
+  # script for user to input game mode, repeats for invalid input
+  def select_game_mode
+    user_mode = gets.chomp
+    return user_mode if user_mode.match?(/^[123]$/)
+
+    puts 'Input error! Enter 1-digit (1, 2, or 3).'
+    select_game_mode
+  end
+
+  def final_message
+    if @board.king_in_check?(@current_turn)
+      puts "\e[36m#{previous_color}\e[0m wins! The #{@current_turn} king is in checkmate."
+    else
+      puts "\e[36m#{previous_color}\e[0m wins in a stalemate!"
+    end
+  end
+
   private
 
   def game_mode_choices
@@ -23,15 +40,6 @@ module GamePrompts
         \e[36m[2]\e[0m to play a \e[36mnew 2-player\e[0m game
         \e[36m[3]\e[0m to play a \e[36msaved\e[0m game
     HEREDOC
-  end
-
-  # script for user to input game mode, repeats for invalid input
-  def select_game_mode
-    user_mode = gets.chomp
-    return user_mode if user_mode.match?(/^[123]$/)
-
-    puts 'Input error! Enter 1-digit (1, 2, or 3).'
-    select_game_mode
   end
 
   def user_piece_selection
@@ -80,13 +88,5 @@ module GamePrompts
   def resign_game
     puts "\e[36m#{previous_color}\e[0m wins because #{@current_turn} resigned!"
     exit
-  end
-
-  def final_message
-    if @board.king_in_check?(@current_turn)
-      puts "\e[36m#{previous_color}\e[0m wins! The #{@current_turn} king is in checkmate."
-    else
-      puts "\e[36m#{previous_color}\e[0m wins in a stalemate!"
-    end
   end
 end

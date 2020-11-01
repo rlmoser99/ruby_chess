@@ -4,10 +4,10 @@ require_relative 'basic_movement'
 
 # contains logic for pawn promotion moves
 class PawnPromotionMovement < BasicMovement
-  def initialize
-    @board = nil
-    @row = nil
-    @column = nil
+  def initialize(board = nil, row = nil, column = nil)
+    @board = board
+    @row = row
+    @column = column
   end
 
   # updates instance variables and runs script to update pawn promotion moves
@@ -17,8 +17,6 @@ class PawnPromotionMovement < BasicMovement
     @column = coords[:column]
     update_pawn_promotion_moves
   end
-
-  private
 
   # script to update pawn promotion moves
   def update_pawn_promotion_moves
@@ -82,6 +80,8 @@ class PawnPromotionMovement < BasicMovement
     end
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+  private
 
   # lists the choices for a new piece during pawn promotion
   def pawn_promotion_choices

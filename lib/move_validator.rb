@@ -2,11 +2,11 @@
 
 # removes any moves/captures that would put their King in check
 class MoveValidator
-  def initialize(location, board, moves)
+  def initialize(location, board, moves, piece = board.data[location[0]][location[1]])
     @current_location = location
     @board = board
     @move_list = moves
-    @current_piece = @board.data[location[0]][location[1]]
+    @current_piece = piece
     @king_location = nil
   end
 

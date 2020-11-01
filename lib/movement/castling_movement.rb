@@ -4,10 +4,10 @@ require_relative 'basic_movement'
 
 # contains logic for castling moves
 class CastlingMovement < BasicMovement
-  def initialize
-    @board = nil
-    @row = nil
-    @column = nil
+  def initialize(board = nil, row = nil, column = nil)
+    @board = board
+    @row = row
+    @column = column
   end
 
   # updates instance variables and runs script to update castling moves
@@ -17,8 +17,6 @@ class CastlingMovement < BasicMovement
     @column = coords[:column]
     update_castling_moves
   end
-
-  private
 
   # script to update castling moves
   def update_castling_moves
@@ -50,6 +48,8 @@ class CastlingMovement < BasicMovement
   def update_castling_piece_location(rook)
     rook.update_location(row, new_rook_column)
   end
+
+  private
 
   # determines rook's original location based on the column of the king's move
   def old_rook_column

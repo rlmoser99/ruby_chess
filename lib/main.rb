@@ -36,8 +36,3 @@ elsif input == '2'
 elsif input == '3'
   load_game.play
 end
-
-# REFACTOR/QUESIONS:
-# Game class is too big - ok?
-# Board class is still too big - ok?
-# -> move initial placement into module or serialize it?

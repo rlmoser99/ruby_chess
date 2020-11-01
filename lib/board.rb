@@ -10,13 +10,13 @@ class Board
   attr_reader :black_king, :white_king, :mode
   attr_accessor :data, :active_piece, :previous_piece
 
-  def initialize(data = Array.new(8) { Array.new(8) }, active_piece = nil)
+  def initialize(data = Array.new(8) { Array.new(8) }, params = {})
     @data = data
-    @active_piece = active_piece
-    @previous_piece = nil
-    @black_king = nil
-    @white_king = nil
-    @mode = :user_prompts
+    @active_piece = params[:active_piece]
+    @previous_piece = params[:previous_piece]
+    @black_king = params[:black_king]
+    @white_king = params[:white_king]
+    @mode = params[:mode]
   end
 
   # updates the board's active piece to use during a player's turn
@@ -48,6 +48,27 @@ class Board
     movement = create_movement(coords)
     movement.update_pieces(self, coords)
     reset_board_values
+  end
+
+  # creates movement strategy based on the coordinates of the move
+  def create_movement(coords)
+    if en_passant_capture?(coords)
+      EnPassantMovement.new
+    elsif pawn_promotion?(coords)
+      PawnPromotionMovement.new
+    elsif castling?(coords)
+      CastlingMovement.new
+    else
+      BasicMovement.new
+    end
+  end
+
+  # script to reset for next turn and notify pieces to update moves/captures
+  def reset_board_values
+    @previous_piece = @active_piece
+    @active_piece = nil
+    changed
+    notify_observers(self)
   end
 
   # returns true if active piece can capture the previous piece en passant
@@ -150,19 +171,6 @@ class Board
     pieces.each { |piece| piece.update(self) }
   end
 
-  # creates movement strategy based on the coordinates of the move
-  def create_movement(coords)
-    if en_passant_capture?(coords)
-      EnPassantMovement.new
-    elsif pawn_promotion?(coords)
-      PawnPromotionMovement.new
-    elsif castling?(coords)
-      CastlingMovement.new
-    else
-      BasicMovement.new
-    end
-  end
-
   # returns true when coords are a pawn captured en_passant
   def en_passant_capture?(coords)
     @previous_piece&.location == [coords[:row], coords[:column]] &&
@@ -178,14 +186,6 @@ class Board
   def castling?(coords)
     file_difference = (coords[:column] - @active_piece.location[1]).abs
     @active_piece&.symbol == " \u265A " && file_difference == 2
-  end
-
-  # script to reset for next turn and notify pieces to update moves/captures
-  def reset_board_values
-    @previous_piece = @active_piece
-    @active_piece = nil
-    changed
-    notify_observers(self)
   end
 
   # returns true if color of active piece matches the cooresponding rank
