@@ -7,11 +7,10 @@ require_relative '../../lib/pieces/piece'
 require_relative '../../lib/pieces/queen'
 
 RSpec.describe PawnPromotionMovement do
-  describe '#update_location' do
+  describe '#update_pieces' do
     subject(:movement) { described_class.new }
     let(:board) { instance_double(Board) }
     let(:black_pawn) { instance_double(Pawn, location: [6, 1], color: :black) }
-    let(:black_queen) { instance_double(Piece, color: :black) }
     let(:data) do
       [
         [nil, nil, nil, nil, nil, nil, nil, nil],
@@ -26,39 +25,54 @@ RSpec.describe PawnPromotionMovement do
     end
 
     before do
-      user_input = '1'
-      allow(movement).to receive(:puts)
-      allow(movement).to receive(:select_promotion_piece).and_return(user_input)
-      allow(movement).to receive(:create_promotion_piece).and_return(black_queen)
       allow(board).to receive(:data).and_return(data)
       allow(board).to receive(:active_piece).and_return(black_pawn)
-      allow(board).to receive(:delete_observer)
-      allow(board).to receive(:active_piece=)
-      allow(board).to receive(:mode).and_return(nil)
+      allow(movement).to receive(:update_pawn_promotion_moves)
+      coordinates = { row: 7, column: 1 }
+      movement.update_pieces(board, coordinates)
     end
 
-    it 'removes observer from original pawn' do
+    it 'updates the board' do
+      expect(movement.board).to eq(board)
+    end
+
+    it 'updates the row' do
+      expect(movement.row).to eq(7)
+    end
+
+    it 'updates the column' do
+      expect(movement.column).to eq(1)
+    end
+
+    it 'calls #update_pawn_promotion_moves' do
+      expect(movement).to receive(:update_pawn_promotion_moves)
+      coordinates = { row: 5, column: 3 }
+      movement.update_pieces(board, coordinates)
+    end
+  end
+
+  describe '#remove_pawn_observer' do
+    subject(:movement) { described_class.new(board, 7, 1) }
+    let(:board) { instance_double(Board) }
+    let(:black_pawn) { instance_double(Pawn, location: [6, 1], color: :black) }
+    let(:data) do
+      [
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, black_pawn, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil]
+      ]
+    end
+
+    it 'sends #delete_observer to board' do
+      allow(board).to receive(:data).and_return(data)
+      allow(board).to receive(:active_piece).and_return(black_pawn)
       expect(board).to receive(:delete_observer).with(black_pawn)
-      coordinates = { row: 7, column: 1 }
-      movement.update_pieces(board, coordinates)
-    end
-
-    it 'removes pawn from original location' do
-      coordinates = { row: 7, column: 1 }
-      movement.update_pieces(board, coordinates)
-      expect(movement.board.data[6][1]).to be nil
-    end
-
-    it 'updates coordinates with new piece' do
-      coordinates = { row: 7, column: 1 }
-      movement.update_pieces(board, coordinates)
-      expect(movement.board.data[7][1]).to eq(black_queen)
-    end
-
-    it 'sends active_piece to board with new piece' do
-      expect(board).to receive(:active_piece=).with(black_queen)
-      coordinates = { row: 7, column: 1 }
-      movement.update_pieces(board, coordinates)
+      movement.remove_pawn_observer
     end
   end
 
@@ -153,6 +167,33 @@ RSpec.describe PawnPromotionMovement do
         result = movement.select_promotion_piece
         expect(result).to eq('1')
       end
+    end
+  end
+
+  describe '#update_board_active_piece' do
+    subject(:movement) { described_class.new(board, 7, 1) }
+    let(:board) { instance_double(Board) }
+    let(:black_pawn) { instance_double(Pawn, location: [6, 1], color: :black) }
+    let(:black_queen) { instance_double(Piece, color: :black) }
+    let(:data) do
+      [
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, black_pawn, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil]
+      ]
+    end
+
+    it 'updates the active piece to promoted piece' do
+      allow(board).to receive(:data).and_return(data)
+      allow(board).to receive(:active_piece=).and_return(black_queen)
+      allow(board).to receive(:active_piece).and_return(black_queen)
+      movement.update_board_active_piece(black_queen)
+      expect(movement.board.active_piece).to be(black_queen)
     end
   end
 end

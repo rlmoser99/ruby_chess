@@ -6,7 +6,7 @@ require_relative '../../lib/board'
 require_relative '../../lib/pieces/pawn'
 
 RSpec.describe EnPassantMovement do
-  describe '#update_location' do
+  describe '#update_pieces' do
     subject(:movement) { described_class.new }
     let(:board) { instance_double(Board) }
     let(:white_pawn) { instance_double(Pawn, location: [3, 1], rank_direction: -1) }
@@ -27,38 +27,109 @@ RSpec.describe EnPassantMovement do
     before do
       allow(board).to receive(:data).and_return(data)
       allow(board).to receive(:active_piece).and_return(white_pawn)
-      allow(board).to receive(:delete_observer)
       allow(white_pawn).to receive(:update_location).with(2, 2)
-    end
+      allow(movement).to receive(:update_en_passant_moves)
 
-    it 'removes observer from captured pawn' do
-      expect(board).to receive(:delete_observer).with(black_pawn)
       coordinates = { row: 3, column: 2 }
       movement.update_pieces(board, coordinates)
     end
 
-    it 'updates altered coordinates with pawn' do
-      coordinates = { row: 3, column: 2 }
-      movement.update_pieces(board, coordinates)
-      expect(movement.board.data[2][2]).to eq(white_pawn)
+    it 'updates the board' do
+      expect(movement.board).to eq(board)
     end
 
-    it 'removes pawn from original location' do
-      coordinates = { row: 3, column: 2 }
-      movement.update_pieces(board, coordinates)
-      expect(movement.board.data[3][1]).to be nil
+    it 'updates the row' do
+      expect(movement.row).to eq(3)
     end
 
-    it 'removes captured pawn from captured location' do
-      coordinates = { row: 3, column: 2 }
-      movement.update_pieces(board, coordinates)
-      expect(movement.board.data[3][2]).to be nil
+    it 'updates the column' do
+      expect(movement.column).to eq(2)
     end
 
-    it 'sends #update_location (with altered coords) to pawn' do
+    it 'calls #update_en_passant_moves' do
+      expect(movement).to receive(:update_en_passant_moves)
+      coordinates = { row: 5, column: 3 }
+      movement.update_pieces(board, coordinates)
+    end
+  end
+
+  describe '#update_active_pawn_coordinates' do
+    subject(:movement) { described_class.new(board, 3, 2) }
+    let(:board) { instance_double(Board) }
+    let(:white_pawn) { instance_double(Pawn, location: [3, 1], rank_direction: -1) }
+    let(:black_pawn) { instance_double(Pawn, location: [3, 2]) }
+    let(:data) do
+      [
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, white_pawn, black_pawn, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil]
+      ]
+    end
+
+    it 'updates new pawn coordinates to active piece' do
+      allow(board).to receive(:data).and_return(data)
+      allow(board).to receive(:active_piece).and_return(white_pawn)
+      movement.update_active_pawn_coordinates
+      new_location = movement.board.data[2][2]
+      expect(new_location).to be(white_pawn)
+    end
+  end
+
+  describe '#remove_en_passant_capture' do
+    subject(:movement) { described_class.new(board, 3, 2) }
+    let(:board) { instance_double(Board) }
+    let(:white_pawn) { instance_double(Pawn, location: [3, 1], rank_direction: -1) }
+    let(:black_pawn) { instance_double(Pawn, location: [3, 2]) }
+    let(:data) do
+      [
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, white_pawn, black_pawn, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil]
+      ]
+    end
+
+    it 'removes opposing pawn from the board' do
+      allow(board).to receive(:data).and_return(data)
+      allow(board).to receive(:active_piece).and_return(white_pawn)
+      movement.remove_en_passant_capture
+      old_location = movement.board.data[3][2]
+      expect(old_location).to be nil
+    end
+  end
+
+  describe '#update_active_piece_location' do
+    subject(:movement) { described_class.new(board, 3, 2) }
+    let(:board) { instance_double(Board) }
+    let(:white_pawn) { instance_double(Pawn, location: [3, 1], rank_direction: -1) }
+    let(:black_pawn) { instance_double(Pawn, location: [3, 2]) }
+    let(:data) do
+      [
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, white_pawn, black_pawn, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil],
+        [nil, nil, nil, nil, nil, nil, nil, nil]
+      ]
+    end
+
+    it 'sends #update_location to the active piece' do
+      allow(board).to receive(:data).and_return(data)
+      allow(board).to receive(:active_piece).and_return(white_pawn)
       expect(white_pawn).to receive(:update_location).with(2, 2)
-      coordinates = { row: 3, column: 2 }
-      movement.update_pieces(board, coordinates)
+      movement.update_active_piece_location
     end
   end
 end

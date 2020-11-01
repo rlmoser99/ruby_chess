@@ -21,14 +21,14 @@ class EnPassantMovement < BasicMovement
   # script to update en passant moves
   def update_en_passant_moves
     remove_capture_piece_observer
-    update_new_coordinates
+    update_active_pawn_coordinates
     remove_original_piece
     remove_en_passant_capture
     update_active_piece_location
   end
 
   # updates the board with pawn's piece in the new location
-  def update_new_coordinates
+  def update_active_pawn_coordinates
     @board.data[new_rank][column] = @board.active_piece
   end
 
