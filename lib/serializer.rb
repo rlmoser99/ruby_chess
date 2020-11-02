@@ -10,7 +10,7 @@ module Serializer
       Marshal.dump(self, file)
     end
     puts "Game was saved as \e[36m#{filename}\e[0m"
-    exit
+    @player_count = 0
   rescue SystemCallError => e
     puts "Error while writing to file #{filename}."
     puts e

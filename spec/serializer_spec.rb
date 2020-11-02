@@ -41,7 +41,6 @@ RSpec.describe Serializer do
 
   describe '#save_game' do
     before do
-      allow(dummy_class).to receive(:exit)
       allow(dummy_class).to receive(:puts)
       allow(Marshal).to receive(:dump)
     end
