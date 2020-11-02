@@ -11,7 +11,19 @@ module GamePrompts
     select_game_mode
   end
 
+  def repeat_game
+    puts repeat_game_choices
+    input = gets.chomp
+    choice = input.upcase == 'Q' ? :quit : :repeat
+    return choice if input.match?(/^[QP]$/i)
+
+    puts 'Input error! Enter Q or P.'
+    repeat_game
+  end
+
   def final_message
+    return unless @player_count.positive?
+
     if @board.king_in_check?(@current_turn)
       puts "\e[36m#{previous_color}\e[0m wins! The #{@current_turn} king is in checkmate."
     else
@@ -39,6 +51,14 @@ module GamePrompts
         \e[36m[1]\e[0m to play a \e[36mnew 1-player\e[0m game against the computer
         \e[36m[2]\e[0m to play a \e[36mnew 2-player\e[0m game
         \e[36m[3]\e[0m to play a \e[36msaved\e[0m game
+    HEREDOC
+  end
+
+  def repeat_game_choices
+    <<~HEREDOC
+
+      Would you like to quit or play again?
+      \e[36m[Q]\e[0m to Quit or \e[36m[P]\e[0m to Play
     HEREDOC
   end
 
@@ -87,6 +107,6 @@ module GamePrompts
 
   def resign_game
     puts "\e[36m#{previous_color}\e[0m wins because #{@current_turn} resigned!"
-    exit
+    @player_count = 0
   end
 end

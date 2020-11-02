@@ -10,6 +10,7 @@ Layout/LineLength:
   Exclude:
     - 'spec/**/*'
     - 'lib/game_prompts.rb'
+    - 'lib/move_validator.rb'
 Metrics/ClassLength:
   Exclude:
     - 'lib/game.rb'
@@ -17,6 +18,7 @@ Metrics/ClassLength:
 Metrics/MethodLength:
   Exclude:
     - 'lib/displayable.rb'
+    - 'lib/main.rb'
 Style/MixinUsage:
   Exclude:
     - 'lib/main.rb'

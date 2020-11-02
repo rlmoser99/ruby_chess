@@ -51,7 +51,7 @@ class Game
   # script to play a game of chess
   def play
     @board.to_s
-    player_turn until @board.game_over?
+    player_turn until @board.game_over? || @player_count.zero?
     final_message
   end
 
@@ -63,6 +63,8 @@ class Game
     else
       human_player_turn
     end
+    return unless @player_count.positive?
+
     @board.to_s
     switch_color
   end
@@ -70,6 +72,8 @@ class Game
   # script for human turn to choose a piece and then a legal move/capture
   def human_player_turn
     select_piece_coordinates
+    return unless @player_count.positive?
+
     @board.to_s
     move = select_move_coordinates
     @board.update(move)
@@ -89,6 +93,8 @@ class Game
   # script for user to input coordinates, then selected piece will be validated
   def select_piece_coordinates
     input = user_select_piece
+    return unless @player_count.positive?
+
     coords = translate_coordinates(input)
     validate_piece_coordinates(coords)
     @board.update_active_piece(coords)

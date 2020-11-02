@@ -22,17 +22,23 @@ require_relative 'movement/castling_movement.rb'
 extend GamePrompts
 extend Serializer
 
-puts game_mode_choices
-input = select_game_mode
+def play_game(input)
+  if input == '1'
+    single_player = Game.new(1)
+    single_player.setup_board
+    single_player.play
+  elsif input == '2'
+    two_player = Game.new(2)
+    two_player.setup_board
+    two_player.play
+  elsif input == '3'
+    load_game.play
+  end
+end
 
-if input == '1'
-  single_player = Game.new(1)
-  single_player.setup_board
-  single_player.play
-elsif input == '2'
-  two_player = Game.new(2)
-  two_player.setup_board
-  two_player.play
-elsif input == '3'
-  load_game.play
+loop do
+  puts game_mode_choices
+  mode = select_game_mode
+  play_game(mode)
+  break if repeat_game == :quit
 end
