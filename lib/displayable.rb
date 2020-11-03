@@ -54,7 +54,6 @@ module Displayable
     end
   end
 
-  # returns true if row/column is a active piece's capture location
   def capture_background?(row, column)
     @active_piece&.captures&.any?([row, column]) && @data[row][column]
   end

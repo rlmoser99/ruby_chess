@@ -13,7 +13,7 @@ class Knight < Piece
     @captures = []
   end
 
-  # finds possible moves by iterating through knight's move_set
+  # iterates over move_set and adds the location as a move when valid
   def find_possible_moves(board)
     possibilities = []
     move_set.each do |move|
@@ -26,7 +26,7 @@ class Knight < Piece
     possibilities
   end
 
-  # finds possible captures by iterating through knight's move_set
+  # iterates over move_set and adds the location as a capture when valid
   def find_possible_captures(board)
     result = []
     move_set.each do |move|
@@ -41,7 +41,6 @@ class Knight < Piece
 
   private
 
-  # list of possible directions that a knight can move
   def move_set
     [[-1, -2], [1, 2], [-1, 2], [1, -2], [-2, -1], [2, 1], [-2, 1], [2, -1]]
   end

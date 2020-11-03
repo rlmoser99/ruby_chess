@@ -2,7 +2,6 @@
 
 # contains the text content for chess game
 module GamePrompts
-  # script for user to input game mode, repeats for invalid input
   def select_game_mode
     user_mode = gets.chomp
     return user_mode if user_mode.match?(/^[123]$/)
