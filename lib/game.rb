@@ -12,21 +12,21 @@ class Game
     end
   end
 
-  # Declares error message when user enters invalid move
+  # Declares error message when user enters an opponent's piece
   class CoordinatesError < StandardError
     def message
       'Invalid coordinates! Enter column & row of the correct color.'
     end
   end
 
-  # Declares error message when user enters invalid move
+  # Declares error message when user enters invalid coordinates
   class MoveError < StandardError
     def message
       'Invalid coordinates! Enter a valid column & row to move.'
     end
   end
 
-  # Declares error message when user enters invalid move
+  # Declares error message when user enters a piece without moves
   class PieceError < StandardError
     def message
       'Invalid piece! This piece does not have any legal moves.'
@@ -42,20 +42,17 @@ class Game
     @current_turn = current_turn
   end
 
-  # script to set-up board for new game of chess
   def setup_board
     @board.update_mode if @player_count == 1
     @board.initial_placement
   end
 
-  # script to play a game of chess
   def play
     @board.to_s
     player_turn until @board.game_over? || @player_count.zero?
     final_message
   end
 
-  # script for computer/human turn, display board & switches @current_turn color
   def player_turn
     puts "#{@current_turn.capitalize}'s turn!"
     if @player_count == 1 && @current_turn == :black
@@ -69,7 +66,6 @@ class Game
     switch_color
   end
 
-  # script for human turn to choose a piece and then a legal move/capture
   def human_player_turn
     select_piece_coordinates
     return unless @player_count.positive?
@@ -79,7 +75,6 @@ class Game
     @board.update(move)
   end
 
-  # script for computer to select random piece and then a random move/capture
   def computer_player_turn
     sleep(1.5)
     coordinates = computer_select_random_piece
@@ -90,7 +85,6 @@ class Game
     @board.update(move)
   end
 
-  # script for user to input coordinates, then selected piece will be validated
   def select_piece_coordinates
     input = user_select_piece
     return unless @player_count.positive?
@@ -104,7 +98,6 @@ class Game
     retry
   end
 
-  # script for user to input coordinates, then selected move will be validated
   def select_move_coordinates
     input = user_select_move
     coords = translate_coordinates(input)
@@ -115,7 +108,6 @@ class Game
     retry
   end
 
-  # script for user to input piece to move, or quit the game
   def user_select_piece
     puts king_check_warning if @board.king_in_check?(@current_turn)
     input = user_input(user_piece_selection)
@@ -125,7 +117,6 @@ class Game
     input
   end
 
-  # script for user to input move, or quit the game
   def user_select_move
     puts en_passant_warning if @board.possible_en_passant?
     puts castling_warning if @board.possible_castling?
@@ -135,42 +126,34 @@ class Game
     input
   end
 
-  # alternates between :black and :white for #player_turn
   def switch_color
     @current_turn = @current_turn == :white ? :black : :white
   end
 
-  # returns a random black piece for :computer mode
   def computer_select_random_piece
     @board.random_black_piece
   end
 
-  # returns a random black move for :computer mode
   def computer_select_random_move
     @board.random_black_move
   end
 
-  # raises an error if input is not valid
   def validate_piece_input(input)
     raise InputError unless input.match?(/^[a-h][1-8]$|^[q]$|^[s]$/i)
   end
 
-  # raises an error if input is not valid
   def validate_move_input(input)
     raise InputError unless input.match?(/^[a-h][1-8]$/i)
   end
 
-  # raises an error if coordinates is not a valid piece
   def validate_piece_coordinates(coords)
     raise CoordinatesError unless @board.valid_piece?(coords, @current_turn)
   end
 
-  # raises an error if coordinates is not a valid move/capture
   def validate_move(coords)
     raise MoveError unless @board.valid_piece_movement?(coords)
   end
 
-  # raises an error if piece selected does not have legal moves/captures
   def validate_active_piece
     raise PieceError unless @board.active_piece_moveable?
   end
@@ -183,7 +166,6 @@ class Game
 
   private
 
-  # outputs a prompt and returns the user's input
   def user_input(prompt)
     puts prompt
     gets.chomp
