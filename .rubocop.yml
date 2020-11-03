@@ -17,6 +17,7 @@ Metrics/ClassLength:
     - 'lib/board.rb'
 Metrics/MethodLength:
   Exclude:
+    - 'lib/movement/pawn_promotion_movement.rb'
     - 'lib/displayable.rb'
     - 'lib/main.rb'
 Style/MixinUsage:
@@ -25,3 +26,6 @@ Style/MixinUsage:
 Security/MarshalLoad:
   Exclude:
     - 'lib/serializer.rb'
+Metrics/AbcSize:
+  Exclude:
+    - 'lib/movement/pawn_promotion_movement.rb'

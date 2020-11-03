@@ -54,7 +54,7 @@ class Piece
     validator.verify_possible_moves
   end
 
-  # method required as an observer for the Board
+  # method used when notified of a change in Board (as an observer)
   def update(board)
     current_captures(board)
     current_moves(board)

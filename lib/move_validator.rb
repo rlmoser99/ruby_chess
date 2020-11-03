@@ -20,6 +20,7 @@ class MoveValidator
 
   private
 
+  # changes board/pieces to the possible move and checks if king is safe
   def legal_move?(move)
     captured_piece = @board.data[move[0]][move[1]]
     move_current_piece(move)

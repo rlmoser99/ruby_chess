@@ -57,7 +57,6 @@ class PawnPromotionMovement < BasicMovement
     select_promotion_piece
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def create_promotion_piece(choice)
     color = @board.active_piece.color
     case choice.to_i
@@ -71,7 +70,6 @@ class PawnPromotionMovement < BasicMovement
       Rook.new(@board, { color: color, location: [row, column] })
     end
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   private
 
