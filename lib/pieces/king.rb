@@ -48,12 +48,14 @@ class King < Piece
     castling_moves
   end
 
+  # ADD KING NOT BEING IN CHECK!!!
   def king_side_castling?(board)
     king_side_pass = 5
     empty_files = [6]
     king_side_rook = 7
     unmoved_king_rook?(board, king_side_rook) &&
       empty_files?(board, empty_files) &&
+      !board.king_in_check?(@color) &&
       king_pass_through_safe?(board, king_side_pass)
   end
 
@@ -63,6 +65,7 @@ class King < Piece
     queen_side_pass = 3
     unmoved_king_rook?(board, queen_side_rook) &&
       empty_files?(board, empty_files) &&
+      !board.king_in_check?(@color) &&
       king_pass_through_safe?(board, queen_side_pass)
   end
 

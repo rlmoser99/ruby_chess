@@ -100,6 +100,7 @@ RSpec.describe King do
 
       it 'has two moves' do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:king_in_check?).with(:white).and_return(false)
         result = wkg.find_possible_moves(board)
         expect(result).to contain_exactly([7, 5], [7, 6])
       end
@@ -148,6 +149,7 @@ RSpec.describe King do
 
       it 'has six moves' do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:king_in_check?).with(:black).and_return(false)
         allow(wpc).to receive(:find_possible_moves).and_return([7, 5])
         result = bkg.find_possible_moves(board)
         expect(result).to contain_exactly([0, 2], [0, 3], [0, 5], [1, 3], [1, 4], [1, 5])
@@ -199,7 +201,34 @@ RSpec.describe King do
 
       it 'will not include castling move' do
         allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:king_in_check?).with(:white).and_return(false)
         allow(brk).to receive(:find_possible_moves).and_return([[7, 5]])
+        result = wkg.find_possible_moves(board)
+        expect(result).not_to include([7, 6])
+      end
+    end
+
+    context 'when king is in check and can not castle' do
+      subject(:wkg) { described_class.new(board, { color: :white, location: [7, 4] }) }
+      let(:wrk) { instance_double(Rook, color: :white, symbol: " \u265C ", moved: false, location: [7, 7]) }
+      let(:brk) { instance_double(Piece, color: :black, symbol: " \u265C ", moved: false, location: [0, 4]) }
+      let(:data) do
+        [
+          [nil, nil, nil, nil, brk, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, wkg, nil, nil, wrk]
+        ]
+      end
+
+      it 'will not include castling move' do
+        allow(board).to receive(:data).and_return(data)
+        allow(board).to receive(:king_in_check?).with(:white).and_return(true)
+        allow(brk).to receive(:find_possible_moves).and_return([[7, 3]])
         result = wkg.find_possible_moves(board)
         expect(result).not_to include([7, 6])
       end
