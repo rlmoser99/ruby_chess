@@ -372,8 +372,6 @@ RSpec.describe Pawn do
           ]
         end
 
-        # THE CURRENT METHODS DO NOT REMOVE BPN FROM BOARD TO CHECK!!!
-
         it 'does not return en_passant capture' do
           allow(board).to receive(:data).and_return(data)
           allow(board).to receive(:previous_piece).and_return(bpn)
