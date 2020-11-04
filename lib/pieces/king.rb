@@ -48,7 +48,6 @@ class King < Piece
     castling_moves
   end
 
-  # ADD KING NOT BEING IN CHECK!!!
   def king_side_castling?(board)
     king_side_pass = 5
     empty_files = [6]
