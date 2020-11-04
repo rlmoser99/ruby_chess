@@ -2,6 +2,8 @@
 
 require_relative '../../lib/pieces/pawn'
 require_relative '../../lib/pieces/piece'
+require_relative '../../lib/pieces/king'
+require_relative '../../lib/pieces/queen'
 require_relative '../../lib/board'
 
 RSpec.describe Pawn do
@@ -225,6 +227,7 @@ RSpec.describe Pawn do
         it 'has one capture' do
           allow(board).to receive(:data).and_return(data)
           allow(board).to receive(:previous_piece).and_return(wpn)
+          allow(bpn).to receive(:legal_en_passant_move?).and_return(true)
           result = bpn.find_possible_captures(board)
           expect(result).to contain_exactly([4, 2])
         end
@@ -345,8 +348,39 @@ RSpec.describe Pawn do
         it 'has two captures' do
           allow(board).to receive(:data).and_return(data)
           allow(board).to receive(:previous_piece).and_return(bpn)
+          allow(wpn).to receive(:legal_en_passant_move?).and_return(true)
           result = wpn.find_possible_captures(board)
           expect(result).to contain_exactly([3, 4], [2, 2])
+        end
+      end
+
+      context 'when pawn has an en_passant capture but puts King in check' do
+        subject(:wpn) { described_class.new(board, { color: :white, location: [3, 3] }) }
+        let(:bpn) { instance_double(Pawn, en_passant: true, location: [3, 4], symbol: " \u265F ") }
+        let(:wkg) { instance_double(King, location: [3, 0]) }
+        let(:bqn) { instance_double(Queen, location: [3, 7]) }
+        let(:data) do
+          [
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, bpc, nil, nil, nil, nil, nil],
+            [wkg, nil, nil, wpn, bpn, nil, nil, bqn],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil],
+            [nil, nil, nil, nil, nil, nil, nil, nil]
+          ]
+        end
+
+        # THE CURRENT METHODS DO NOT REMOVE BPN FROM BOARD TO CHECK!!!
+
+        it 'does not return en_passant capture' do
+          allow(board).to receive(:data).and_return(data)
+          allow(board).to receive(:previous_piece).and_return(bpn)
+          allow(board).to receive(:white_king).and_return(wkg)
+          allow(wpn).to receive(:legal_en_passant_move?).and_return(false)
+          result = wpn.find_possible_captures(board)
+          expect(result).not_to include([3, 4])
         end
       end
 
