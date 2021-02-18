@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 require 'observer'
-require_relative 'displayable.rb'
-
-require 'pry'
+require_relative 'displayable'
 
 # contains logic for chess board
 class Board

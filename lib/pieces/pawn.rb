@@ -7,14 +7,10 @@ class Pawn < Piece
   attr_reader :en_passant
 
   def initialize(board, args)
-    board.add_observer(self)
-    @color = args[:color]
-    @location = args[:location]
+    super(board, args)
     @symbol = " \u265F "
     @moved = false
     @en_passant = false
-    @moves = []
-    @captures = []
   end
 
   def update_location(row, column)

@@ -14,8 +14,6 @@ require_relative '../lib/movement/en_passant_movement'
 require_relative '../lib/movement/pawn_promotion_movement'
 require_relative '../lib/movement/castling_movement'
 
-require 'pry'
-
 RSpec.describe Board do
   subject(:board) { described_class.new }
 

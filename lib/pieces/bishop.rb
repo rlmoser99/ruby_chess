@@ -5,12 +5,8 @@ require_relative 'piece'
 # logic for bishop chess piece
 class Bishop < Piece
   def initialize(board, args)
-    board.add_observer(self)
-    @color = args[:color]
-    @location = args[:location]
+    super(board, args)
     @symbol = " \u265D "
-    @moves = []
-    @captures = []
   end
 
   private

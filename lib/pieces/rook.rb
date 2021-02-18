@@ -5,13 +5,8 @@ require_relative 'piece'
 # logic for rook chess piece
 class Rook < Piece
   def initialize(board, args)
-    board.add_observer(self)
-    @color = args[:color]
-    @location = args[:location]
+    super(board, args)
     @symbol = " \u265C "
-    @moved = false
-    @moves = []
-    @captures = []
   end
 
   private

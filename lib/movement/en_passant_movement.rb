@@ -5,9 +5,7 @@ require_relative 'basic_movement'
 # contains logic for en passant moves
 class EnPassantMovement < BasicMovement
   def initialize(board = nil, row = nil, column = nil)
-    @board = board
-    @row = row
-    @column = column
+    super
   end
 
   def update_pieces(board, coords)

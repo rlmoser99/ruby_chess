@@ -5,11 +5,8 @@ require_relative 'piece'
 # logic for knight chess piece
 class Knight < Piece
   def initialize(board, args)
-    board.add_observer(self)
-    @color = args[:color]
-    @location = args[:location]
+    super(board, args)
     @symbol = " \u265E "
-    @moves = []
     @captures = []
   end
 
