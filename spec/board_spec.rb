@@ -8,10 +8,13 @@ require_relative '../lib/pieces/bishop'
 require_relative '../lib/pieces/knight'
 require_relative '../lib/pieces/pawn'
 require_relative '../lib/pieces/piece'
+require_relative '../lib/movement/movement_factory'
 require_relative '../lib/movement/basic_movement'
 require_relative '../lib/movement/en_passant_movement'
 require_relative '../lib/movement/pawn_promotion_movement'
 require_relative '../lib/movement/castling_movement'
+
+require 'pry'
 
 RSpec.describe Board do
   subject(:board) { described_class.new }
@@ -259,56 +262,67 @@ RSpec.describe Board do
   describe '#update' do
     subject(:board) { described_class.new }
     let(:basic_movement) { instance_double(BasicMovement) }
+    let(:factory) { double(MovementFactory) }
+
+    before do
+      allow(board).to receive(:movement_type).and_return('Basic')
+      allow(MovementFactory).to receive(:new).with('Basic').and_return(factory)
+      allow(factory).to receive(:build).and_return(basic_movement)
+      allow(basic_movement).to receive(:update_pieces)
+      allow(board).to receive(:reset_board_values)
+    end
+
+    it 'sends #build to factory' do
+      coordinates = { row: 0, column: 0 }
+      expect(MovementFactory).to receive(:new).with('Basic')
+      expect(factory).to receive(:build)
+      board.update(coordinates)
+    end
 
     it 'sends #update_pieces to movement' do
-      allow(board).to receive(:create_movement).and_return(basic_movement)
       coordinates = { row: 0, column: 0 }
       expect(basic_movement).to receive(:update_pieces).with(board, coordinates)
       board.update(coordinates)
     end
   end
 
-  describe '#create_movement' do
+  describe '#movement_type' do
     subject(:board) { described_class.new }
 
     context 'when there is an en passant capture' do
-      it 'creates EnPassantMovement' do
+      it "returns 'EnPassant'" do
         allow(board).to receive(:en_passant_capture?).and_return(true)
-        expect(EnPassantMovement).to receive(:new)
         coordinates = { row: 0, column: 0 }
-        board.create_movement(coordinates)
+        expect(board.movement_type(coordinates)).to eq('EnPassant')
       end
     end
 
     context 'when there is a pawn promotion' do
-      it 'creates PawnPromotionMovement' do
+      it "returns 'PawnPromotion'" do
         allow(board).to receive(:en_passant_capture?).and_return(false)
         allow(board).to receive(:pawn_promotion?).and_return(true)
-        expect(PawnPromotionMovement).to receive(:new)
         coordinates = { row: 0, column: 0 }
-        board.create_movement(coordinates)
+        expect(board.movement_type(coordinates)).to eq('PawnPromotion')
       end
     end
 
     context 'when there is an castling move' do
-      it 'creates CastlingMovement' do
+      it "returns 'Castling'" do
         allow(board).to receive(:en_passant_capture?).and_return(false)
         allow(board).to receive(:pawn_promotion?).and_return(false)
         allow(board).to receive(:castling?).and_return(true)
-        expect(CastlingMovement).to receive(:new)
         coordinates = { row: 0, column: 0 }
-        board.create_movement(coordinates)
+        expect(board.movement_type(coordinates)).to eq('Castling')
       end
     end
 
     context 'when there are no special moves' do
-      it 'creates BasicMovement' do
+      it "returns 'Basic'" do
         allow(board).to receive(:en_passant_capture?).and_return(false)
         allow(board).to receive(:pawn_promotion?).and_return(false)
         allow(board).to receive(:castling?).and_return(false)
-        expect(BasicMovement).to receive(:new)
         coordinates = { row: 0, column: 0 }
-        board.create_movement(coordinates)
+        expect(board.movement_type(coordinates)).to eq('Basic')
       end
     end
   end

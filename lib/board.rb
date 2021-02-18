@@ -3,6 +3,8 @@
 require 'observer'
 require_relative 'displayable.rb'
 
+require 'pry'
+
 # contains logic for chess board
 class Board
   include Displayable
