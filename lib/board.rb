@@ -40,20 +40,21 @@ class Board
   end
 
   def update(coords)
-    movement = create_movement(coords)
+    type = movement_type(coords)
+    movement = MovementFactory.new(type).build
     movement.update_pieces(self, coords)
     reset_board_values
   end
 
-  def create_movement(coords)
+  def movement_type(coords)
     if en_passant_capture?(coords)
-      EnPassantMovement.new
+      'EnPassant'
     elsif pawn_promotion?(coords)
-      PawnPromotionMovement.new
+      'PawnPromotion'
     elsif castling?(coords)
-      CastlingMovement.new
+      'Castling'
     else
-      BasicMovement.new
+      'Basic'
     end
   end
 
