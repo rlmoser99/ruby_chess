@@ -7,12 +7,15 @@ This is the final project in the Ruby curriculum at [The Odin Project](https://w
 *1-minute demo game featuring [Owen's Defense](https://en.wikipedia.org/wiki/Owen%27s_Defence) opening moves*
 
 ## Use of Design Patterns
-Right after I started working on this project, I joined a book club reading [Design Patterns in Ruby](https://www.amazon.com/Design-Patterns-Ruby-Russ-Olsen/dp/0321490452). When we are done reading and discussing all of the design patterns, I hope to come back to this project to review and refactor. Currently, we've studied six patterns and I have identified two that are useful in this application.
+The Odin Project's Discord community offered a book club for [Design Patterns in Ruby](https://www.amazon.com/Design-Patterns-Ruby-Russ-Olsen/dp/0321490452). Every two weeks we would share code using each pattern and discuss them. Here is a brief summary of the 3 patterns that I implemented in this game:
 
-**[Strategy](https://sourcemaking.com/design_patterns/strategy):** 
+**[Strategy](https://refactoring.guru/design-patterns/strategy):** 
 I implemented this pattern using the `Board` class as the context and the four `Movement` classes as different strategies. The `Board` changes its movement strategy to update the position of the piece(s) based on if the move is a basic move, en passant move, castling move, or pawn promotion move. 
 
-**[Observer](https://sourcemaking.com/design_patterns/observer):** 
+**[Factory](https://refactoring.guru/design-patterns/factory-method:** 
+I implemented this pattern to create the different `Movement` classes needed for the above strategies. The `Board` passes a string to the Factory to know which type to create.
+
+**[Observer](https://refactoring.guru/design-patterns/observer):** 
 I implemented this pattern using the `Board` class as the subject and the `Piece` classes as the observers. When an instance of `Piece` is created, it becomes an observer of the `Board` instance. Every time a `Piece` moves in the `Board`, all of the pieces update their legal moves and captures. In addition, when a `Piece` is removed from the `Board`, that observer must also be removed.
 
 ## Project Requirements
