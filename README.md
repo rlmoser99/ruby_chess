@@ -12,7 +12,7 @@ The Odin Project's Discord community offered a book club for [Design Patterns in
 **[Strategy](https://refactoring.guru/design-patterns/strategy):** 
 I implemented this pattern using the `Board` class as the context and the four `Movement` classes as different strategies. The `Board` changes its movement strategy to update the position of the piece(s) based on if the move is a basic move, en passant move, castling move, or pawn promotion move. 
 
-**[Factory](https://refactoring.guru/design-patterns/factory-method:** 
+**[Factory](https://refactoring.guru/design-patterns/factory-method):** 
 I implemented this pattern to create the different `Movement` classes needed for the above strategies. The `Board` passes a string to the Factory to know which type to create.
 
 **[Observer](https://refactoring.guru/design-patterns/observer):** 
